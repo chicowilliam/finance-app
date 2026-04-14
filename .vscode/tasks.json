@@ -1,0 +1,16 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"label": "git-status-root",
+			"type": "shell",
+			"command": "git",
+			"args": [
+				"-C",
+				"c:\\Users\\User1\\Desktop\\finance-app\\finance-app",
+				"status",
+				"--short"
+			]
+		}
+	]
+}
