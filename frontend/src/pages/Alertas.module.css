@@ -1,0 +1,21 @@
+.titulo { font-size: 1.5rem; font-weight: 700; margin-bottom: 1.5rem; }
+.secao { margin-bottom: 2rem; }
+.h2Atrasada, .h2Urgente { display: flex; align-items: center; gap: 10px; font-size: 1rem; font-weight: 700; margin-bottom: 1rem; }
+.badge {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 24px; height: 24px; border-radius: 50%;
+  background: #ef4444; color: #fff; font-weight: 800; font-size: 0.85rem;
+}
+.badgeAmber { background: #f59e0b; }
+.cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 12px; }
+.card { padding: 1rem; border-radius: 10px; border: 1px solid; }
+.cardAtrasada { background: #fef2f2; border-color: #fca5a5; }
+.cardVencer   { background: #fefce8; border-color: #fde047; }
+.topo { display: flex; justify-content: space-between; align-items: flex-start; gap: 8px; margin-bottom: 10px; }
+.desc  { font-weight: 700; font-size: 0.95rem; color: #1e293b; }
+.valor { font-weight: 700; font-size: 1rem; white-space: nowrap; color: #0f172a; }
+.rodape { display: flex; justify-content: space-between; align-items: center; }
+.cat { font-size: 0.75rem; color: #64748b; }
+.tagAtrasada { font-size: 0.75rem; font-weight: 700; color: #b91c1c; }
+.tagVencer   { font-size: 0.75rem; font-weight: 700; color: #b45309; }
+.ok { text-align: center; padding: 3rem; color: #64748b; font-size: 1rem; }

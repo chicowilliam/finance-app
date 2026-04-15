@@ -1,0 +1,28 @@
+.titulo { font-size: 1.5rem; font-weight: 700; margin-bottom: 0.75rem; }
+.legenda { display: flex; gap: 16px; font-size: 0.8rem; font-weight: 600; margin-bottom: 1rem; }
+.lPaga     { color: #15803d; }
+.lVencer   { color: #b45309; }
+.lAtrasada { color: #b91c1c; }
+.grid { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 4px; }
+.cab { text-align: center; font-size: 0.75rem; font-weight: 600; color: #64748b; padding: 6px 0; }
+.cel {
+  min-height: 80px; border: 1px solid #e2e8f0; border-radius: 8px;
+  padding: 6px; display: flex; flex-direction: column; gap: 3px;
+  background: #fff;
+}
+.hoje      { border: 2px solid #6366f1; background: #f5f3ff; }
+.celAtrasada { background: #fef2f2; border-color: #fca5a5; }
+.celVencer   { background: #fefce8; border-color: #fde047; }
+.num { font-size: 0.8rem; font-weight: 700; color: #334155; }
+.tag { border-radius: 4px; padding: 2px 5px; margin-top: 2px; }
+.tag.paga     { background: #dcfce7; }
+.tag.a_vencer { background: #fef9c3; }
+.tag.atrasada { background: #fee2e2; }
+.tagNome { display: block; font-size: 0.65rem; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.tag.paga .tagNome     { color: #15803d; }
+.tag.a_vencer .tagNome { color: #a16207; }
+.tag.atrasada .tagNome { color: #b91c1c; }
+.tagVal { display: block; font-size: 0.6rem; }
+.tag.paga .tagVal     { color: #15803d; }
+.tag.a_vencer .tagVal { color: #a16207; }
+.tag.atrasada .tagVal { color: #b91c1c; }

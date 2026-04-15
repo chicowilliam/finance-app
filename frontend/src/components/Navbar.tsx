@@ -1,35 +1,31 @@
-function Navbar() {
-	const mesAtual = new Date().toLocaleDateString('pt-BR', {
-		month: 'long',
-		year: 'numeric',
-	})
+import { NavLink } from 'react-router-dom'
+import styles from './Navbar.module.css'
 
-	const totalAVencer = 1840.5
+const links = [
+  { to: '/',          label: 'Visão Geral' },
+  { to: '/contas',    label: 'Contas'      },
+  { to: '/calendario', label: 'Calendário' },
+  { to: '/alertas',   label: 'Alertas'    },
+]
 
-	return (
-		<header className="topbar">
-			<div>
-				<p className="topbar-label">Mes atual</p>
-				<h1 className="topbar-title">{mesAtual}</h1>
-			</div>
-
-			<div className="topbar-actions">
-				<div className="topbar-summary">
-					<p className="topbar-label">Total a vencer</p>
-					<strong className="topbar-value">
-						{totalAVencer.toLocaleString('pt-BR', {
-							style: 'currency',
-							currency: 'BRL',
-						})}
-					</strong>
-				</div>
-
-				<button className="add-bill-button" type="button">
-					+ Adicionar conta
-				</button>
-			</div>
-		</header>
-	)
+export default function Navbar() {
+  return (
+    <nav className={styles.nav}>
+      <span className={styles.logo}>💰 FinanceApp</span>
+      <div className={styles.links}>
+        {links.map(l => (
+          <NavLink
+            key={l.to}
+            to={l.to}
+            end={l.to === '/'}
+            className={({ isActive }) =>
+              `${styles.link} ${isActive ? styles.ativo : ''}`
+            }
+          >
+            {l.label}
+          </NavLink>
+        ))}
+      </div>
+    </nav>
+  )
 }
-
-export default Navbar
