@@ -1,5 +1,6 @@
 import { useState } from 'react'
-import { mockContas, formatBRL, formatData, StatusConta } from '../data/mockContas'
+import { mockContas, formatBRL, formatData } from '../data/mockContas'
+import type { StatusConta } from '../data/mockContas'
 import styles from './Contas.module.css'
 
 type Filtro = StatusConta | 'todas'

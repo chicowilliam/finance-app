@@ -1,4 +1,5 @@
-import { mockContas, formatBRL, formatData, Conta } from '../data/mockContas'
+import { mockContas, formatBRL } from '../data/mockContas'
+import type { Conta } from '../data/mockContas'
 import styles from './Alertas.module.css'
 
 const hoje = new Date()
