@@ -1,5 +1,6 @@
 import { useState } from 'react'
-import { mockContas, formatBRL, formatData } from '../data/mockContas'
+import { useContasContext } from '../context/ContasContext'
+import { formatBRL, formatData } from '../data/mockContas'
 import type { StatusConta } from '../data/mockContas'
 import styles from './Contas.module.css'
 
@@ -11,8 +12,11 @@ const STATUS_LABEL: Record<StatusConta, string> = {
 
 export default function Contas() {
   const [filtro, setFiltro] = useState<Filtro>('todas')
+  const { contas, loading } = useContasContext()
 
-  const lista = filtro === 'todas' ? mockContas : mockContas.filter(c => c.status === filtro)
+  if (loading) return <p>Carregando...</p>
+
+  const lista = filtro === 'todas' ? contas : contas.filter(c => c.status === filtro)
 
   return (
     <div>

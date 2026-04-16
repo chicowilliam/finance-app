@@ -1,7 +1,12 @@
-import { mockContas, formatBRL } from '../data/mockContas'
+import { useContasContext } from '../context/ContasContext'
+import { formatBRL } from '../data/mockContas'
 import styles from './Calendario.module.css'
 
 export default function Calendario() {
+  const { contas, loading } = useContasContext()
+
+  if (loading) return <p>Carregando...</p>
+
   const hoje = new Date()
   const ano = hoje.getFullYear()
   const mes = hoje.getMonth()
@@ -9,8 +14,8 @@ export default function Calendario() {
   const primeiroDia = new Date(ano, mes, 1).getDay()
   const diasNoMes = new Date(ano, mes + 1, 0).getDate()
 
-  const porDia: Record<number, typeof mockContas> = {}
-  mockContas.forEach(c => {
+  const porDia: Record<number, typeof contas> = {}
+  contas.forEach(c => {
     const d = new Date(c.vencimento + 'T00:00:00')
     if (d.getFullYear() === ano && d.getMonth() === mes) {
       const dia = d.getDate()

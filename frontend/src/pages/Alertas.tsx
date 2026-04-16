@@ -1,4 +1,5 @@
-import { mockContas, formatBRL } from '../data/mockContas'
+import { useContasContext } from '../context/ContasContext'
+import { formatBRL } from '../data/mockContas'
 import type { Conta } from '../data/mockContas'
 import styles from './Alertas.module.css'
 
@@ -11,8 +12,12 @@ const diasParaVencer = (c: Conta) =>
   Math.ceil((new Date(c.vencimento + 'T00:00:00').getTime() - hoje.getTime()) / 86_400_000)
 
 export default function Alertas() {
-  const atrasadas = mockContas.filter(c => c.status === 'atrasada')
-  const urgentes  = mockContas.filter(c => c.status === 'a_vencer' && diasParaVencer(c) <= 5)
+  const { contas, loading } = useContasContext()
+
+  if (loading) return <p>Carregando...</p>
+
+  const atrasadas = contas.filter(c => c.status === 'atrasada')
+  const urgentes  = contas.filter(c => c.status === 'a_vencer' && diasParaVencer(c) <= 5)
 
   return (
     <div>

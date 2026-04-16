@@ -1,16 +1,21 @@
-import { mockContas, formatBRL, formatData } from '../data/mockContas'
+import { useContasContext } from '../context/ContasContext'
+import { formatBRL, formatData } from '../data/mockContas'
 import styles from './VisaoGeral.module.css'
 
 export default function VisaoGeral() {
-  const pagas     = mockContas.filter(c => c.status === 'paga')
-  const aVencer   = mockContas.filter(c => c.status === 'a_vencer')
-  const atrasadas = mockContas.filter(c => c.status === 'atrasada')
+  const { contas, loading } = useContasContext()
+
+  if (loading) return <p>Carregando...</p>
+
+  const pagas     = contas.filter(c => c.status === 'paga')
+  const aVencer   = contas.filter(c => c.status === 'a_vencer')
+  const atrasadas = contas.filter(c => c.status === 'atrasada')
 
   const cards = [
     { label: 'Total Pago',    valor: pagas.reduce((s, c) => s + c.valor, 0),     qtd: pagas.length,     cor: styles.verde   },
     { label: 'A Vencer',      valor: aVencer.reduce((s, c) => s + c.valor, 0),   qtd: aVencer.length,   cor: styles.amarelo },
     { label: 'Atrasadas',     valor: atrasadas.reduce((s, c) => s + c.valor, 0), qtd: atrasadas.length, cor: styles.vermelho },
-    { label: 'Total do Mês',  valor: mockContas.reduce((s, c) => s + c.valor, 0), qtd: mockContas.length, cor: styles.roxo  },
+    { label: 'Total do Mês',  valor: contas.reduce((s, c) => s + c.valor, 0), qtd: contas.length, cor: styles.roxo  },
   ]
 
   return (
