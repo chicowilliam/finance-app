@@ -1,31 +1,30 @@
-import { NavLink } from 'react-router-dom'
-import styles from './Navbar.module.css'
+import { useLocation } from 'react-router-dom'
 
-const links = [
-  { to: '/',          label: 'Visão Geral' },
-  { to: '/contas',    label: 'Contas'      },
-  { to: '/calendario', label: 'Calendário' },
-  { to: '/alertas',   label: 'Alertas'    },
-]
+const pageTitles: Record<string, string> = {
+  '/':           'Visão Geral',
+  '/contas':     'Contas',
+  '/calendario': 'Calendário',
+  '/alertas':    'Alertas',
+}
 
 export default function Navbar() {
+  const { pathname } = useLocation()
+  const title = pageTitles[pathname] ?? 'Dashboard'
+
   return (
-    <nav className={styles.nav}>
-      <span className={styles.logo}>💰 FinanceApp</span>
-      <div className={styles.links}>
-        {links.map(l => (
-          <NavLink
-            key={l.to}
-            to={l.to}
-            end={l.to === '/'}
-            className={({ isActive }) =>
-              `${styles.link} ${isActive ? styles.ativo : ''}`
-            }
-          >
-            {l.label}
-          </NavLink>
-        ))}
+    <header className="topbar">
+      <div>
+        <p className="topbar-label">Dashboard</p>
+        <h1 className="topbar-title">{title}</h1>
       </div>
-    </nav>
+
+      <div className="topbar-actions">
+        <div className="topbar-summary">
+          <span className="topbar-label">Total a vencer</span>
+          <span className="topbar-value"> R$ 1.840,50</span>
+        </div>
+        <button className="add-bill-button">+ Nova Conta</button>
+      </div>
+    </header>
   )
 }
