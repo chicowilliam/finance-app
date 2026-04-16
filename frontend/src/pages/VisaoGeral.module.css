@@ -1,0 +1,114 @@
+.titulo {
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin-bottom: 1.5rem;
+  color: #1e2a24;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 12px;
+  margin-bottom: 1.5rem;
+}
+
+.card {
+  border: 1px solid #d8e1db;
+  border-radius: 12px;
+  background: #ffffff;
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.cardLabel {
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+.cardValor {
+  font-size: 1.1rem;
+  font-weight: 800;
+}
+
+.cardSub {
+  font-size: 0.75rem;
+  color: #5a6b62;
+}
+
+.verde {
+  background: #ecfdf3;
+  border-color: #bbf7d0;
+}
+
+.verde .cardLabel,
+.verde .cardValor {
+  color: #15803d;
+}
+
+.amarelo {
+  background: #fff9e9;
+  border-color: #fde68a;
+}
+
+.amarelo .cardLabel,
+.amarelo .cardValor {
+  color: #b7791f;
+}
+
+.vermelho {
+  background: #fef0f0;
+  border-color: #fecaca;
+}
+
+.vermelho .cardLabel,
+.vermelho .cardValor {
+  color: #b42318;
+}
+
+.roxo {
+  background: #eff6ff;
+  border-color: #bfdbfe;
+}
+
+.roxo .cardLabel,
+.roxo .cardValor {
+  color: #1d4ed8;
+}
+
+.secao {
+  background: #ffffff;
+  border: 1px solid #d8e1db;
+  border-radius: 12px;
+  padding: 12px;
+}
+
+.lista {
+  margin-top: 10px;
+  list-style: none;
+  display: grid;
+  gap: 8px;
+  padding: 0;
+}
+
+.itemAtrasado {
+  display: grid;
+  grid-template-columns: 1fr auto auto;
+  gap: 8px;
+  align-items: center;
+  padding: 8px;
+  border-radius: 8px;
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+}
+
+.desc {
+  font-weight: 700;
+  color: #1e2a24;
+}
+
+.valorDest {
+  font-weight: 700;
+  color: #b42318;
+}
