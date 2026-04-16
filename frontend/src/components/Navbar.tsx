@@ -7,7 +7,11 @@ const pageTitles: Record<string, string> = {
   '/alertas':    'Alertas',
 }
 
-export default function Navbar() {
+interface NavbarProps {
+  onAddBill: () => void
+}
+
+export default function Navbar({ onAddBill }: NavbarProps) {
   const { pathname } = useLocation()
   const title = pageTitles[pathname] ?? 'Dashboard'
 
@@ -23,7 +27,7 @@ export default function Navbar() {
           <span className="topbar-label">Total a vencer</span>
           <span className="topbar-value"> R$ 1.840,50</span>
         </div>
-        <button className="add-bill-button">+ Nova Conta</button>
+        <button className="add-bill-button" onClick={onAddBill}>+ Nova Conta</button>
       </div>
     </header>
   )
