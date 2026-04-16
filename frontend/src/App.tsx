@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route } from 'react-router-dom'
+import { Routes, Route } from 'react-router-dom'
 import Navbar from './components/Navbar'
 import VisaoGeral from './pages/VisaoGeral'
 import Contas from './pages/Contas'
@@ -8,7 +8,7 @@ import './App.css'
 
 export default function App() {
   return (
-    <BrowserRouter>
+    <>
       <Navbar />
       <div className="page-wrapper">
         <Routes>
@@ -18,6 +18,6 @@ export default function App() {
           <Route path="/alertas"    element={<Alertas />} />
         </Routes>
       </div>
-    </BrowserRouter>
+    </>
   )
 }
