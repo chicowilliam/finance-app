@@ -1,25 +1,22 @@
 import { Injectable, ConflictException } from '@nestjs/common';
 import * as bcrypt from 'bcrypt';
-import { User } from './user.entity';
+import { PrismaService } from '../prisma/prisma.service';
+import { User } from '@prisma/client';
 
 @Injectable()
 export class UsersService {
-  private readonly users: User[] = [];
-  private nextId = 1;
+  constructor(private prisma: PrismaService) {}
 
   async create(nome: string, email: string, password: string): Promise<User> {
-    const existing = this.users.find((u) => u.email === email);
+    const existing = await this.prisma.user.findUnique({ where: { email } });
     if (existing) {
       throw new ConflictException('E-mail já cadastrado');
     }
-
     const passwordHash = await bcrypt.hash(password, 10);
-    const user: User = { id: this.nextId++, nome, email, passwordHash };
-    this.users.push(user);
-    return user;
+    return this.prisma.user.create({ data: { nome, email, passwordHash } });
   }
 
-  findByEmail(email: string): User | undefined {
-    return this.users.find((u) => u.email === email);
+  async findByEmail(email: string): Promise<User | null> {
+    return this.prisma.user.findUnique({ where: { email } });
   }
 }
