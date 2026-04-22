@@ -1,4 +1,4 @@
-const API_URL = 'http://localhost:3000/api';
+const API_URL = import.meta.env.VITE_API_URL ?? 'http://localhost:3000/api';
 
 function authHeaders(): Record<string, string> {
   const token = localStorage.getItem('token');
@@ -36,7 +36,7 @@ export async function postAuth<T>(path: string, body: unknown): Promise<T> {
 export async function put<T>(path: string, body: unknown): Promise<T> {
   const res = await fetch(`${API_URL}${path}`, {
     method: 'PUT',
-    headers: { 'Content-Type': 'application/json' },
+    headers: { 'Content-Type': 'application/json', ...authHeaders() },
     body: JSON.stringify(body),
   });
   if (!res.ok) throw new Error(`PUT ${path} failed: ${res.status}`);
@@ -44,6 +44,9 @@ export async function put<T>(path: string, body: unknown): Promise<T> {
 }
 
 export async function del(path: string): Promise<void> {
-  const res = await fetch(`${API_URL}${path}`, { method: 'DELETE' });
+  const res = await fetch(`${API_URL}${path}`, {
+    method: 'DELETE',
+    headers: authHeaders(),
+  });
   if (!res.ok) throw new Error(`DELETE ${path} failed: ${res.status}`);
 }
