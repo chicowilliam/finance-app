@@ -7,11 +7,14 @@ import {
   Param,
   Body,
   ParseIntPipe,
+  UseGuards,
 } from '@nestjs/common';
+import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { ContasService } from './contas.service';
 import { CreateContaDto } from './dto/create-conta.dto';
 import { UpdateContaDto } from './dto/update-conta.dto';
 
+@UseGuards(JwtAuthGuard)
 @Controller('api/contas')
 export class ContasController {
   constructor(private readonly contasService: ContasService) {}
