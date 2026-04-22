@@ -314,3 +314,95 @@
 .btn-secondary:hover:not(:disabled) {
 	background: var(--color-border);
 }
+
+/* ── Welcome / Auth ─────────────────────────── */
+.welcome-shell {
+	min-height: 100vh;
+	display: grid;
+	place-items: center;
+	padding: var(--space-3);
+	background:
+		radial-gradient(circle at 15% 10%, rgba(30, 122, 93, 0.15) 0 25%, transparent 26%),
+		linear-gradient(135deg, #f3f5f4 0%, #e6efe9 100%);
+}
+
+.welcome-card {
+	width: 100%;
+	max-width: 560px;
+	background: var(--color-surface);
+	border: 1px solid var(--color-border);
+	border-radius: var(--radius-lg);
+	padding: var(--space-3);
+	box-shadow: 0 12px 34px rgba(15, 61, 48, 0.12);
+}
+
+.welcome-kicker {
+	font-size: 12px;
+	letter-spacing: 0.14em;
+	text-transform: uppercase;
+	color: var(--color-brand);
+	font-weight: 700;
+	margin: 0;
+}
+
+.welcome-title {
+	margin: 10px 0 8px;
+	font-size: 34px;
+	line-height: 1.15;
+	color: #0f3d30;
+}
+
+.welcome-subtitle {
+	margin: 0 0 var(--space-2);
+	color: var(--color-text-muted);
+}
+
+.welcome-tabs {
+	display: grid;
+	grid-template-columns: 1fr 1fr;
+	gap: 8px;
+	margin-bottom: var(--space-2);
+}
+
+.welcome-tab {
+	border: 1px solid var(--color-border);
+	background: #fff;
+	padding: 10px;
+	border-radius: var(--radius-sm);
+	font-weight: 700;
+	cursor: pointer;
+}
+
+.welcome-tab.active {
+	background: #0f3d30;
+	color: #fff;
+	border-color: #0f3d30;
+}
+
+.welcome-form {
+	display: grid;
+	gap: var(--space-1);
+}
+
+.welcome-form h2 {
+	margin: 0 0 4px;
+	font-size: 20px;
+}
+
+.welcome-error {
+	color: var(--status-late);
+	font-size: 14px;
+	margin: 0;
+}
+
+.welcome-divider {
+	height: 1px;
+	background: var(--color-border);
+	margin: var(--space-2) 0;
+}
+
+.welcome-note {
+	font-size: 13px;
+	color: var(--color-text-muted);
+	margin: 8px 0 0;
+}

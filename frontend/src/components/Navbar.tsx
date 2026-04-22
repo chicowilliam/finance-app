@@ -1,10 +1,11 @@
-import { useLocation } from 'react-router-dom'
+import { useLocation, useNavigate } from 'react-router-dom'
+import { useAuth } from '../hooks/useAuth'
 
 const pageTitles: Record<string, string> = {
-  '/':           'Visão Geral',
-  '/contas':     'Contas',
-  '/calendario': 'Calendário',
-  '/alertas':    'Alertas',
+  '/app':            'Visão Geral',
+  '/app/contas':     'Contas',
+  '/app/calendario': 'Calendário',
+  '/app/alertas':    'Alertas',
 }
 
 interface NavbarProps {
@@ -13,12 +14,21 @@ interface NavbarProps {
 
 export default function Navbar({ onAddBill }: NavbarProps) {
   const { pathname } = useLocation()
+  const navigate = useNavigate()
+  const { mode, logout } = useAuth()
   const title = pageTitles[pathname] ?? 'Dashboard'
+
+  function handleLogout() {
+    logout()
+    navigate('/')
+  }
 
   return (
     <header className="topbar">
       <div>
-        <p className="topbar-label">Dashboard</p>
+        <p className="topbar-label">
+          Dashboard {mode === 'guest' ? '• Convidado' : mode === 'user' ? '• Conta' : ''}
+        </p>
         <h1 className="topbar-title">{title}</h1>
       </div>
 
@@ -28,6 +38,7 @@ export default function Navbar({ onAddBill }: NavbarProps) {
           <span className="topbar-value"> R$ 1.840,50</span>
         </div>
         <button className="add-bill-button" onClick={onAddBill}>+ Nova Conta</button>
+        <button className="btn btn-secondary" onClick={handleLogout}>Sair</button>
       </div>
     </header>
   )
