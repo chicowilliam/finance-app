@@ -2,6 +2,7 @@ import { useCallback, useMemo, useState } from 'react'
 import type { ReactNode } from 'react'
 import { AuthContext } from './AuthStateContext'
 import type { AuthMode } from './AuthStateContext'
+import { apiLogin, apiRegister } from '../services/authService'
 
 const AUTH_MODE_KEY = 'finance.auth.mode'
 
@@ -31,20 +32,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 	}, [persistMode])
 
 	const login = useCallback(async (email: string, senha: string) => {
-		if (!email || !senha) {
-			throw new Error('Preencha email e senha')
-		}
-
-		localStorage.setItem('token', 'dev-user-token')
+		const { access_token } = await apiLogin(email, senha)
+		localStorage.setItem('token', access_token)
 		persistMode('user')
 	}, [persistMode])
 
 	const register = useCallback(async (nome: string, email: string, senha: string) => {
-		if (!nome || !email || !senha) {
-			throw new Error('Preencha nome, email e senha')
-		}
-
-		localStorage.setItem('token', 'dev-user-token')
+		const { access_token } = await apiRegister(nome, email, senha)
+		localStorage.setItem('token', access_token)
 		persistMode('user')
 	}, [persistMode])
 
@@ -66,3 +61,4 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
 	return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>
 }
+
