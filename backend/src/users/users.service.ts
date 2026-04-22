@@ -19,7 +19,7 @@ export class UsersService {
     return user;
   }
 
-  async findByEmail(email: string): Promise<User | undefined> {
+  findByEmail(email: string): User | undefined {
     return this.users.find((u) => u.email === email);
   }
 }
