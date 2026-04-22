@@ -1,4 +1,4 @@
-import api from './api'
+import { post, postAuth } from './api'
 import type { Conta } from '../data/mockContas'
 
 export interface AuthResponse {
@@ -10,18 +10,15 @@ export async function apiRegister(
   email: string,
   senha: string,
 ): Promise<AuthResponse> {
-  const { data } = await api.post<AuthResponse>('/auth/register', { nome, email, senha })
-  return data
+  return post<AuthResponse>('/auth/register', { nome, email, senha })
 }
 
 export async function apiLogin(email: string, senha: string): Promise<AuthResponse> {
-  const { data } = await api.post<AuthResponse>('/auth/login', { email, senha })
-  return data
+  return post<AuthResponse>('/auth/login', { email, senha })
 }
 
 export async function apiUpgradeFromGuest(
   contas: Omit<Conta, 'id'>[],
 ): Promise<Conta[]> {
-  const { data } = await api.post<Conta[]>('/auth/upgrade-from-guest', { contas })
-  return data
+  return postAuth<Conta[]>('/auth/upgrade-from-guest', { contas })
 }
