@@ -1,4 +1,11 @@
-import { IsString, IsNumber, IsIn, IsNotEmpty, Min, Matches } from 'class-validator';
+import {
+  IsString,
+  IsNumber,
+  IsIn,
+  IsNotEmpty,
+  Min,
+  Matches,
+} from 'class-validator';
 import type { StatusConta } from '../entities/conta.entity';
 
 export class CreateContaDto {
@@ -11,7 +18,9 @@ export class CreateContaDto {
   valor: number;
 
   @IsString()
-  @Matches(/^\d{4}-\d{2}-\d{2}$/, { message: 'vencimento deve ser no formato YYYY-MM-DD' })
+  @Matches(/^\d{4}-\d{2}-\d{2}$/, {
+    message: 'vencimento deve ser no formato YYYY-MM-DD',
+  })
   vencimento: string;
 
   @IsIn(['paga', 'a_vencer', 'atrasada'])

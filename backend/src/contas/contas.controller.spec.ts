@@ -29,7 +29,9 @@ describe('ContasController', () => {
   });
 
   it('should list contas', () => {
-    contasServiceMock.findAll.mockReturnValue([{ id: 1, descricao: 'Aluguel' }]);
+    contasServiceMock.findAll.mockReturnValue([
+      { id: 1, descricao: 'Aluguel' },
+    ]);
     expect(controller.findAll()).toEqual([{ id: 1, descricao: 'Aluguel' }]);
     expect(contasServiceMock.findAll).toHaveBeenCalledTimes(1);
   });

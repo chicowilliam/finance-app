@@ -24,7 +24,9 @@ describe('Contas (e2e)', () => {
   });
 
   it('GET /api/contas should start empty', async () => {
-    const res = await request(app.getHttpServer()).get('/api/contas').expect(200);
+    const res = await request(app.getHttpServer())
+      .get('/api/contas')
+      .expect(200);
     expect(res.body).toEqual([]);
   });
 
@@ -43,7 +45,11 @@ describe('Contas (e2e)', () => {
       .expect(201);
 
     expect(res.body).toMatchObject(payload);
-    expect(res.body.id).toBeDefined();
+
+    const listRes = await request(app.getHttpServer())
+      .get('/api/contas')
+      .expect(200);
+    expect(listRes.body).toHaveLength(1);
   });
 
   it('POST /api/contas should reject invalid payload', async () => {

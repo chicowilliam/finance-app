@@ -32,10 +32,7 @@ export class ContasController {
   }
 
   @Put(':id')
-  update(
-    @Param('id', ParseIntPipe) id: number,
-    @Body() dto: UpdateContaDto,
-  ) {
+  update(@Param('id', ParseIntPipe) id: number, @Body() dto: UpdateContaDto) {
     return this.contasService.update(id, dto);
   }
 
