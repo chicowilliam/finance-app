@@ -2,6 +2,8 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { ContasController } from './contas.controller';
 import { ContasService } from './contas.service';
 
+const mockReq = { user: { userId: 1, email: 'test@test.com' } };
+
 describe('ContasController', () => {
   let controller: ContasController;
 
@@ -32,8 +34,8 @@ describe('ContasController', () => {
     contasServiceMock.findAll.mockReturnValue([
       { id: 1, descricao: 'Aluguel' },
     ]);
-    expect(controller.findAll()).toEqual([{ id: 1, descricao: 'Aluguel' }]);
-    expect(contasServiceMock.findAll).toHaveBeenCalledTimes(1);
+    expect(controller.findAll(mockReq as any)).toEqual([{ id: 1, descricao: 'Aluguel' }]);
+    expect(contasServiceMock.findAll).toHaveBeenCalledWith(1);
   });
 
   it('should create conta', () => {
@@ -46,13 +48,13 @@ describe('ContasController', () => {
     };
     contasServiceMock.create.mockReturnValue({ id: 1, ...dto });
 
-    expect(controller.create(dto)).toEqual({ id: 1, ...dto });
-    expect(contasServiceMock.create).toHaveBeenCalledWith(dto);
+    expect(controller.create(dto, mockReq as any)).toEqual({ id: 1, ...dto });
+    expect(contasServiceMock.create).toHaveBeenCalledWith(dto, 1);
   });
 
   it('should return success message on remove', () => {
     contasServiceMock.remove.mockImplementation(() => undefined);
-    expect(controller.remove(1)).toEqual({ message: 'Conta #1 removida' });
-    expect(contasServiceMock.remove).toHaveBeenCalledWith(1);
+    expect(controller.remove(1, mockReq as any)).toEqual({ message: 'Conta #1 removida' });
+    expect(contasServiceMock.remove).toHaveBeenCalledWith(1, 1);
   });
 });

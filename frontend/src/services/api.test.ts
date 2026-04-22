@@ -15,7 +15,9 @@ describe('api service', () => {
 
     const data = await get('/contas');
 
-    expect(fetch).toHaveBeenCalledWith('http://localhost:3000/api/contas');
+    expect(fetch).toHaveBeenCalledWith('http://localhost:3000/api/contas', {
+      headers: {},
+    });
     expect(data).toEqual(mockResponse);
   });
 

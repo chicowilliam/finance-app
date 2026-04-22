@@ -3,6 +3,10 @@ import { renderHook, waitFor, act } from '@testing-library/react';
 import { useContas } from './useBills';
 import { contasService } from '../services/billService';
 
+vi.mock('./useAuth', () => ({
+  useAuth: () => ({ mode: 'user' }),
+}));
+
 vi.mock('../services/billService', () => ({
   contasService: {
     listar: vi.fn(),
