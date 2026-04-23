@@ -1,7 +1,7 @@
-import type { ButtonHTMLAttributes } from 'react'
 import { motion, useReducedMotion } from 'motion/react'
+import type { HTMLMotionProps } from 'motion/react'
 
-interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
+interface ButtonProps extends HTMLMotionProps<'button'> {
   variant?: 'primary' | 'secondary'
 }
 

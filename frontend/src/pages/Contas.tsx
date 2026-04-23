@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { AnimatePresence, motion, useReducedMotion } from 'motion/react'
 import { useContasContext } from '../context/ContasContext'
 import { formatBRL, formatData } from '../data/mockContas'
 import type { StatusConta } from '../data/mockContas'
@@ -13,6 +14,7 @@ const STATUS_LABEL: Record<StatusConta, string> = {
 export default function Contas() {
   const [filtro, setFiltro] = useState<Filtro>('todas')
   const { contas, loading } = useContasContext()
+  const shouldReduceMotion = useReducedMotion()
 
   if (loading) return <p>Carregando...</p>
 
@@ -24,13 +26,16 @@ export default function Contas() {
 
       <div className={styles.filtros}>
         {(['todas', 'paga', 'a_vencer', 'atrasada'] as Filtro[]).map(f => (
-          <button
+          <motion.button
             key={f}
             onClick={() => setFiltro(f)}
             className={`${styles.btn} ${filtro === f ? styles[`ativo_${f}`] : ''}`}
+            whileHover={shouldReduceMotion ? undefined : { y: -1 }}
+            whileTap={shouldReduceMotion ? undefined : { scale: 0.98 }}
+            transition={{ duration: 0.16, ease: 'easeOut' }}
           >
             {f === 'todas' ? 'Todas' : STATUS_LABEL[f as StatusConta]}
-          </button>
+          </motion.button>
         ))}
       </div>
 
@@ -46,18 +51,39 @@ export default function Contas() {
             </tr>
           </thead>
           <tbody>
-            {lista.map(c => (
-              <tr key={c.id}>
-                <td className={styles.tdDesc}>{c.descricao}</td>
-                <td>{c.categoria}</td>
-                <td>{formatData(c.vencimento)}</td>
-                <td className={styles.tdValor}>{formatBRL(c.valor)}</td>
-                <td><span className={`${styles.badge} ${styles[c.status]}`}>{STATUS_LABEL[c.status]}</span></td>
-              </tr>
-            ))}
+            <AnimatePresence initial={false}>
+              {lista.map((c, idx) => (
+                <motion.tr
+                  key={c.id}
+                  layout
+                  initial={shouldReduceMotion ? { opacity: 0 } : { opacity: 0, y: 8 }}
+                  animate={shouldReduceMotion ? { opacity: 1 } : { opacity: 1, y: 0 }}
+                  exit={shouldReduceMotion ? { opacity: 0 } : { opacity: 0, y: -8 }}
+                  transition={{ duration: shouldReduceMotion ? 0.1 : 0.2, delay: shouldReduceMotion ? 0 : idx * 0.02 }}
+                >
+                  <td className={styles.tdDesc}>{c.descricao}</td>
+                  <td>{c.categoria}</td>
+                  <td>{formatData(c.vencimento)}</td>
+                  <td className={styles.tdValor}>{formatBRL(c.valor)}</td>
+                  <td><span className={`${styles.badge} ${styles[c.status]}`}>{STATUS_LABEL[c.status]}</span></td>
+                </motion.tr>
+              ))}
+            </AnimatePresence>
           </tbody>
         </table>
-        {lista.length === 0 && <p className={styles.vazio}>Nenhuma conta encontrada.</p>}
+        <AnimatePresence initial={false}>
+          {lista.length === 0 && (
+            <motion.p
+              className={styles.vazio}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.16, ease: 'easeOut' }}
+            >
+              Nenhuma conta encontrada.
+            </motion.p>
+          )}
+        </AnimatePresence>
       </div>
     </div>
   )
