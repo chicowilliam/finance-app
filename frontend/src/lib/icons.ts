@@ -1,5 +1,3 @@
-// Temporary wrapper to avoid tsserver resolution issue for lucide-react types in this workspace.
-// @ts-ignore
 import {
   AlertCircle,
   AlertTriangle,

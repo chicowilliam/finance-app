@@ -4,6 +4,7 @@ import { useContasContext } from '../context/ContasContext'
 import { formatBRL, formatData } from '../data/mockContas'
 import type { StatusConta } from '../data/mockContas'
 import styles from './Contas.module.css'
+import Loader from '../components/Loader'
 
 type Filtro = StatusConta | 'todas'
 
@@ -16,7 +17,7 @@ export default function Contas() {
   const { contas, loading } = useContasContext()
   const shouldReduceMotion = useReducedMotion()
 
-  if (loading) return <p>Carregando...</p>
+  if (loading) return <Loader variant="table" />
 
   const lista = filtro === 'todas' ? contas : contas.filter(c => c.status === filtro)
 

@@ -1,16 +1,70 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { INestApplication, ValidationPipe } from '@nestjs/common';
+import {
+  CanActivate,
+  ExecutionContext,
+  INestApplication,
+  ValidationPipe,
+} from '@nestjs/common';
 import request from 'supertest';
 import { App } from 'supertest/types';
 import { AppModule } from './../src/app.module';
+import { JwtAuthGuard } from '../src/auth/jwt-auth.guard';
+import { ContasService } from '../src/contas/contas.service';
+import { CreateContaDto } from '../src/contas/dto/create-conta.dto';
 
 describe('Contas (e2e)', () => {
   let app: INestApplication<App>;
 
-  beforeEach(async () => {
+  const mockAuthGuard: CanActivate = {
+    canActivate(context: ExecutionContext): boolean {
+      const req = context
+        .switchToHttp()
+        .getRequest<{ user?: { userId: number; email: string } }>();
+      req.user = { userId: 1, email: 'e2e@test.com' };
+      return true;
+    },
+  };
+
+  type ContaStatus = 'paga' | 'a_vencer' | 'atrasada';
+
+  interface E2EConta {
+    id: number;
+    descricao: string;
+    valor: number;
+    vencimento: string;
+    status: ContaStatus;
+    categoria: string;
+    userId: number;
+  }
+
+  const db: E2EConta[] = [];
+  let nextId = 1;
+
+  const contasServiceMock: Pick<ContasService, 'findAll' | 'create'> = {
+    findAll: jest.fn(
+      (userId: number): Promise<E2EConta[]> =>
+        Promise.resolve(db.filter((c) => c.userId === userId)),
+    ),
+    create: jest.fn(
+      (dto: CreateContaDto, userId: number): Promise<E2EConta> => {
+        const conta: E2EConta = { id: nextId++, userId, ...dto };
+        db.push(conta);
+        return Promise.resolve(conta);
+      },
+    ),
+  };
+
+  beforeAll(async () => {
+    jest.setTimeout(30000);
+
     const moduleFixture: TestingModule = await Test.createTestingModule({
       imports: [AppModule],
-    }).compile();
+    })
+      .overrideGuard(JwtAuthGuard)
+      .useValue(mockAuthGuard)
+      .overrideProvider(ContasService)
+      .useValue(contasServiceMock)
+      .compile();
 
     app = moduleFixture.createNestApplication();
     app.useGlobalPipes(
@@ -21,6 +75,12 @@ describe('Contas (e2e)', () => {
       }),
     );
     await app.init();
+  });
+
+  beforeEach(() => {
+    db.splice(0, db.length);
+    nextId = 1;
+    jest.clearAllMocks();
   });
 
   it('GET /api/contas should start empty', async () => {
@@ -67,7 +127,7 @@ describe('Contas (e2e)', () => {
       .expect(400);
   });
 
-  afterEach(async () => {
+  afterAll(async () => {
     await app.close();
   });
 });

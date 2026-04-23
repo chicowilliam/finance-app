@@ -4,6 +4,7 @@ import type { Conta } from '../data/mockContas'
 import styles from './Alertas.module.css'
 import { AlertCircle, Clock, CheckCircle } from '../lib/icons'
 import { AnimatePresence, motion, useReducedMotion } from 'motion/react'
+import Loader from '../components/Loader'
 
 const hoje = new Date()
 
@@ -17,7 +18,7 @@ export default function Alertas() {
   const { contas, loading } = useContasContext()
   const shouldReduceMotion = useReducedMotion()
 
-  if (loading) return <p>Carregando...</p>
+  if (loading) return <Loader variant="alerts" />
 
   const atrasadas = contas.filter(c => c.status === 'atrasada')
   const urgentes  = contas.filter(c => c.status === 'a_vencer' && diasParaVencer(c) <= 5)

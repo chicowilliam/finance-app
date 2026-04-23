@@ -34,7 +34,9 @@ describe('ContasController', () => {
     contasServiceMock.findAll.mockReturnValue([
       { id: 1, descricao: 'Aluguel' },
     ]);
-    expect(controller.findAll(mockReq as any)).toEqual([{ id: 1, descricao: 'Aluguel' }]);
+    expect(controller.findAll(mockReq)).toEqual([
+      { id: 1, descricao: 'Aluguel' },
+    ]);
     expect(contasServiceMock.findAll).toHaveBeenCalledWith(1);
   });
 
@@ -48,13 +50,15 @@ describe('ContasController', () => {
     };
     contasServiceMock.create.mockReturnValue({ id: 1, ...dto });
 
-    expect(controller.create(dto, mockReq as any)).toEqual({ id: 1, ...dto });
+    expect(controller.create(dto, mockReq)).toEqual({ id: 1, ...dto });
     expect(contasServiceMock.create).toHaveBeenCalledWith(dto, 1);
   });
 
-  it('should return success message on remove', () => {
+  it('should return success message on remove', async () => {
     contasServiceMock.remove.mockImplementation(() => undefined);
-    expect(controller.remove(1, mockReq as any)).toEqual({ message: 'Conta #1 removida' });
+    await expect(controller.remove(1, mockReq)).resolves.toEqual({
+      message: 'Conta #1 removida',
+    });
     expect(contasServiceMock.remove).toHaveBeenCalledWith(1, 1);
   });
 });

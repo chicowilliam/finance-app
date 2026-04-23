@@ -49,8 +49,11 @@ export class ContasController {
   }
 
   @Delete(':id')
-  remove(@Param('id', ParseIntPipe) id: number, @Request() req: AuthRequest) {
-    this.contasService.remove(id, req.user.userId);
+  async remove(
+    @Param('id', ParseIntPipe) id: number,
+    @Request() req: AuthRequest,
+  ) {
+    await this.contasService.remove(id, req.user.userId);
     return { message: `Conta #${id} removida` };
   }
 }

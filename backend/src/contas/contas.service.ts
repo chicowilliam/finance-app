@@ -28,7 +28,11 @@ export class ContasService {
     return Promise.all(dtos.map((dto) => this.create(dto, userId)));
   }
 
-  async update(id: number, dto: UpdateContaDto, userId: number): Promise<Conta> {
+  async update(
+    id: number,
+    dto: UpdateContaDto,
+    userId: number,
+  ): Promise<Conta> {
     await this.findOne(id, userId);
     return this.prisma.conta.update({ where: { id }, data: dto });
   }

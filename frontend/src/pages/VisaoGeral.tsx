@@ -3,12 +3,13 @@ import { formatBRL, formatData } from '../data/mockContas'
 import styles from './VisaoGeral.module.css'
 import { AlertTriangle } from '../lib/icons'
 import { motion, useReducedMotion } from 'motion/react'
+import Loader from '../components/Loader'
 
 export default function VisaoGeral() {
   const { contas, loading } = useContasContext()
   const shouldReduceMotion = useReducedMotion()
 
-  if (loading) return <p>Carregando...</p>
+  if (loading) return <Loader variant="dashboard" />
 
   const pagas     = contas.filter(c => c.status === 'paga')
   const aVencer   = contas.filter(c => c.status === 'a_vencer')
