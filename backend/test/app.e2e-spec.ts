@@ -7,7 +7,7 @@ import {
 } from '@nestjs/common';
 import request from 'supertest';
 import { App } from 'supertest/types';
-import { AppModule } from './../src/app.module';
+import { ContasController } from '../src/contas/contas.controller';
 import { JwtAuthGuard } from '../src/auth/jwt-auth.guard';
 import { ContasService } from '../src/contas/contas.service';
 import { CreateContaDto } from '../src/contas/dto/create-conta.dto';
@@ -58,12 +58,16 @@ describe('Contas (e2e)', () => {
     jest.setTimeout(30000);
 
     const moduleFixture: TestingModule = await Test.createTestingModule({
-      imports: [AppModule],
+      controllers: [ContasController],
+      providers: [
+        {
+          provide: ContasService,
+          useValue: contasServiceMock,
+        },
+      ],
     })
       .overrideGuard(JwtAuthGuard)
       .useValue(mockAuthGuard)
-      .overrideProvider(ContasService)
-      .useValue(contasServiceMock)
       .compile();
 
     app = moduleFixture.createNestApplication();
