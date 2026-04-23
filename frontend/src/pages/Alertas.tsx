@@ -2,6 +2,7 @@ import { useContasContext } from '../context/ContasContext'
 import { formatBRL } from '../data/mockContas'
 import type { Conta } from '../data/mockContas'
 import styles from './Alertas.module.css'
+import { AlertCircle, Clock, CheckCircle } from '../lib/icons'
 
 const hoje = new Date()
 
@@ -26,7 +27,7 @@ export default function Alertas() {
       {atrasadas.length > 0 && (
         <section className={styles.secao}>
           <h2 className={styles.h2Atrasada}>
-            <span className={styles.badge}>!</span> Contas Atrasadas ({atrasadas.length})
+            <AlertCircle size={18} strokeWidth={1.5} /> Contas Atrasadas ({atrasadas.length})
           </h2>
           <div className={styles.cards}>
             {atrasadas.map(c => (
@@ -50,7 +51,7 @@ export default function Alertas() {
       {urgentes.length > 0 && (
         <section className={styles.secao}>
           <h2 className={styles.h2Urgente}>
-            <span className={`${styles.badge} ${styles.badgeAmber}`}>~</span> Vencem em Breve ({urgentes.length})
+            <Clock size={18} strokeWidth={1.5} /> Vencem em Breve ({urgentes.length})
           </h2>
           <div className={styles.cards}>
             {urgentes.map(c => {
@@ -75,7 +76,7 @@ export default function Alertas() {
       )}
 
       {atrasadas.length === 0 && urgentes.length === 0 && (
-        <p className={styles.ok}>✅ Tudo em dia! Nenhum alerta no momento.</p>
+        <p className={styles.ok}><CheckCircle size={18} strokeWidth={1.5} /> Tudo em dia! Nenhum alerta no momento.</p>
       )}
     </div>
   )

@@ -1,5 +1,6 @@
 import { useLocation, useNavigate } from 'react-router-dom'
 import { useAuth } from '../hooks/useAuth'
+import { Plus, LogOut } from '../lib/icons'
 
 const pageTitles: Record<string, string> = {
   '/app':            'Visão Geral',
@@ -37,8 +38,8 @@ export default function Navbar({ onAddBill }: NavbarProps) {
           <span className="topbar-label">Total a vencer</span>
           <span className="topbar-value"> R$ 1.840,50</span>
         </div>
-        <button className="add-bill-button" onClick={onAddBill}>+ Nova Conta</button>
-        <button className="btn btn-secondary" onClick={handleLogout}>Sair</button>
+        <button className="add-bill-button" onClick={onAddBill}><Plus size={15} strokeWidth={2} /> Nova Conta</button>
+        <button className="btn btn-secondary" onClick={handleLogout}><LogOut size={15} strokeWidth={1.5} /> Sair</button>
       </div>
     </header>
   )

@@ -1,6 +1,7 @@
 import { useContasContext } from '../context/ContasContext'
 import { formatBRL, formatData } from '../data/mockContas'
 import styles from './VisaoGeral.module.css'
+import { AlertTriangle } from '../lib/icons'
 
 export default function VisaoGeral() {
   const { contas, loading } = useContasContext()
@@ -34,7 +35,7 @@ export default function VisaoGeral() {
 
       {atrasadas.length > 0 && (
         <section className={styles.secao}>
-          <h2>⚠️ Contas Atrasadas</h2>
+          <h2><AlertTriangle size={18} strokeWidth={1.5} /> Contas Atrasadas</h2>
           <ul className={styles.lista}>
             {atrasadas.map(c => (
               <li key={c.id} className={styles.itemAtrasado}>

@@ -1,4 +1,5 @@
 import type { ReactNode } from 'react'
+import { X } from '../lib/icons'
 
 interface ModalProps {
   open: boolean
@@ -15,7 +16,7 @@ export default function Modal({ open, onClose, title, children }: ModalProps) {
       <div className="modal-content" onClick={e => e.stopPropagation()}>
         <div className="modal-header">
           <h2 className="modal-title">{title}</h2>
-          <button className="modal-close" onClick={onClose}>✕</button>
+          <button className="modal-close" onClick={onClose}><X size={18} strokeWidth={1.5} /></button>
         </div>
         <div className="modal-body">
           {children}
