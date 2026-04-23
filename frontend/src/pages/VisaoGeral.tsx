@@ -2,9 +2,11 @@ import { useContasContext } from '../context/ContasContext'
 import { formatBRL, formatData } from '../data/mockContas'
 import styles from './VisaoGeral.module.css'
 import { AlertTriangle } from '../lib/icons'
+import { motion, useReducedMotion } from 'motion/react'
 
 export default function VisaoGeral() {
   const { contas, loading } = useContasContext()
+  const shouldReduceMotion = useReducedMotion()
 
   if (loading) return <p>Carregando...</p>
 
@@ -23,29 +25,64 @@ export default function VisaoGeral() {
     <div>
       <h1 className={styles.titulo}>Visão Geral do Mês</h1>
 
-      <div className={styles.grid}>
+      <motion.div
+        className={styles.grid}
+        initial="hidden"
+        animate="visible"
+        variants={{
+          hidden: {},
+          visible: {
+            transition: {
+              delayChildren: shouldReduceMotion ? 0 : 0.05,
+              staggerChildren: shouldReduceMotion ? 0 : 0.06,
+            },
+          },
+        }}
+      >
         {cards.map(c => (
-          <div key={c.label} className={`${styles.card} ${c.cor}`}>
+          <motion.div
+            key={c.label}
+            className={`${styles.card} ${c.cor}`}
+            layout
+            variants={{
+              hidden: shouldReduceMotion ? { opacity: 0 } : { opacity: 0, y: 10 },
+              visible: shouldReduceMotion ? { opacity: 1 } : { opacity: 1, y: 0 },
+            }}
+            whileHover={shouldReduceMotion ? undefined : { y: -2 }}
+            transition={{ duration: shouldReduceMotion ? 0.12 : 0.24, ease: 'easeOut' }}
+          >
             <span className={styles.cardLabel}>{c.label}</span>
             <span className={styles.cardValor}>{formatBRL(c.valor)}</span>
             <span className={styles.cardSub}>{c.qtd} conta{c.qtd !== 1 ? 's' : ''}</span>
-          </div>
+          </motion.div>
         ))}
-      </div>
+      </motion.div>
 
       {atrasadas.length > 0 && (
-        <section className={styles.secao}>
+        <motion.section
+          className={styles.secao}
+          initial={shouldReduceMotion ? { opacity: 0 } : { opacity: 0, y: 8 }}
+          animate={shouldReduceMotion ? { opacity: 1 } : { opacity: 1, y: 0 }}
+          transition={{ duration: shouldReduceMotion ? 0.12 : 0.22, ease: 'easeOut' }}
+        >
           <h2><AlertTriangle size={18} strokeWidth={1.5} /> Contas Atrasadas</h2>
           <ul className={styles.lista}>
-            {atrasadas.map(c => (
-              <li key={c.id} className={styles.itemAtrasado}>
+            {atrasadas.map((c, idx) => (
+              <motion.li
+                key={c.id}
+                className={styles.itemAtrasado}
+                layout
+                initial={shouldReduceMotion ? { opacity: 0 } : { opacity: 0, x: -8 }}
+                animate={shouldReduceMotion ? { opacity: 1 } : { opacity: 1, x: 0 }}
+                transition={{ duration: shouldReduceMotion ? 0.1 : 0.2, delay: shouldReduceMotion ? 0 : idx * 0.04 }}
+              >
                 <span className={styles.desc}>{c.descricao}</span>
                 <span>{formatData(c.vencimento)}</span>
                 <span className={styles.valorDest}>{formatBRL(c.valor)}</span>
-              </li>
+              </motion.li>
             ))}
           </ul>
-        </section>
+        </motion.section>
       )}
     </div>
   )
