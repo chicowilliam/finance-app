@@ -1,7 +1,20 @@
 const rawApiUrl = (import.meta.env.VITE_API_URL || 'http://localhost:3000').trim();
 const API_BASE = rawApiUrl.replace(/\/+$/, '').replace(/\/api$/, '');
 
+function ensureApiConfigured(): void {
+  const isBrowser = typeof window !== 'undefined';
+  if (!isBrowser) return;
+
+  const isProdHost = !['localhost', '127.0.0.1'].includes(window.location.hostname);
+  const pointsToLocalhost = API_BASE.includes('localhost') || API_BASE.includes('127.0.0.1');
+
+  if (isProdHost && pointsToLocalhost) {
+    throw new Error('API não configurada em produção. Defina VITE_API_URL com a URL pública do backend.');
+  }
+}
+
 function buildApiUrl(path: string): string {
+  ensureApiConfigured();
   const normalizedPath = path.startsWith('/') ? path : `/${path}`;
   const apiPath = normalizedPath.startsWith('/api/')
     ? normalizedPath
