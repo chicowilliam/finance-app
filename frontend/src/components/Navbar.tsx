@@ -9,6 +9,7 @@ const pageTitles: Record<string, string> = {
   '/app/contas':     'Contas',
   '/app/calendario': 'Calendário',
   '/app/alertas':    'Alertas',
+  '/app/configuracoes': 'Configurações',
 }
 
 interface NavbarProps {
