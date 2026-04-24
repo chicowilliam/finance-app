@@ -27,11 +27,27 @@ function authHeaders(): Record<string, string> {
   return token ? { Authorization: `Bearer ${token}` } : {};
 }
 
+async function readErrorMessage(res: Response, fallbackMessage: string): Promise<string> {
+  try {
+    const data = (await res.json()) as { message?: string | string[] };
+    if (Array.isArray(data.message) && data.message.length > 0) {
+      return data.message.join(', ');
+    }
+    if (typeof data.message === 'string' && data.message.trim()) {
+      return data.message;
+    }
+  } catch {
+    // Ignore invalid/non-JSON error bodies and use the fallback message.
+  }
+
+  return fallbackMessage;
+}
+
 export async function get<T>(path: string): Promise<T> {
   const res = await fetch(buildApiUrl(path), {
     headers: authHeaders(),
   });
-  if (!res.ok) throw new Error(`GET ${path} failed: ${res.status}`);
+  if (!res.ok) throw new Error(await readErrorMessage(res, `GET ${path} failed: ${res.status}`));
   return res.json();
 }
 
@@ -41,7 +57,7 @@ export async function post<T>(path: string, body: unknown): Promise<T> {
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(body),
   });
-  if (!res.ok) throw new Error(`POST ${path} failed: ${res.status}`);
+  if (!res.ok) throw new Error(await readErrorMessage(res, `POST ${path} failed: ${res.status}`));
   return res.json();
 }
 
@@ -51,7 +67,7 @@ export async function postAuth<T>(path: string, body: unknown): Promise<T> {
     headers: { 'Content-Type': 'application/json', ...authHeaders() },
     body: JSON.stringify(body),
   });
-  if (!res.ok) throw new Error(`POST ${path} failed: ${res.status}`);
+  if (!res.ok) throw new Error(await readErrorMessage(res, `POST ${path} failed: ${res.status}`));
   return res.json();
 }
 
@@ -61,7 +77,7 @@ export async function put<T>(path: string, body: unknown): Promise<T> {
     headers: { 'Content-Type': 'application/json', ...authHeaders() },
     body: JSON.stringify(body),
   });
-  if (!res.ok) throw new Error(`PUT ${path} failed: ${res.status}`);
+  if (!res.ok) throw new Error(await readErrorMessage(res, `PUT ${path} failed: ${res.status}`));
   return res.json();
 }
 
@@ -70,5 +86,5 @@ export async function del(path: string): Promise<void> {
     method: 'DELETE',
     headers: authHeaders(),
   });
-  if (!res.ok) throw new Error(`DELETE ${path} failed: ${res.status}`);
+  if (!res.ok) throw new Error(await readErrorMessage(res, `DELETE ${path} failed: ${res.status}`));
 }

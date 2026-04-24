@@ -44,4 +44,15 @@ describe('api service', () => {
     });
     expect(data).toEqual({ id: 1, ...payload });
   });
+
+  it('should expose backend error message when request fails', async () => {
+    vi.spyOn(global, 'fetch').mockResolvedValue({
+      ok: false,
+      json: async () => ({ message: 'Usuário não encontrado' }),
+    } as Response);
+
+    await expect(post('/auth/login', { email: 'x', senha: 'y' })).rejects.toThrow(
+      'Usuário não encontrado',
+    );
+  });
 });

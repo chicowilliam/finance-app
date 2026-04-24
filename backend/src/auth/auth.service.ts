@@ -22,7 +22,7 @@ export class AuthService {
   async login(email: string, senha: string) {
     const user = await this.usersService.findByEmail(email);
     if (!user) {
-      throw new UnauthorizedException('Credenciais inválidas');
+      throw new UnauthorizedException('Usuário não encontrado');
     }
 
     const valid = await bcrypt.compare(senha, user.passwordHash);
