@@ -27,7 +27,7 @@ export class AuthService {
 
     const valid = await bcrypt.compare(senha, user.passwordHash);
     if (!valid) {
-      throw new UnauthorizedException('Credenciais inválidas');
+      throw new UnauthorizedException('Senha incorreta');
     }
 
     const payload = { sub: user.id, email: user.email };

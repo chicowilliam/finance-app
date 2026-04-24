@@ -1,8 +1,9 @@
-import { useCallback, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import type { ReactNode } from 'react'
 import { AuthContext } from './AuthStateContext'
 import type { AuthMode } from './AuthStateContext'
 import { apiLogin, apiRegister, apiUpgradeFromGuest } from '../services/authService'
+import { AUTH_EXPIRED_EVENT } from '../services/api'
 import type { Conta } from '../data/mockContas'
 
 const AUTH_MODE_KEY = 'finance.auth.mode'
@@ -78,6 +79,15 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
 	const logout = useCallback(() => {
 		persistMode('anonymous')
+	}, [persistMode])
+
+	useEffect(() => {
+		function handleAuthExpired() {
+			persistMode('anonymous')
+		}
+
+		window.addEventListener(AUTH_EXPIRED_EVENT, handleAuthExpired)
+		return () => window.removeEventListener(AUTH_EXPIRED_EVENT, handleAuthExpired)
 	}, [persistMode])
 
 	const value = useMemo(

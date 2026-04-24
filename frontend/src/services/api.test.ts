@@ -1,8 +1,9 @@
 import { describe, it, expect, vi, afterEach } from 'vitest';
-import { get, post } from './api';
+import { get, post, postAuth } from './api';
 
 afterEach(() => {
   vi.restoreAllMocks();
+  localStorage.clear();
 });
 
 describe('api service', () => {
@@ -54,5 +55,22 @@ describe('api service', () => {
     await expect(post('/auth/login', { email: 'x', senha: 'y' })).rejects.toThrow(
       'Usuário não encontrado',
     );
+  });
+
+  it('should report expired session and dispatch auth event on protected 401', async () => {
+    const dispatchEventSpy = vi.spyOn(window, 'dispatchEvent');
+    localStorage.setItem('token', 'fake-token');
+
+    vi.spyOn(global, 'fetch').mockResolvedValue({
+      ok: false,
+      status: 401,
+      json: async () => ({ message: 'Unauthorized' }),
+    } as Response);
+
+    await expect(postAuth('/contas', { descricao: 'Teste' })).rejects.toThrow(
+      'Sessão expirada. Faça login novamente.',
+    );
+
+    expect(dispatchEventSpy).toHaveBeenCalledTimes(1);
   });
 });
