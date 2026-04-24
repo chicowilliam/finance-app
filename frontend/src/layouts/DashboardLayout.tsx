@@ -26,7 +26,13 @@ export default function DashboardLayout() {
 	return (
 		<ContasContext.Provider value={contasState}>
 			<AppShell navbar={{ width: 280, breakpoint: 'md' }} padding="lg">
-				<AppShell.Navbar p="xs">
+				<AppShell.Navbar
+					p={0}
+					style={{
+						backgroundColor: '#0f3d30',
+						borderInlineEnd: '1px solid rgba(255, 255, 255, 0.08)',
+					}}
+				>
 					<Sidebar />
 				</AppShell.Navbar>
 				<AppShell.Main>

@@ -25,9 +25,8 @@ export default function Sidebar() {
 		<Box
 			style={{
 				height: '100%',
-				padding: '12px',
-				background: '#0f3d30',
-				borderRadius: 12,
+				padding: '24px 12px',
+				background: 'transparent',
 				display: 'flex',
 				flexDirection: 'column',
 			}}
