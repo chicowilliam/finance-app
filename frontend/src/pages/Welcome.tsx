@@ -1,5 +1,19 @@
 import { useMemo, useState } from 'react'
 import { Navigate, useNavigate } from 'react-router-dom'
+import {
+  Alert,
+  Button,
+  Container,
+  Group,
+  Paper,
+  PasswordInput,
+  Stack,
+  Tabs,
+  Text,
+  TextInput,
+  Title,
+} from '@mantine/core'
+import { AlertCircle } from '../lib/icons'
 import { useAuth } from '../hooks/useAuth'
 
 type Tab = 'login' | 'register'
@@ -47,87 +61,68 @@ export default function Welcome() {
   }
 
   return (
-    <main className="welcome-shell">
-      <section className="welcome-card">
-        <p className="welcome-kicker">Finance App</p>
-        <h1 className="welcome-title">Controle financeiro sem friccao</h1>
-        <p className="welcome-subtitle">
-          Entre, crie sua conta ou continue como convidado para testar tudo agora.
-        </p>
+    <Container size={520} py={36}>
+      <Paper withBorder shadow="sm" radius="lg" p="lg">
+        <Stack gap="md">
+          <div>
+            <Text c="teal" fw={700} size="xs" tt="uppercase">Finance App</Text>
+            <Title order={1} size="h2">Controle financeiro sem fricção</Title>
+            <Text c="dimmed" mt={6}>Entre, crie sua conta ou continue como convidado para testar tudo agora.</Text>
+          </div>
 
-        <div className="welcome-tabs" role="tablist" aria-label="Autenticacao">
-          <button
-            className={`welcome-tab ${tab === 'login' ? 'active' : ''}`}
-            onClick={() => setTab('login')}
-            type="button"
-          >
-            Entrar
-          </button>
-          <button
-            className={`welcome-tab ${tab === 'register' ? 'active' : ''}`}
-            onClick={() => setTab('register')}
-            type="button"
-          >
-            Criar conta
-          </button>
-        </div>
+          <Tabs value={tab} onChange={(value) => setTab((value as Tab) ?? 'login')}>
+            <Tabs.List grow>
+              <Tabs.Tab value="login">Entrar</Tabs.Tab>
+              <Tabs.Tab value="register">Criar conta</Tabs.Tab>
+            </Tabs.List>
+          </Tabs>
 
-        <form className="welcome-form" onSubmit={handleAuthSubmit}>
-          <h2>{titulo}</h2>
+          <form onSubmit={handleAuthSubmit}>
+            <Stack gap="sm">
+              <Title order={2} size="h4">{titulo}</Title>
 
-          {tab === 'register' && (
-            <div className="form-field">
-              <label className="form-label" htmlFor="nome">Nome</label>
-              <input
-                className="form-input"
-                id="nome"
-                value={nome}
-                onChange={(e) => setNome(e.target.value)}
-                placeholder="Seu nome"
+              {tab === 'register' && (
+                <TextInput
+                  label="Nome"
+                  value={nome}
+                  onChange={(e) => setNome(e.currentTarget.value)}
+                  placeholder="Seu nome"
+                />
+              )}
+
+              <TextInput
+                label="Email"
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.currentTarget.value)}
+                placeholder="voce@email.com"
               />
-            </div>
-          )}
 
-          <div className="form-field">
-            <label className="form-label" htmlFor="email">Email</label>
-            <input
-              className="form-input"
-              id="email"
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              placeholder="voce@email.com"
-            />
-          </div>
+              <PasswordInput
+                label="Senha"
+                value={senha}
+                onChange={(e) => setSenha(e.currentTarget.value)}
+                placeholder="Sua senha"
+              />
 
-          <div className="form-field">
-            <label className="form-label" htmlFor="senha">Senha</label>
-            <input
-              className="form-input"
-              id="senha"
-              type="password"
-              value={senha}
-              onChange={(e) => setSenha(e.target.value)}
-              placeholder="Sua senha"
-            />
-          </div>
+              {erro && (
+                <Alert color="red" variant="light" icon={<AlertCircle size={16} strokeWidth={1.8} />}>
+                  {erro}
+                </Alert>
+              )}
 
-          {erro && <p className="welcome-error">{erro}</p>}
+              <Button type="submit" loading={loading}>
+                {tab === 'login' ? 'Entrar' : 'Criar conta'}
+              </Button>
+            </Stack>
+          </form>
 
-          <button className="btn btn-primary" disabled={loading} type="submit">
-            {loading ? 'Aguarde...' : tab === 'login' ? 'Entrar' : 'Criar conta'}
-          </button>
-        </form>
-
-        <div className="welcome-divider" />
-
-        <button className="btn btn-secondary" onClick={handleGuest} type="button">
-          Continuar como convidado
-        </button>
-        <p className="welcome-note">
-          No modo convidado, os dados ficam neste navegador.
-        </p>
-      </section>
-    </main>
+          <Group justify="space-between" align="center">
+            <Button variant="default" onClick={handleGuest}>Continuar como convidado</Button>
+            <Text size="xs" c="dimmed">Os dados de convidado ficam neste navegador.</Text>
+          </Group>
+        </Stack>
+      </Paper>
+    </Container>
   )
 }

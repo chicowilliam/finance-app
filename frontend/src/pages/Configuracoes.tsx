@@ -1,67 +1,89 @@
 import { useState } from 'react'
-import styles from './Configuracoes.module.css'
+import {
+  Avatar,
+  Button,
+  Card,
+  Grid,
+  Group,
+  Stack,
+  Switch,
+  Text,
+  Title,
+} from '@mantine/core'
 import { Settings, Moon, Sun, UserCircle, Bell, Shield } from '../lib/icons'
+import { useTheme } from '../hooks/useTheme'
 
 export default function Configuracoes() {
-  const [darkMode, setDarkMode] = useState(false)
+  const { theme, setTheme } = useTheme()
   const [notifications, setNotifications] = useState(true)
+  const darkMode = theme === 'dark'
 
   return (
-    <section className={styles.wrapper}>
-      <header className={styles.header}>
-        <h1 className={styles.title}><Settings size={18} strokeWidth={1.5} /> Configurações</h1>
-        <p className={styles.subtitle}>Central de preferências da aplicação.</p>
+    <Stack gap="md">
+      <header>
+        <Title order={1} size="h3"><Group gap={8}><Settings size={18} strokeWidth={1.5} /> Configurações</Group></Title>
+        <Text c="dimmed">Central de preferências da aplicação.</Text>
       </header>
 
-      <div className={styles.grid}>
-        <article className={styles.card}>
-          <h2 className={styles.cardTitle}><UserCircle size={18} strokeWidth={1.5} /> Perfil</h2>
-          <div className={styles.profileRow}>
-            <div className={styles.avatar}>W</div>
-            <div>
-              <p className={styles.profileName}>William Costa</p>
-              <p className={styles.profileEmail}>william@email.com</p>
-            </div>
-          </div>
-          <button className="btn btn-secondary" type="button">Alterar foto</button>
-        </article>
+      <Grid>
+        <Grid.Col span={{ base: 12, md: 6 }}>
+          <Card withBorder radius="lg" shadow="sm">
+            <Stack>
+              <Title order={2} size="h5"><Group gap={8}><UserCircle size={18} strokeWidth={1.5} /> Perfil</Group></Title>
+              <Group>
+                <Avatar size="lg" radius="xl" color="teal">W</Avatar>
+                <div>
+                  <Text fw={700}>William Costa</Text>
+                  <Text size="sm" c="dimmed">william@email.com</Text>
+                </div>
+              </Group>
+              <Button variant="default">Alterar foto</Button>
+            </Stack>
+          </Card>
+        </Grid.Col>
 
-        <article className={styles.card}>
-          <h2 className={styles.cardTitle}>
-            {darkMode ? <Moon size={18} strokeWidth={1.5} /> : <Sun size={18} strokeWidth={1.5} />} Tema
-          </h2>
-          <label className={styles.toggleRow}>
-            <span>Modo noturno</span>
-            <input
-              type="checkbox"
-              checked={darkMode}
-              onChange={(e) => setDarkMode(e.target.checked)}
-            />
-          </label>
-          <p className={styles.hint}>Visual por enquanto em preparação.</p>
-        </article>
+        <Grid.Col span={{ base: 12, md: 6 }}>
+          <Card withBorder radius="lg" shadow="sm">
+            <Stack>
+              <Title order={2} size="h5">
+                <Group gap={8}>{darkMode ? <Moon size={18} strokeWidth={1.5} /> : <Sun size={18} strokeWidth={1.5} />} Tema</Group>
+              </Title>
+              <Switch
+                checked={darkMode}
+                onChange={(e) => setTheme(e.currentTarget.checked ? 'dark' : 'light')}
+                label="Modo noturno"
+              />
+              <Text size="sm" c="dimmed">Tema aplicado globalmente no app.</Text>
+            </Stack>
+          </Card>
+        </Grid.Col>
 
-        <article className={styles.card}>
-          <h2 className={styles.cardTitle}><Bell size={18} strokeWidth={1.5} /> Notificações</h2>
-          <label className={styles.toggleRow}>
-            <span>Lembretes de vencimento</span>
-            <input
-              type="checkbox"
-              checked={notifications}
-              onChange={(e) => setNotifications(e.target.checked)}
-            />
-          </label>
-          <p className={styles.hint}>Configuração visual (sem persistência ainda).</p>
-        </article>
+        <Grid.Col span={{ base: 12, md: 6 }}>
+          <Card withBorder radius="lg" shadow="sm">
+            <Stack>
+              <Title order={2} size="h5"><Group gap={8}><Bell size={18} strokeWidth={1.5} /> Notificações</Group></Title>
+              <Switch
+                checked={notifications}
+                onChange={(e) => setNotifications(e.currentTarget.checked)}
+                label="Lembretes de vencimento"
+              />
+              <Text size="sm" c="dimmed">Configuração visual (sem persistência no servidor).</Text>
+            </Stack>
+          </Card>
+        </Grid.Col>
 
-        <article className={styles.card}>
-          <h2 className={styles.cardTitle}><Shield size={18} strokeWidth={1.5} /> Conta</h2>
-          <div className={styles.actions}>
-            <button className="btn btn-secondary" type="button">Alterar senha</button>
-            <button className="btn btn-secondary" type="button">Gerenciar sessão</button>
-          </div>
-        </article>
-      </div>
-    </section>
+        <Grid.Col span={{ base: 12, md: 6 }}>
+          <Card withBorder radius="lg" shadow="sm">
+            <Stack>
+              <Title order={2} size="h5"><Group gap={8}><Shield size={18} strokeWidth={1.5} /> Conta</Group></Title>
+              <Group>
+                <Button variant="default">Alterar senha</Button>
+                <Button variant="default">Gerenciar sessão</Button>
+              </Group>
+            </Stack>
+          </Card>
+        </Grid.Col>
+      </Grid>
+    </Stack>
   )
 }
