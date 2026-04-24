@@ -23,14 +23,11 @@ export default function Sidebar() {
 
 	return (
 		<Box
-			component="aside"
 			style={{
-				position: 'sticky',
-				top: 0,
-				height: '100vh',
-				padding: '24px 12px',
+				height: '100%',
+				padding: '12px',
 				background: '#0f3d30',
-				borderRight: '1px solid rgba(255, 255, 255, 0.08)',
+				borderRadius: 12,
 				display: 'flex',
 				flexDirection: 'column',
 			}}

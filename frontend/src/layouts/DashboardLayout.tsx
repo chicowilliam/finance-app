@@ -1,8 +1,8 @@
 import { useState } from 'react'
+import { Alert, AppShell, Modal } from '@mantine/core'
 import { Outlet } from 'react-router-dom'
 import Sidebar from '../components/Sidebar'
 import Navbar from '../components/Navbar'
-import Modal from '../components/Modal'
 import NovaContaForm from '../components/NovaContaForm'
 import { useContas } from '../hooks/useBills'
 import { ContasContext } from '../context/ContasContext'
@@ -25,29 +25,29 @@ export default function DashboardLayout() {
 
 	return (
 		<ContasContext.Provider value={contasState}>
-			<div className="dashboard-shell">
-				<Sidebar />
-
-				<div className="dashboard-main">
+			<AppShell navbar={{ width: 280, breakpoint: 'md' }} padding="lg">
+				<AppShell.Navbar p="xs">
+					<Sidebar />
+				</AppShell.Navbar>
+				<AppShell.Main>
 					<Navbar onAddBill={() => setModalOpen(true)} />
-
-					<main className="dashboard-content">
+					<div style={{ paddingTop: '1rem' }}>
 						<Outlet />
-					</main>
-				</div>
+					</div>
+				</AppShell.Main>
 
-				<Modal open={modalOpen} onClose={() => setModalOpen(false)} title="Nova Conta">
+				<Modal opened={modalOpen} onClose={() => setModalOpen(false)} title="Nova Conta" centered>
 					<NovaContaForm
 						onSubmit={handleAddConta}
 						onCancel={() => setModalOpen(false)}
 					/>
 								{formError && (
-									<p style={{ color: 'var(--color-danger, #e53e3e)', marginTop: '0.5rem', fontSize: '0.875rem' }}>
+								<Alert color="red" mt="sm">
 										{formError}
-									</p>
+								</Alert>
 								)}
 				</Modal>
-			</div>
+			</AppShell>
 		</ContasContext.Provider>
 	)
 }

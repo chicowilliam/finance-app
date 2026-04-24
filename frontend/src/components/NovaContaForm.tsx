@@ -1,11 +1,10 @@
 import { useState } from 'react'
 import type { FormEvent } from 'react'
-import Input from './Input'
-import Button from './Button'
+import { Button, Group, NumberInput, Select, Stack, TextInput } from '@mantine/core'
 import type { Conta } from '../data/mockContas'
 
 interface NovaContaFormProps {
-  onSubmit: (conta: Omit<Conta, 'id'>) => void
+  onSubmit: (conta: Omit<Conta, 'id'>) => Promise<void> | void
   onCancel: () => void
 }
 
@@ -16,7 +15,7 @@ const categorias = [
 
 export default function NovaContaForm({ onSubmit, onCancel }: NovaContaFormProps) {
   const [descricao, setDescricao] = useState('')
-  const [valor, setValor] = useState('')
+  const [valor, setValor] = useState<string | number>('')
   const [vencimento, setVencimento] = useState('')
   const [categoria, setCategoria] = useState(categorias[0])
 
@@ -26,71 +25,62 @@ export default function NovaContaForm({ onSubmit, onCancel }: NovaContaFormProps
     const hoje = new Date().toISOString().split('T')[0]
     const status = vencimento < hoje ? 'atrasada' : 'a_vencer'
 
-    onSubmit({
+    void onSubmit({
       descricao,
-      valor: parseFloat(valor),
+      valor: Number(valor),
       vencimento,
       status,
       categoria,
     })
   }
 
-  const formValid = descricao.trim() && valor && parseFloat(valor) > 0 && vencimento
+  const formValid = descricao.trim() && Number(valor) > 0 && vencimento
 
   return (
-    <form onSubmit={handleSubmit} className="nova-conta-form">
-      <Input
+    <form onSubmit={handleSubmit}>
+      <Stack gap="sm">
+      <TextInput
         label="Descrição"
-        id="descricao"
         value={descricao}
-        onChange={e => setDescricao(e.target.value)}
+        onChange={e => setDescricao(e.currentTarget.value)}
         placeholder="Ex: Aluguel, Internet..."
         required
       />
 
-      <Input
+      <NumberInput
         label="Valor (R$)"
-        id="valor"
-        type="number"
-        min="0.01"
-        step="0.01"
         value={valor}
-        onChange={e => setValor(e.target.value)}
+        onChange={(value) => setValor(value)}
+        min={0.01}
+        step={0.01}
         placeholder="0,00"
         required
       />
 
-      <Input
+      <TextInput
         label="Vencimento"
-        id="vencimento"
         type="date"
         value={vencimento}
-        onChange={e => setVencimento(e.target.value)}
+        onChange={e => setVencimento(e.currentTarget.value)}
         required
       />
 
-      <div className="form-field">
-        <label htmlFor="categoria" className="form-label">Categoria</label>
-        <select
-          id="categoria"
-          className="form-input"
-          value={categoria}
-          onChange={e => setCategoria(e.target.value)}
-        >
-          {categorias.map(c => (
-            <option key={c} value={c}>{c}</option>
-          ))}
-        </select>
-      </div>
+      <Select
+        label="Categoria"
+        data={categorias}
+        value={categoria}
+        onChange={(value) => setCategoria(value ?? categorias[0])}
+      />
 
-      <div className="form-actions">
-        <Button type="button" variant="secondary" onClick={onCancel}>
+      <Group justify="flex-end" mt="xs">
+        <Button type="button" variant="default" onClick={onCancel}>
           Cancelar
         </Button>
         <Button type="submit" disabled={!formValid}>
           Adicionar
         </Button>
-      </div>
+      </Group>
+      </Stack>
     </form>
   )
 }
