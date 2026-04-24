@@ -1,4 +1,5 @@
-import { NavLink } from 'react-router-dom'
+import { NavLink, useLocation } from 'react-router-dom'
+import { Box, Divider, Group, NavLink as MantineNavLink, Stack, Text } from '@mantine/core'
 import { LayoutDashboard, List, CalendarDays, Bell, Wallet, Settings } from '../lib/icons'
 
 const mainLinks = [
@@ -13,40 +14,76 @@ const bottomLinks = [
 ]
 
 export default function Sidebar() {
+	const { pathname } = useLocation()
+
+	const isActive = (to: string) => {
+		if (to === '/app') return pathname === '/app'
+		return pathname.startsWith(to)
+	}
+
 	return (
-		<aside className="sidebar">
-			<h2 className="sidebar-title"><Wallet size={20} strokeWidth={1.5} /> FinanceApp</h2>
+		<Box
+			component="aside"
+			style={{
+				position: 'sticky',
+				top: 0,
+				height: '100vh',
+				padding: '24px 12px',
+				background: '#0f3d30',
+				borderRight: '1px solid rgba(255, 255, 255, 0.08)',
+				display: 'flex',
+				flexDirection: 'column',
+			}}
+		>
+			<Group gap={8} mb="md" wrap="nowrap">
+				<Wallet size={20} strokeWidth={1.5} color="#f0faf6" />
+				<Text c="#f0faf6" fw={700} size="lg">FinanceApp</Text>
+			</Group>
 
-			<nav className="sidebar-nav">
-				{mainLinks.map(l => (
-					<NavLink
+			<Stack gap={6}>
+				{mainLinks.map((l) => (
+					<MantineNavLink
 						key={l.to}
+						component={NavLink}
 						to={l.to}
-						end={l.to === '/app'}
-						className={({ isActive }) =>
-							`sidebar-link ${isActive ? 'active' : ''}`
-						}
-					>
-						<l.icon size={16} strokeWidth={1.5} />
-						{l.label}
-					</NavLink>
+						label={l.label}
+						leftSection={<l.icon size={16} strokeWidth={1.5} />}
+						active={isActive(l.to)}
+						styles={{
+							root: {
+								borderRadius: 10,
+								color: '#d3ebdf',
+								background: isActive(l.to) ? 'rgba(255,255,255,0.16)' : 'transparent',
+							},
+							label: { fontWeight: 600 },
+						}}
+					/>
 				))}
-			</nav>
+			</Stack>
 
-			<nav className="sidebar-nav sidebar-nav-bottom">
-				{bottomLinks.map(l => (
-					<NavLink
-						key={l.to}
-						to={l.to}
-						className={({ isActive }) =>
-							`sidebar-link ${isActive ? 'active' : ''}`
-						}
-					>
-						<l.icon size={16} strokeWidth={1.5} />
-						{l.label}
-					</NavLink>
-				))}
-			</nav>
-		</aside>
+			<Box mt="auto" pt="md">
+				<Divider color="rgba(255,255,255,0.2)" mb="sm" />
+				<Stack gap={6}>
+					{bottomLinks.map((l) => (
+						<MantineNavLink
+							key={l.to}
+							component={NavLink}
+							to={l.to}
+							label={l.label}
+							leftSection={<l.icon size={16} strokeWidth={1.5} />}
+							active={isActive(l.to)}
+							styles={{
+								root: {
+									borderRadius: 10,
+									color: '#d3ebdf',
+									background: isActive(l.to) ? 'rgba(255,255,255,0.16)' : 'transparent',
+								},
+								label: { fontWeight: 600 },
+							}}
+						/>
+					))}
+				</Stack>
+			</Box>
+		</Box>
 	)
 }

@@ -1,9 +1,9 @@
 import { useState } from 'react'
 import { AnimatePresence, motion, useReducedMotion } from 'motion/react'
+import { Badge, Button, Group, Paper, Stack, Table, Text, Title } from '@mantine/core'
 import { useContasContext } from '../context/ContasContext'
 import { formatBRL, formatData } from '../data/mockContas'
 import type { StatusConta } from '../data/mockContas'
-import styles from './Contas.module.css'
 import Loader from '../components/Loader'
 
 type Filtro = StatusConta | 'todas'
@@ -21,37 +21,47 @@ export default function Contas() {
 
   const lista = filtro === 'todas' ? contas : contas.filter(c => c.status === filtro)
 
-  return (
-    <div>
-      <h1 className={styles.titulo}>Lista de Contas</h1>
+  const statusColor: Record<StatusConta, string> = {
+    paga: 'green',
+    a_vencer: 'yellow',
+    atrasada: 'red',
+  }
 
-      <div className={styles.filtros}>
+  return (
+    <Stack>
+      <Title order={1} size="h3">Lista de Contas</Title>
+
+      <Group>
         {(['todas', 'paga', 'a_vencer', 'atrasada'] as Filtro[]).map(f => (
-          <motion.button
+          <motion.div
             key={f}
-            onClick={() => setFiltro(f)}
-            className={`${styles.btn} ${filtro === f ? styles[`ativo_${f}`] : ''}`}
             whileHover={shouldReduceMotion ? undefined : { y: -1 }}
             whileTap={shouldReduceMotion ? undefined : { scale: 0.98 }}
             transition={{ duration: 0.16, ease: 'easeOut' }}
           >
-            {f === 'todas' ? 'Todas' : STATUS_LABEL[f as StatusConta]}
-          </motion.button>
+            <Button
+              variant={filtro === f ? 'filled' : 'light'}
+              color={f === 'todas' ? 'gray' : statusColor[f as StatusConta]}
+              onClick={() => setFiltro(f)}
+            >
+              {f === 'todas' ? 'Todas' : STATUS_LABEL[f as StatusConta]}
+            </Button>
+          </motion.div>
         ))}
-      </div>
+      </Group>
 
-      <div className={styles.tableWrap}>
-        <table className={styles.tabela}>
-          <thead>
-            <tr>
-              <th>Descrição</th>
-              <th>Categoria</th>
-              <th>Vencimento</th>
-              <th>Valor</th>
-              <th>Status</th>
-            </tr>
-          </thead>
-          <tbody>
+      <Paper withBorder radius="lg" p="sm">
+        <Table highlightOnHover striped>
+          <Table.Thead>
+            <Table.Tr>
+              <Table.Th>Descrição</Table.Th>
+              <Table.Th>Categoria</Table.Th>
+              <Table.Th>Vencimento</Table.Th>
+              <Table.Th>Valor</Table.Th>
+              <Table.Th>Status</Table.Th>
+            </Table.Tr>
+          </Table.Thead>
+          <Table.Tbody>
             <AnimatePresence initial={false}>
               {lista.map((c, idx) => (
                 <motion.tr
@@ -62,30 +72,29 @@ export default function Contas() {
                   exit={shouldReduceMotion ? { opacity: 0 } : { opacity: 0, y: -8 }}
                   transition={{ duration: shouldReduceMotion ? 0.1 : 0.2, delay: shouldReduceMotion ? 0 : idx * 0.02 }}
                 >
-                  <td className={styles.tdDesc}>{c.descricao}</td>
+                  <td><Text fw={600}>{c.descricao}</Text></td>
                   <td>{c.categoria}</td>
                   <td>{formatData(c.vencimento)}</td>
-                  <td className={styles.tdValor}>{formatBRL(c.valor)}</td>
-                  <td><span className={`${styles.badge} ${styles[c.status]}`}>{STATUS_LABEL[c.status]}</span></td>
+                  <td><Text fw={700}>{formatBRL(c.valor)}</Text></td>
+                  <td><Badge color={statusColor[c.status]} variant="light">{STATUS_LABEL[c.status]}</Badge></td>
                 </motion.tr>
               ))}
             </AnimatePresence>
-          </tbody>
-        </table>
+          </Table.Tbody>
+        </Table>
         <AnimatePresence initial={false}>
           {lista.length === 0 && (
             <motion.p
-              className={styles.vazio}
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               transition={{ duration: 0.16, ease: 'easeOut' }}
             >
-              Nenhuma conta encontrada.
+              <Text c="dimmed" ta="center" py="md">Nenhuma conta encontrada.</Text>
             </motion.p>
           )}
         </AnimatePresence>
-      </div>
-    </div>
+      </Paper>
+    </Stack>
   )
 }

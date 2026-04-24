@@ -1,7 +1,7 @@
 import { useContasContext } from '../context/ContasContext'
 import { formatBRL } from '../data/mockContas'
 import type { Conta } from '../data/mockContas'
-import styles from './Alertas.module.css'
+import { Badge, Card, Group, Paper, SimpleGrid, Stack, Text, Title } from '@mantine/core'
 import { AlertCircle, Clock, CheckCircle } from '../lib/icons'
 import { AnimatePresence, motion, useReducedMotion } from 'motion/react'
 import Loader from '../components/Loader'
@@ -24,23 +24,22 @@ export default function Alertas() {
   const urgentes  = contas.filter(c => c.status === 'a_vencer' && diasParaVencer(c) <= 5)
 
   return (
-    <div>
-      <h1 className={styles.titulo}>Alertas de Risco</h1>
+    <Stack>
+      <Title order={1} size="h3">Alertas de Risco</Title>
 
       <AnimatePresence initial={false}>
         {atrasadas.length > 0 && (
         <motion.section
-          className={styles.secao}
           initial={shouldReduceMotion ? { opacity: 0 } : { opacity: 0, y: 8 }}
           animate={shouldReduceMotion ? { opacity: 1 } : { opacity: 1, y: 0 }}
           exit={shouldReduceMotion ? { opacity: 0 } : { opacity: 0, y: -8 }}
           transition={{ duration: shouldReduceMotion ? 0.1 : 0.22, ease: 'easeOut' }}
         >
-          <h2 className={styles.h2Atrasada}>
-            <AlertCircle size={18} strokeWidth={1.5} /> Contas Atrasadas ({atrasadas.length})
-          </h2>
+          <Group mb="sm">
+            <AlertCircle size={18} strokeWidth={1.5} />
+            <Title order={2} size="h5">Contas Atrasadas ({atrasadas.length})</Title>
+          </Group>
           <motion.div
-            className={styles.cards}
             initial="hidden"
             animate="visible"
             variants={{
@@ -53,11 +52,11 @@ export default function Alertas() {
               },
             }}
           >
+            <SimpleGrid cols={{ base: 1, md: 2 }} spacing="sm">
             {atrasadas.map(c => (
               <motion.div
                 key={c.id}
                 layout
-                className={`${styles.card} ${styles.cardAtrasada}`}
                 variants={{
                   hidden: shouldReduceMotion ? { opacity: 0 } : { opacity: 0, y: 10 },
                   visible: shouldReduceMotion ? { opacity: 1 } : { opacity: 1, y: 0 },
@@ -65,18 +64,23 @@ export default function Alertas() {
                 whileHover={shouldReduceMotion ? undefined : { y: -2 }}
                 transition={{ duration: shouldReduceMotion ? 0.1 : 0.2, ease: 'easeOut' }}
               >
-                <div className={styles.topo}>
-                  <span className={styles.desc}>{c.descricao}</span>
-                  <span className={styles.valor}>{formatBRL(c.valor)}</span>
-                </div>
-                <div className={styles.rodape}>
-                  <span className={styles.cat}>{c.categoria}</span>
-                  <span className={styles.tagAtrasada}>
+                <Card withBorder radius="lg" shadow="sm">
+                  <Stack gap={8}>
+                    <Group justify="space-between" wrap="nowrap">
+                      <Text fw={600}>{c.descricao}</Text>
+                      <Text fw={700} c="red">{formatBRL(c.valor)}</Text>
+                    </Group>
+                    <Group justify="space-between">
+                      <Text size="sm" c="dimmed">{c.categoria}</Text>
+                      <Badge color="red" variant="light">
                     {diasAtraso(c)} dia{diasAtraso(c) !== 1 ? 's' : ''} em atraso
-                  </span>
-                </div>
+                      </Badge>
+                    </Group>
+                  </Stack>
+                </Card>
               </motion.div>
             ))}
+            </SimpleGrid>
           </motion.div>
         </motion.section>
       )}
@@ -85,17 +89,16 @@ export default function Alertas() {
       <AnimatePresence initial={false}>
       {urgentes.length > 0 && (
         <motion.section
-          className={styles.secao}
           initial={shouldReduceMotion ? { opacity: 0 } : { opacity: 0, y: 8 }}
           animate={shouldReduceMotion ? { opacity: 1 } : { opacity: 1, y: 0 }}
           exit={shouldReduceMotion ? { opacity: 0 } : { opacity: 0, y: -8 }}
           transition={{ duration: shouldReduceMotion ? 0.1 : 0.22, ease: 'easeOut' }}
         >
-          <h2 className={styles.h2Urgente}>
-            <Clock size={18} strokeWidth={1.5} /> Vencem em Breve ({urgentes.length})
-          </h2>
+          <Group mb="sm">
+            <Clock size={18} strokeWidth={1.5} />
+            <Title order={2} size="h5">Vencem em Breve ({urgentes.length})</Title>
+          </Group>
           <motion.div
-            className={styles.cards}
             initial="hidden"
             animate="visible"
             variants={{
@@ -108,13 +111,13 @@ export default function Alertas() {
               },
             }}
           >
+            <SimpleGrid cols={{ base: 1, md: 2 }} spacing="sm">
             {urgentes.map(c => {
               const dias = diasParaVencer(c)
               return (
                 <motion.div
                   key={c.id}
                   layout
-                  className={`${styles.card} ${styles.cardVencer}`}
                   variants={{
                     hidden: shouldReduceMotion ? { opacity: 0 } : { opacity: 0, y: 10 },
                     visible: shouldReduceMotion ? { opacity: 1 } : { opacity: 1, y: 0 },
@@ -122,19 +125,24 @@ export default function Alertas() {
                   whileHover={shouldReduceMotion ? undefined : { y: -2 }}
                   transition={{ duration: shouldReduceMotion ? 0.1 : 0.2, ease: 'easeOut' }}
                 >
-                  <div className={styles.topo}>
-                    <span className={styles.desc}>{c.descricao}</span>
-                    <span className={styles.valor}>{formatBRL(c.valor)}</span>
-                  </div>
-                  <div className={styles.rodape}>
-                    <span className={styles.cat}>{c.categoria}</span>
-                    <span className={styles.tagVencer}>
+                  <Card withBorder radius="lg" shadow="sm">
+                    <Stack gap={8}>
+                      <Group justify="space-between" wrap="nowrap">
+                        <Text fw={600}>{c.descricao}</Text>
+                        <Text fw={700} c="yellow.8">{formatBRL(c.valor)}</Text>
+                      </Group>
+                      <Group justify="space-between">
+                        <Text size="sm" c="dimmed">{c.categoria}</Text>
+                        <Badge color="yellow" variant="light">
                       {dias === 0 ? 'Vence hoje!' : `${dias} dia${dias !== 1 ? 's' : ''} para vencer`}
-                    </span>
-                  </div>
+                        </Badge>
+                      </Group>
+                    </Stack>
+                  </Card>
                 </motion.div>
               )
             })}
+            </SimpleGrid>
           </motion.div>
         </motion.section>
       )}
@@ -143,16 +151,17 @@ export default function Alertas() {
       <AnimatePresence initial={false}>
         {atrasadas.length === 0 && urgentes.length === 0 && (
           <motion.p
-            className={styles.ok}
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.16, ease: 'easeOut' }}
           >
-            <CheckCircle size={18} strokeWidth={1.5} /> Tudo em dia! Nenhum alerta no momento.
+            <Paper withBorder radius="lg" p="md">
+              <Group><CheckCircle size={18} strokeWidth={1.5} /> <Text fw={600}>Tudo em dia! Nenhum alerta no momento.</Text></Group>
+            </Paper>
           </motion.p>
         )}
       </AnimatePresence>
-    </div>
+    </Stack>
   )
 }
