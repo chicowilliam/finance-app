@@ -1,4 +1,5 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState } from 'react';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { contasService } from '../services/billService';
 import { useAuth } from './useAuth';
 import type { Conta } from '../data/mockContas';
@@ -23,54 +24,53 @@ let guestNextId = -(Date.now());
 export function useContas() {
   const { mode } = useAuth();
   const isGuest = mode === 'guest';
+  const queryClient = useQueryClient();
 
-  const [contas, setContas] = useState<Conta[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const [guestContas, setGuestContas] = useState<Conta[]>(loadGuestContas);
 
-  const carregar = useCallback(async () => {
-    if (isGuest) {
-      setContas(loadGuestContas());
-      setLoading(false);
-      return;
-    }
-    try {
-      setLoading(true);
-      setError(null);
-      const data = await contasService.listar();
-      setContas(data);
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Erro ao carregar contas');
-    } finally {
-      setLoading(false);
-    }
-  }, [isGuest]);
+  const query = useQuery({
+    queryKey: ['contas'],
+    queryFn: () => contasService.listar(),
+    enabled: !isGuest,
+  });
 
-  useEffect(() => { void carregar(); }, [carregar]);
+  const adicionarMutation = useMutation({
+    mutationFn: (conta: Omit<Conta, 'id'>) => contasService.criar(conta),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ['contas'] }),
+  });
 
-  async function adicionar(conta: Omit<Conta, 'id'>) {
+  const removerMutation = useMutation({
+    mutationFn: (id: number) => contasService.remover(id),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ['contas'] }),
+  });
+
+  async function adicionar(conta: Omit<Conta, 'id'>): Promise<Conta> {
     if (isGuest) {
       const nova: Conta = { ...conta, id: guestNextId-- };
-      const updated = [...contas, nova];
-      setContas(updated);
+      const updated = [...guestContas, nova];
+      setGuestContas(updated);
       saveGuestContas(updated);
       return nova;
     }
-    const nova = await contasService.criar(conta);
-    setContas(prev => [...prev, nova]);
-    return nova;
+    return adicionarMutation.mutateAsync(conta);
   }
 
-  async function remover(id: number) {
+  async function remover(id: number): Promise<void> {
     if (isGuest) {
-      const updated = contas.filter(c => c.id !== id);
-      setContas(updated);
+      const updated = guestContas.filter(c => c.id !== id);
+      setGuestContas(updated);
       saveGuestContas(updated);
       return;
     }
-    await contasService.remover(id);
-    setContas(prev => prev.filter(c => c.id !== id));
+    await removerMutation.mutateAsync(id);
   }
 
-  return { contas, loading, error, carregar, adicionar, remover };
+  return {
+    contas: isGuest ? guestContas : (query.data ?? []),
+    loading: isGuest ? false : query.isLoading,
+    error: isGuest ? null : (query.error instanceof Error ? query.error.message : null),
+    carregar: () => queryClient.invalidateQueries({ queryKey: ['contas'] }),
+    adicionar,
+    remover,
+  };
 }

@@ -18,7 +18,7 @@ const categorias = [
 const novaContaSchema = z.object({
   descricao: z.string().min(2, 'Descrição obrigatória'),
   valor: z
-    .number({ invalid_type_error: 'Informe um valor' })
+    .number({ error: 'Informe um valor' })
     .positive('Deve ser maior que zero'),
   vencimento: z.string().min(1, 'Informe a data de vencimento'),
   categoria: z.string().min(1, 'Selecione uma categoria'),
