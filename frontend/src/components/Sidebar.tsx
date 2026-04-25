@@ -14,12 +14,11 @@ const bottomLinks = [
 ]
 
 interface SidebarProps {
-	desktopOpened: boolean
 	onToggleDesktop: () => void
 	onNavClick: () => void
 }
 
-export default function Sidebar({ desktopOpened, onToggleDesktop, onNavClick }: SidebarProps) {
+export default function Sidebar({ onToggleDesktop, onNavClick }: SidebarProps) {
 	const { pathname } = useLocation()
 
 	const isActive = (to: string) => {

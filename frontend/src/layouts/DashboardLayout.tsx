@@ -44,7 +44,6 @@ export default function DashboardLayout() {
 					}}
 				>
 					<Sidebar
-						desktopOpened={desktopOpened}
 						onToggleDesktop={toggleDesktop}
 						onNavClick={closeMobile}
 					/>

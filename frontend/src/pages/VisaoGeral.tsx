@@ -1,6 +1,6 @@
 import { useContasContext } from '../context/ContasContext'
 import { formatBRL, formatData } from '../data/mockContas'
-import { Card, Group, List, Paper, SimpleGrid, Stack, Text, Title } from '@mantine/core'
+import { Box, Card, Group, List, Paper, SimpleGrid, Stack, Text, Title } from '@mantine/core'
 import { AlertTriangle } from '../lib/icons'
 import { motion, useReducedMotion } from 'motion/react'
 import Loader from '../components/Loader'
@@ -21,6 +21,13 @@ export default function VisaoGeral() {
     { label: 'Atrasadas', valor: atrasadas.reduce((s, c) => s + c.valor, 0), qtd: atrasadas.length, color: 'red' },
     { label: 'Total do Mês', valor: contas.reduce((s, c) => s + c.valor, 0), qtd: contas.length, color: 'teal' },
   ]
+
+  const torresData = [
+    { label: 'Pagas', valor: cards[0].valor, cor: '#2f9e44' },
+    { label: 'A vencer', valor: cards[1].valor, cor: '#f08c00' },
+    { label: 'Atrasadas', valor: cards[2].valor, cor: '#e03131' },
+  ]
+  const maxTorre = Math.max(...torresData.map((item) => item.valor), 1)
 
   return (
     <Stack>
@@ -62,6 +69,63 @@ export default function VisaoGeral() {
           ))}
         </SimpleGrid>
       </motion.div>
+
+      <motion.section
+        initial={shouldReduceMotion ? { opacity: 0 } : { opacity: 0, y: 8 }}
+        animate={shouldReduceMotion ? { opacity: 1 } : { opacity: 1, y: 0 }}
+        transition={{ duration: shouldReduceMotion ? 0.12 : 0.22, ease: 'easeOut' }}
+      >
+        <Paper withBorder radius="lg" p="md">
+          <Stack gap="xs" mb="md">
+            <Title order={2} size="h5">Torres de Controle Financeiro</Title>
+            <Text size="sm" c="dimmed">Comparativo de valores por status das contas no mês.</Text>
+          </Stack>
+
+          <Group align="end" justify="space-around" style={{ minHeight: 250 }}>
+            {torresData.map((item, idx) => {
+              const altura = item.valor === 0 ? 0 : Math.max((item.valor / maxTorre) * 180, 16)
+
+              return (
+                <Stack key={item.label} align="center" gap={8} style={{ flex: 1, maxWidth: 180 }}>
+                  <Text size="sm" fw={700}>{formatBRL(item.valor)}</Text>
+                  <Box
+                    style={{
+                      width: '100%',
+                      maxWidth: 72,
+                      minWidth: 56,
+                      height: 190,
+                      display: 'flex',
+                      alignItems: 'end',
+                    }}
+                  >
+                    <motion.div
+                      initial={shouldReduceMotion ? { opacity: 0 } : { opacity: 0, height: 0 }}
+                      animate={
+                        shouldReduceMotion
+                          ? { opacity: 1 }
+                          : { opacity: 1, height: altura }
+                      }
+                      transition={{
+                        duration: shouldReduceMotion ? 0.12 : 0.35,
+                        delay: shouldReduceMotion ? 0 : idx * 0.06,
+                        ease: 'easeOut',
+                      }}
+                      style={{
+                        width: '100%',
+                        height: shouldReduceMotion ? altura : undefined,
+                        background: `linear-gradient(180deg, ${item.cor}, ${item.cor}CC)`,
+                        borderRadius: '10px 10px 4px 4px',
+                        boxShadow: `0 10px 20px ${item.cor}33`,
+                      }}
+                    />
+                  </Box>
+                  <Text size="sm" fw={600}>{item.label}</Text>
+                </Stack>
+              )
+            })}
+          </Group>
+        </Paper>
+      </motion.section>
 
       {atrasadas.length > 0 && (
         <motion.section

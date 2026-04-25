@@ -23,8 +23,8 @@ const tabDirection: Record<string, number> = { login: -1, register: 1 }
 
 const formVariants = {
   enter: (dir: number) => ({ opacity: 0, x: dir * 40 }),
-  center: { opacity: 1, x: 0, transition: { duration: 0.25, ease: 'easeOut' } },
-  exit: (dir: number) => ({ opacity: 0, x: dir * -40, transition: { duration: 0.2, ease: 'easeIn' } }),
+  center: { opacity: 1, x: 0, transition: { duration: 0.25 } },
+  exit: (dir: number) => ({ opacity: 0, x: dir * -40, transition: { duration: 0.2 } }),
 }
 
 export default function Welcome() {
