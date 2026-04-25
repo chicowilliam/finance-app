@@ -1,5 +1,5 @@
 import { useLocation, useNavigate } from 'react-router-dom'
-import { Badge, Button, Group, Paper, Stack, Text, Title } from '@mantine/core'
+import { Badge, Burger, Button, Group, Paper, Stack, Text, Title } from '@mantine/core'
 import { useAuth } from '../hooks/useAuth'
 import { useContasContext } from '../context/ContasContext'
 import { formatBRL } from '../data/mockContas'
@@ -15,9 +15,11 @@ const pageTitles: Record<string, string> = {
 
 interface NavbarProps {
   onAddBill: () => void
+  sidebarOpened: boolean
+  onToggleSidebar: () => void
 }
 
-export default function Navbar({ onAddBill }: NavbarProps) {
+export default function Navbar({ onAddBill, sidebarOpened, onToggleSidebar }: NavbarProps) {
   const { pathname } = useLocation()
   const navigate = useNavigate()
   const { mode, logout } = useAuth()
@@ -35,12 +37,21 @@ export default function Navbar({ onAddBill }: NavbarProps) {
   return (
     <Paper component="header" withBorder radius={0} p="md">
       <Group justify="space-between" align="flex-start" gap="md">
-        <Stack gap={4}>
+        <Group gap="sm" align="flex-start">
+          <Burger
+            opened={sidebarOpened}
+            onClick={onToggleSidebar}
+            size="sm"
+            aria-label="Toggle sidebar"
+            mt={4}
+          />
+          <Stack gap={4}>
           <Text c="dimmed" size="sm">
             Dashboard {mode === 'guest' ? '• Convidado' : mode === 'user' ? '• Conta' : ''}
           </Text>
           <Title order={1} size="h2">{title}</Title>
-        </Stack>
+          </Stack>
+        </Group>
 
         <Group gap="sm" align="center">
           <Stack gap={2}>

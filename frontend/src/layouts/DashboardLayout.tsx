@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { Alert, AppShell, Modal } from '@mantine/core'
+import { useDisclosure } from '@mantine/hooks'
 import { Outlet } from 'react-router-dom'
 import Sidebar from '../components/Sidebar'
 import Navbar from '../components/Navbar'
@@ -12,6 +13,7 @@ export default function DashboardLayout() {
 	const [modalOpen, setModalOpen] = useState(false)
 	const contasState = useContas()
 	const [formError, setFormError] = useState<string | null>(null)
+	const [sidebarOpened, { toggle: toggleSidebar }] = useDisclosure(true)
 
 	async function handleAddConta(conta: Omit<Conta, 'id'>) {
 		try {
@@ -25,7 +27,14 @@ export default function DashboardLayout() {
 
 	return (
 		<ContasContext.Provider value={contasState}>
-			<AppShell navbar={{ width: 280, breakpoint: 'md' }} padding="lg">
+			<AppShell
+				navbar={{
+					width: 280,
+					breakpoint: 'md',
+					collapsed: { mobile: !sidebarOpened, desktop: !sidebarOpened },
+				}}
+				padding="lg"
+			>
 				<AppShell.Navbar
 					p={0}
 					style={{
@@ -36,7 +45,7 @@ export default function DashboardLayout() {
 					<Sidebar />
 				</AppShell.Navbar>
 				<AppShell.Main>
-					<Navbar onAddBill={() => setModalOpen(true)} />
+					<Navbar onAddBill={() => setModalOpen(true)} sidebarOpened={sidebarOpened} onToggleSidebar={toggleSidebar} />
 					<div style={{ paddingTop: '1rem' }}>
 						<Outlet />
 					</div>
