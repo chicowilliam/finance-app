@@ -23,6 +23,15 @@
   --panel-border: var(--color-border);
   --panel-shadow: var(--shadow-sm);
 
+  --skeleton-line-1: #e6ece8;
+  --skeleton-line-2: #f4f7f5;
+  --skeleton-card-bg: #ffffff;
+  --skeleton-card-border: #dde6e0;
+  --skeleton-soft-bg: #f6faf8;
+  --skeleton-soft-border: #e6eeea;
+  --skeleton-table-border: #e2e8f0;
+  --skeleton-table-row-border: #f1f5f9;
+
   --button-brand-solid-bg: var(--color-brand);
   --button-brand-solid-hover: var(--color-brand-strong);
   --button-brand-solid-border: var(--color-brand);
@@ -144,6 +153,15 @@
   --panel-border: var(--color-border);
   --panel-shadow: var(--shadow-md);
 
+  --skeleton-line-1: #24322c;
+  --skeleton-line-2: #2b3b34;
+  --skeleton-card-bg: #18211d;
+  --skeleton-card-border: #304039;
+  --skeleton-soft-bg: #1e2a24;
+  --skeleton-soft-border: #304039;
+  --skeleton-table-border: #304039;
+  --skeleton-table-row-border: #223029;
+
   --button-brand-solid-bg: var(--color-brand);
   --button-brand-solid-hover: var(--color-brand-strong);
   --button-brand-solid-border: var(--color-brand);
@@ -258,4 +276,18 @@ input,
 select,
 textarea {
   font: inherit;
+}
+
+:where(a, button, [role='button'], input, select, textarea):focus-visible {
+  outline: 2px solid var(--focus-ring-color);
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    scroll-behavior: auto !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
 }

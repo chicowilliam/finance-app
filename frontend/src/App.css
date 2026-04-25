@@ -7,7 +7,7 @@
 .skeleton-line {
 	height: 12px;
 	border-radius: 999px;
-	background: linear-gradient(90deg, #e6ece8 0%, #f4f7f5 45%, #e6ece8 100%);
+	background: linear-gradient(90deg, var(--skeleton-line-1) 0%, var(--skeleton-line-2) 45%, var(--skeleton-line-1) 100%);
 	background-size: 220% 100%;
 	animation: skeleton-shimmer 1.3s linear infinite;
 }
@@ -19,18 +19,18 @@
 }
 
 .skeleton-card {
-	border: 1px solid #dde6e0;
+	border: 1px solid var(--skeleton-card-border);
 	border-radius: 12px;
-	background: #ffffff;
+	background: var(--skeleton-card-bg);
 	padding: 12px;
 	display: grid;
 	gap: 10px;
 }
 
 .skeleton-section {
-	border: 1px solid #dde6e0;
+	border: 1px solid var(--skeleton-card-border);
 	border-radius: 12px;
-	background: #ffffff;
+	background: var(--skeleton-card-bg);
 	padding: 12px;
 }
 
@@ -45,8 +45,8 @@
 	gap: 8px;
 	padding: 8px;
 	border-radius: 8px;
-	background: #f6faf8;
-	border: 1px solid #e6eeea;
+	background: var(--skeleton-soft-bg);
+	border: 1px solid var(--skeleton-soft-border);
 }
 
 .skeleton-chip-row {
@@ -64,10 +64,10 @@
 .skeleton-table {
 	display: grid;
 	gap: 8px;
-	border: 1px solid #e2e8f0;
+	border: 1px solid var(--skeleton-table-border);
 	border-radius: 10px;
 	overflow: hidden;
-	background: #ffffff;
+	background: var(--skeleton-card-bg);
 }
 
 .skeleton-table-row {
@@ -75,7 +75,7 @@
 	grid-template-columns: 2fr 1fr 1fr 1fr 1fr;
 	gap: 10px;
 	padding: 12px;
-	border-bottom: 1px solid #f1f5f9;
+	border-bottom: 1px solid var(--skeleton-table-row-border);
 }
 
 .skeleton-table-row:last-child {
