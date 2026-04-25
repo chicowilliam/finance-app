@@ -1,15 +1,11 @@
 import { useRef, useState } from 'react'
 import { Navigate, useNavigate } from 'react-router-dom'
 import {
-  Button,
   Container,
   Group,
-  Paper,
-  PasswordInput,
   Stack,
   Tabs,
   Text,
-  TextInput,
   Title,
 } from '@mantine/core'
 import { useForm } from 'react-hook-form'
@@ -18,6 +14,9 @@ import { z } from 'zod'
 import { AnimatePresence, motion } from 'motion/react'
 import { toast } from 'sonner'
 import { useAuth } from '../hooks/useAuth'
+import AppButton from '../components/AppButton'
+import { AppInput, AppPasswordInput } from '../components/AppInput'
+import AppPanel from '../components/AppPanel'
 
 type Tab = 'login' | 'register'
 
@@ -93,10 +92,10 @@ export default function Welcome() {
 
   return (
     <Container size={520} py={36}>
-      <Paper withBorder shadow="sm" radius="lg" p="lg">
+      <AppPanel>
         <Stack gap="md">
           <div>
-            <Text c="teal" fw={700} size="xs" tt="uppercase">Finance App</Text>
+            <Text c="brand" fw={700} size="xs" tt="uppercase">Finance App</Text>
             <Title order={1} size="h2">Controle financeiro sem fricção</Title>
             <Text c="dimmed" mt={6}>Entre, crie sua conta ou continue como convidado para testar tudo agora.</Text>
           </div>
@@ -123,7 +122,7 @@ export default function Welcome() {
                     <Stack gap="sm">
                       <Title order={2} size="h4">Entrar na sua conta</Title>
 
-                      <TextInput
+                      <AppInput
                         label="Email"
                         type="email"
                         placeholder="voce@email.com"
@@ -131,16 +130,16 @@ export default function Welcome() {
                         {...loginForm.register('email')}
                       />
 
-                      <PasswordInput
+                      <AppPasswordInput
                         label="Senha"
                         placeholder="Sua senha"
                         error={loginForm.formState.errors.senha?.message}
                         {...loginForm.register('senha')}
                       />
 
-                      <Button type="submit" loading={loginForm.formState.isSubmitting}>
+                      <AppButton type="submit" loading={loginForm.formState.isSubmitting}>
                         Entrar
-                      </Button>
+                      </AppButton>
                     </Stack>
                   </form>
                 ) : (
@@ -148,14 +147,14 @@ export default function Welcome() {
                     <Stack gap="sm">
                       <Title order={2} size="h4">Criar nova conta</Title>
 
-                      <TextInput
+                      <AppInput
                         label="Nome"
                         placeholder="Seu nome"
                         error={registerForm.formState.errors.nome?.message}
                         {...registerForm.register('nome')}
                       />
 
-                      <TextInput
+                      <AppInput
                         label="Email"
                         type="email"
                         placeholder="voce@email.com"
@@ -163,23 +162,23 @@ export default function Welcome() {
                         {...registerForm.register('email')}
                       />
 
-                      <PasswordInput
+                      <AppPasswordInput
                         label="Senha"
                         placeholder="Mínimo 6 caracteres"
                         error={registerForm.formState.errors.senha?.message}
                         {...registerForm.register('senha')}
                       />
 
-                      <PasswordInput
+                      <AppPasswordInput
                         label="Confirmar senha"
                         placeholder="Repita a senha"
                         error={registerForm.formState.errors.confirmarSenha?.message}
                         {...registerForm.register('confirmarSenha')}
                       />
 
-                      <Button type="submit" loading={registerForm.formState.isSubmitting}>
+                      <AppButton type="submit" loading={registerForm.formState.isSubmitting}>
                         Criar conta
-                      </Button>
+                      </AppButton>
                     </Stack>
                   </form>
                 )}
@@ -188,11 +187,11 @@ export default function Welcome() {
           </div>
 
           <Group justify="space-between" align="center">
-            <Button variant="default" onClick={handleGuest}>Continuar como convidado</Button>
+            <AppButton appearance="outline" tone="neutral" onClick={handleGuest}>Continuar como convidado</AppButton>
             <Text size="xs" c="dimmed">Os dados de convidado ficam neste navegador.</Text>
           </Group>
         </Stack>
-      </Paper>
+      </AppPanel>
     </Container>
   )
 }

@@ -4,6 +4,7 @@ import { ActionIcon, Badge, Group, Pagination, Paper, Stack, Table, Text, Title 
 import { useContasContext } from '../context/ContasContext'
 import { formatBRL, formatData } from '../data/mockContas'
 import type { Conta, StatusConta } from '../data/mockContas'
+import AppPanel from '../components/AppPanel'
 import Loader from '../components/Loader'
 import { ChevronUp, ChevronDown, ChevronsUpDown } from '../lib/icons'
 import AppButton from '../components/AppButton'
@@ -104,7 +105,7 @@ export default function Contas() {
         ))}
       </Group>
 
-      <Paper withBorder radius="lg" p="sm">
+      <AppPanel p="sm">
         <Table highlightOnHover striped>
           <Table.Thead>
             <Table.Tr>
@@ -174,7 +175,7 @@ export default function Contas() {
             <Pagination total={totalPages} value={page} onChange={setPage} size="sm" />
           </Group>
         )}
-      </Paper>
+      </AppPanel>
     </Stack>
   )
 }
