@@ -1,8 +1,6 @@
 import { useState } from 'react'
 import {
   Avatar,
-  Button,
-  Card,
   Grid,
   Group,
   Stack,
@@ -12,6 +10,8 @@ import {
 } from '@mantine/core'
 import { Settings, Moon, Sun, UserCircle, Bell, Shield } from '../lib/icons'
 import { useTheme } from '../hooks/useTheme'
+import AppButton from '../components/AppButton'
+import AppPanel from '../components/AppPanel'
 
 export default function Configuracoes() {
   const { theme, setTheme } = useTheme()
@@ -27,7 +27,7 @@ export default function Configuracoes() {
 
       <Grid>
         <Grid.Col span={{ base: 12, md: 6 }}>
-          <Card withBorder radius="lg" shadow="sm">
+          <AppPanel>
             <Stack>
               <Title order={2} size="h5"><Group gap={8}><UserCircle size={18} strokeWidth={1.5} /> Perfil</Group></Title>
               <Group>
@@ -37,13 +37,13 @@ export default function Configuracoes() {
                   <Text size="sm" c="dimmed">william@email.com</Text>
                 </div>
               </Group>
-              <Button variant="default">Alterar foto</Button>
+              <AppButton appearance="outline" tone="neutral">Alterar foto</AppButton>
             </Stack>
-          </Card>
+          </AppPanel>
         </Grid.Col>
 
         <Grid.Col span={{ base: 12, md: 6 }}>
-          <Card withBorder radius="lg" shadow="sm">
+          <AppPanel>
             <Stack>
               <Title order={2} size="h5">
                 <Group gap={8}>{darkMode ? <Moon size={18} strokeWidth={1.5} /> : <Sun size={18} strokeWidth={1.5} />} Tema</Group>
@@ -55,11 +55,11 @@ export default function Configuracoes() {
               />
               <Text size="sm" c="dimmed">Tema aplicado globalmente no app.</Text>
             </Stack>
-          </Card>
+          </AppPanel>
         </Grid.Col>
 
         <Grid.Col span={{ base: 12, md: 6 }}>
-          <Card withBorder radius="lg" shadow="sm">
+          <AppPanel>
             <Stack>
               <Title order={2} size="h5"><Group gap={8}><Bell size={18} strokeWidth={1.5} /> Notificações</Group></Title>
               <Switch
@@ -69,19 +69,19 @@ export default function Configuracoes() {
               />
               <Text size="sm" c="dimmed">Configuração visual (sem persistência no servidor).</Text>
             </Stack>
-          </Card>
+          </AppPanel>
         </Grid.Col>
 
         <Grid.Col span={{ base: 12, md: 6 }}>
-          <Card withBorder radius="lg" shadow="sm">
+          <AppPanel>
             <Stack>
               <Title order={2} size="h5"><Group gap={8}><Shield size={18} strokeWidth={1.5} /> Conta</Group></Title>
               <Group>
-                <Button variant="default">Alterar senha</Button>
-                <Button variant="default">Gerenciar sessão</Button>
+                <AppButton appearance="outline" tone="neutral">Alterar senha</AppButton>
+                <AppButton appearance="outline" tone="neutral">Gerenciar sessão</AppButton>
               </Group>
             </Stack>
-          </Card>
+          </AppPanel>
         </Grid.Col>
       </Grid>
     </Stack>

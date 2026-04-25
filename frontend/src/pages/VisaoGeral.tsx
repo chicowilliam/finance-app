@@ -1,8 +1,9 @@
 import { useContasContext } from '../context/ContasContext'
 import { formatBRL, formatData } from '../data/mockContas'
-import { Box, Card, Group, List, Paper, SimpleGrid, Stack, Text, Title } from '@mantine/core'
+import { Box, Group, List, SimpleGrid, Stack, Text, Title } from '@mantine/core'
 import { AlertTriangle } from '../lib/icons'
 import { motion, useReducedMotion } from 'motion/react'
+import AppPanel from '../components/AppPanel'
 import Loader from '../components/Loader'
 
 export default function VisaoGeral() {
@@ -58,13 +59,13 @@ export default function VisaoGeral() {
               whileHover={shouldReduceMotion ? undefined : { y: -2 }}
               transition={{ duration: shouldReduceMotion ? 0.12 : 0.24, ease: 'easeOut' }}
             >
-              <Card withBorder radius="lg" shadow="sm" padding="md">
+              <AppPanel>
                 <Stack gap={4}>
                   <Text c="dimmed" size="sm">{c.label}</Text>
                   <Text fw={800} size="xl">{formatBRL(c.valor)}</Text>
                   <Text c={c.color} fw={600} size="sm">{c.qtd} conta{c.qtd !== 1 ? 's' : ''}</Text>
                 </Stack>
-              </Card>
+              </AppPanel>
             </motion.div>
           ))}
         </SimpleGrid>
@@ -75,7 +76,7 @@ export default function VisaoGeral() {
         animate={shouldReduceMotion ? { opacity: 1 } : { opacity: 1, y: 0 }}
         transition={{ duration: shouldReduceMotion ? 0.12 : 0.22, ease: 'easeOut' }}
       >
-        <Paper withBorder radius="lg" p="md">
+        <AppPanel>
           <Stack gap="xs" mb="md">
             <Title order={2} size="h5">Torres de Controle Financeiro</Title>
             <Text size="sm" c="dimmed">Comparativo de valores por status das contas no mês.</Text>
@@ -124,7 +125,7 @@ export default function VisaoGeral() {
               )
             })}
           </Group>
-        </Paper>
+        </AppPanel>
       </motion.section>
 
       {atrasadas.length > 0 && (
@@ -133,7 +134,7 @@ export default function VisaoGeral() {
           animate={shouldReduceMotion ? { opacity: 1 } : { opacity: 1, y: 0 }}
           transition={{ duration: shouldReduceMotion ? 0.12 : 0.22, ease: 'easeOut' }}
         >
-          <Paper withBorder radius="lg" p="md">
+          <AppPanel>
             <Group mb="sm"><AlertTriangle size={18} strokeWidth={1.5} /> <Title order={2} size="h5">Contas Atrasadas</Title></Group>
             <List spacing="xs">
             {atrasadas.map((c, idx) => (
@@ -154,7 +155,7 @@ export default function VisaoGeral() {
               </motion.div>
             ))}
             </List>
-          </Paper>
+          </AppPanel>
         </motion.section>
       )}
     </Stack>
