@@ -1,5 +1,6 @@
-import { useState } from 'react'
-import type { FormEvent } from 'react'
+import { Controller, useForm } from 'react-hook-form'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { z } from 'zod'
 import { Button, Group, NumberInput, Select, Stack, TextInput } from '@mantine/core'
 import type { Conta } from '../data/mockContas'
 
@@ -13,74 +14,95 @@ const categorias = [
   'Entretenimento', 'Transporte', 'Educação', 'Outros',
 ]
 
+// ── Schema Zod ───────────────────────────────────────────────
+const novaContaSchema = z.object({
+  descricao: z.string().min(2, 'Descrição obrigatória'),
+  valor: z
+    .number({ invalid_type_error: 'Informe um valor' })
+    .positive('Deve ser maior que zero'),
+  vencimento: z.string().min(1, 'Informe a data de vencimento'),
+  categoria: z.string().min(1, 'Selecione uma categoria'),
+})
+
+type NovaContaFields = z.infer<typeof novaContaSchema>
+
 export default function NovaContaForm({ onSubmit, onCancel }: NovaContaFormProps) {
-  const [descricao, setDescricao] = useState('')
-  const [valor, setValor] = useState<string | number>('')
-  const [vencimento, setVencimento] = useState('')
-  const [categoria, setCategoria] = useState(categorias[0])
+  const {
+    register,
+    handleSubmit,
+    control,
+    formState: { errors, isSubmitting },
+  } = useForm<NovaContaFields>({
+    resolver: zodResolver(novaContaSchema),
+    defaultValues: { categoria: categorias[0] },
+  })
 
-  function handleSubmit(e: FormEvent) {
-    e.preventDefault()
-
+  async function handleFormSubmit(data: NovaContaFields) {
     const hoje = new Date().toISOString().split('T')[0]
-    const status = vencimento < hoje ? 'atrasada' : 'a_vencer'
-
-    void onSubmit({
-      descricao,
-      valor: Number(valor),
-      vencimento,
-      status,
-      categoria,
-    })
+    const status = data.vencimento < hoje ? 'atrasada' : 'a_vencer'
+    await onSubmit({ ...data, status })
   }
 
-  const formValid = descricao.trim() && Number(valor) > 0 && vencimento
-
   return (
-    <form onSubmit={handleSubmit}>
+    <form onSubmit={handleSubmit(handleFormSubmit)}>
       <Stack gap="sm">
-      <TextInput
-        label="Descrição"
-        value={descricao}
-        onChange={e => setDescricao(e.currentTarget.value)}
-        placeholder="Ex: Aluguel, Internet..."
-        required
-      />
+        <TextInput
+          label="Descrição"
+          placeholder="Ex: Aluguel, Internet..."
+          error={errors.descricao?.message}
+          {...register('descricao')}
+        />
 
-      <NumberInput
-        label="Valor (R$)"
-        value={valor}
-        onChange={(value) => setValor(value)}
-        min={0.01}
-        step={0.01}
-        placeholder="0,00"
-        required
-      />
+        <Controller
+          name="valor"
+          control={control}
+          render={({ field }) => (
+            <NumberInput
+              label="Valor (R$)"
+              min={0.01}
+              step={0.01}
+              decimalScale={2}
+              placeholder="0,00"
+              error={errors.valor?.message}
+              value={field.value ?? ''}
+              onChange={(v) => field.onChange(typeof v === 'number' ? v : undefined)}
+            />
+          )}
+        />
 
-      <TextInput
-        label="Vencimento"
-        type="date"
-        value={vencimento}
-        onChange={e => setVencimento(e.currentTarget.value)}
-        required
-      />
+        <TextInput
+          label="Vencimento"
+          type="date"
+          error={errors.vencimento?.message}
+          {...register('vencimento')}
+        />
 
-      <Select
-        label="Categoria"
-        data={categorias}
-        value={categoria}
-        onChange={(value) => setCategoria(value ?? categorias[0])}
-      />
+        <Controller
+          name="categoria"
+          control={control}
+          render={({ field }) => (
+            <Select
+              label="Categoria"
+              data={categorias}
+              error={errors.categoria?.message}
+              value={field.value}
+              onChange={(v) => field.onChange(v ?? categorias[0])}
+            />
+          )}
+        />
 
-      <Group justify="flex-end" mt="xs">
-        <Button type="button" variant="default" onClick={onCancel}>
-          Cancelar
-        </Button>
-        <Button type="submit" disabled={!formValid}>
-          Adicionar
-        </Button>
-      </Group>
+        <Group justify="flex-end" mt="xs">
+          <Button type="button" variant="default" onClick={onCancel}>
+            Cancelar
+          </Button>
+          <Button type="submit" loading={isSubmitting}>
+            Adicionar
+          </Button>
+        </Group>
       </Stack>
     </form>
   )
 }
+
+
+
