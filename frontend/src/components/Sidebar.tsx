@@ -1,6 +1,6 @@
 import { NavLink, useLocation } from 'react-router-dom'
-import { Box, Divider, Group, NavLink as MantineNavLink, Stack, Text } from '@mantine/core'
-import { LayoutDashboard, List, CalendarDays, Bell, Wallet, Settings } from '../lib/icons'
+import { ActionIcon, Box, Divider, Group, NavLink as MantineNavLink, Stack, Text } from '@mantine/core'
+import { Bell, CalendarDays, LayoutDashboard, List, PanelLeftClose, Settings, Wallet } from '../lib/icons'
 
 const mainLinks = [
 	{ to: '/app',            label: 'Visão Geral',  icon: LayoutDashboard },
@@ -13,7 +13,13 @@ const bottomLinks = [
 	{ to: '/app/configuracoes', label: 'Configurações', icon: Settings },
 ]
 
-export default function Sidebar() {
+interface SidebarProps {
+	desktopOpened: boolean
+	onToggleDesktop: () => void
+	onNavClick: () => void
+}
+
+export default function Sidebar({ desktopOpened, onToggleDesktop, onNavClick }: SidebarProps) {
 	const { pathname } = useLocation()
 
 	const isActive = (to: string) => {
@@ -31,9 +37,21 @@ export default function Sidebar() {
 				flexDirection: 'column',
 			}}
 		>
-			<Group gap={8} mb="md" wrap="nowrap">
-				<Wallet size={20} strokeWidth={1.5} color="#f0faf6" />
-				<Text c="#f0faf6" fw={700} size="lg">FinanceApp</Text>
+			<Group gap={8} mb="md" wrap="nowrap" justify="space-between">
+				<Group gap={8} wrap="nowrap">
+					<Wallet size={20} strokeWidth={1.5} color="#f0faf6" />
+					<Text c="#f0faf6" fw={700} size="lg">FinanceApp</Text>
+				</Group>
+				{/* Botão de recolher — visível somente desktop */}
+				<ActionIcon
+					visibleFrom="md"
+					variant="subtle"
+					onClick={onToggleDesktop}
+					aria-label="Recolher menu"
+					style={{ color: 'rgba(240,250,246,0.6)' }}
+				>
+					<PanelLeftClose size={18} strokeWidth={1.8} />
+				</ActionIcon>
 			</Group>
 
 			<Stack gap={6}>
@@ -45,6 +63,7 @@ export default function Sidebar() {
 						label={l.label}
 						leftSection={<l.icon size={16} strokeWidth={1.5} />}
 						active={isActive(l.to)}
+						onClick={onNavClick}
 						styles={{
 							root: {
 								borderRadius: 10,
@@ -68,6 +87,7 @@ export default function Sidebar() {
 							label={l.label}
 							leftSection={<l.icon size={16} strokeWidth={1.5} />}
 							active={isActive(l.to)}
+							onClick={onNavClick}
 							styles={{
 								root: {
 									borderRadius: 10,

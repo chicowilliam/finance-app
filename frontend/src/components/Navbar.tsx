@@ -1,9 +1,9 @@
 import { useLocation, useNavigate } from 'react-router-dom'
-import { Badge, Burger, Button, Group, Paper, Stack, Text, Title } from '@mantine/core'
+import { ActionIcon, Badge, Button, Group, Paper, Stack, Text, Title } from '@mantine/core'
 import { useAuth } from '../hooks/useAuth'
 import { useContasContext } from '../context/ContasContext'
 import { formatBRL } from '../data/mockContas'
-import { Plus, LogOut } from '../lib/icons'
+import { LogOut, Menu, PanelLeftOpen, Plus } from '../lib/icons'
 
 const pageTitles: Record<string, string> = {
   '/app':            'Visão Geral',
@@ -15,11 +15,13 @@ const pageTitles: Record<string, string> = {
 
 interface NavbarProps {
   onAddBill: () => void
-  sidebarOpened: boolean
-  onToggleSidebar: () => void
+  mobileOpened: boolean
+  onToggleMobile: () => void
+  desktopOpened: boolean
+  onToggleDesktop: () => void
 }
 
-export default function Navbar({ onAddBill, sidebarOpened, onToggleSidebar }: NavbarProps) {
+export default function Navbar({ onAddBill, onToggleMobile, desktopOpened, onToggleDesktop }: NavbarProps) {
   const { pathname } = useLocation()
   const navigate = useNavigate()
   const { mode, logout } = useAuth()
@@ -38,13 +40,28 @@ export default function Navbar({ onAddBill, sidebarOpened, onToggleSidebar }: Na
     <Paper component="header" withBorder radius={0} p="md">
       <Group justify="space-between" align="flex-start" gap="md">
         <Group gap="sm" align="flex-start">
-          <Burger
-            opened={sidebarOpened}
-            onClick={onToggleSidebar}
-            size="sm"
-            aria-label="Toggle sidebar"
+          {/* Mobile: hamburger burger */}
+          <ActionIcon
+            hiddenFrom="md"
+            variant="subtle"
+            onClick={onToggleMobile}
             mt={4}
-          />
+            aria-label="Abrir menu"
+          >
+            <Menu size={20} strokeWidth={1.8} />
+          </ActionIcon>
+          {/* Desktop: reabrir sidebar quando recolhida */}
+          {!desktopOpened && (
+            <ActionIcon
+              visibleFrom="md"
+              variant="subtle"
+              onClick={onToggleDesktop}
+              mt={4}
+              aria-label="Expandir sidebar"
+            >
+              <PanelLeftOpen size={20} strokeWidth={1.8} />
+            </ActionIcon>
+          )}
           <Stack gap={4}>
           <Text c="dimmed" size="sm">
             Dashboard {mode === 'guest' ? '• Convidado' : mode === 'user' ? '• Conta' : ''}

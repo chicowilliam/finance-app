@@ -13,7 +13,8 @@ export default function DashboardLayout() {
 	const [modalOpen, setModalOpen] = useState(false)
 	const contasState = useContas()
 	const [formError, setFormError] = useState<string | null>(null)
-	const [sidebarOpened, { toggle: toggleSidebar }] = useDisclosure(true)
+	const [mobileOpened, { toggle: toggleMobile, close: closeMobile }] = useDisclosure(false)
+	const [desktopOpened, { toggle: toggleDesktop }] = useDisclosure(true)
 
 	async function handleAddConta(conta: Omit<Conta, 'id'>) {
 		try {
@@ -31,7 +32,7 @@ export default function DashboardLayout() {
 				navbar={{
 					width: 280,
 					breakpoint: 'md',
-					collapsed: { mobile: !sidebarOpened, desktop: !sidebarOpened },
+					collapsed: { mobile: !mobileOpened, desktop: !desktopOpened },
 				}}
 				padding="lg"
 			>
@@ -42,10 +43,20 @@ export default function DashboardLayout() {
 						borderInlineEnd: '1px solid rgba(255, 255, 255, 0.08)',
 					}}
 				>
-					<Sidebar />
+					<Sidebar
+						desktopOpened={desktopOpened}
+						onToggleDesktop={toggleDesktop}
+						onNavClick={closeMobile}
+					/>
 				</AppShell.Navbar>
 				<AppShell.Main>
-					<Navbar onAddBill={() => setModalOpen(true)} sidebarOpened={sidebarOpened} onToggleSidebar={toggleSidebar} />
+					<Navbar
+						onAddBill={() => setModalOpen(true)}
+						mobileOpened={mobileOpened}
+						onToggleMobile={toggleMobile}
+						desktopOpened={desktopOpened}
+						onToggleDesktop={toggleDesktop}
+					/>
 					<div style={{ paddingTop: '1rem' }}>
 						<Outlet />
 					</div>
