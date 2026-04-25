@@ -1,5 +1,6 @@
 import { useLocation, useNavigate } from 'react-router-dom'
-import { ActionIcon, Badge, Button, Group, Paper, Stack, Text, Title } from '@mantine/core'
+import { ActionIcon, Badge, Group, Paper, Stack, Text, Title } from '@mantine/core'
+import AppButton from './AppButton'
 import { useAuth } from '../hooks/useAuth'
 import { useContasContext } from '../context/ContasContext'
 import { formatBRL } from '../data/mockContas'
@@ -75,12 +76,12 @@ export default function Navbar({ onAddBill, onToggleMobile, desktopOpened, onTog
             <Text size="xs" c="dimmed">Total a vencer</Text>
             <Badge color="yellow" variant="light" size="lg">{formatBRL(totalAVencer)}</Badge>
           </Stack>
-          <Button leftSection={<Plus size={15} strokeWidth={2} />} onClick={onAddBill}>
+          <AppButton leftSection={<Plus size={15} strokeWidth={2} />} onClick={onAddBill}>
             Nova Conta
-          </Button>
-          <Button variant="default" leftSection={<LogOut size={15} strokeWidth={1.5} />} onClick={handleLogout}>
+          </AppButton>
+          <AppButton appearance="outline" tone="neutral" leftSection={<LogOut size={15} strokeWidth={1.5} />} onClick={handleLogout}>
             Sair
-          </Button>
+          </AppButton>
         </Group>
       </Group>
     </Paper>
