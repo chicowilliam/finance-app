@@ -1,8 +1,10 @@
 import { Controller, useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
-import { Button, Group, NumberInput, Select, Stack, TextInput } from '@mantine/core'
+import { Group, Stack } from '@mantine/core'
 import type { Conta } from '../data/mockContas'
+import AppButton from './AppButton'
+import { AppInput, AppNumberInput, AppSelect } from './AppInput'
 
 interface NovaContaFormProps {
   onSubmit: (conta: Omit<Conta, 'id'>) => Promise<void> | void
@@ -46,7 +48,7 @@ export default function NovaContaForm({ onSubmit, onCancel }: NovaContaFormProps
   return (
     <form onSubmit={handleSubmit(handleFormSubmit)}>
       <Stack gap="sm">
-        <TextInput
+        <AppInput
           label="Descrição"
           placeholder="Ex: Aluguel, Internet..."
           error={errors.descricao?.message}
@@ -57,7 +59,7 @@ export default function NovaContaForm({ onSubmit, onCancel }: NovaContaFormProps
           name="valor"
           control={control}
           render={({ field }) => (
-            <NumberInput
+            <AppNumberInput
               label="Valor (R$)"
               min={0.01}
               step={0.01}
@@ -70,7 +72,7 @@ export default function NovaContaForm({ onSubmit, onCancel }: NovaContaFormProps
           )}
         />
 
-        <TextInput
+        <AppInput
           label="Vencimento"
           type="date"
           error={errors.vencimento?.message}
@@ -81,7 +83,7 @@ export default function NovaContaForm({ onSubmit, onCancel }: NovaContaFormProps
           name="categoria"
           control={control}
           render={({ field }) => (
-            <Select
+            <AppSelect
               label="Categoria"
               data={categorias}
               error={errors.categoria?.message}
@@ -92,12 +94,12 @@ export default function NovaContaForm({ onSubmit, onCancel }: NovaContaFormProps
         />
 
         <Group justify="flex-end" mt="xs">
-          <Button type="button" variant="default" onClick={onCancel}>
+          <AppButton type="button" appearance="outline" tone="neutral" onClick={onCancel}>
             Cancelar
-          </Button>
-          <Button type="submit" loading={isSubmitting}>
+          </AppButton>
+          <AppButton type="submit" loading={isSubmitting}>
             Adicionar
-          </Button>
+          </AppButton>
         </Group>
       </Stack>
     </form>
