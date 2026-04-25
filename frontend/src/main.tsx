@@ -4,6 +4,7 @@ import { BrowserRouter } from 'react-router-dom'
 import { MantineProvider, createTheme } from '@mantine/core'
 import { Analytics } from '@vercel/analytics/react'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
+import { Toaster } from 'sonner'
 import { AuthProvider } from './context/AuthContext'
 import { ThemeProvider } from './context/ThemeContext'
 import { useTheme } from './hooks/useTheme'
@@ -32,6 +33,12 @@ function AppWithProviders() {
 	return (
 		<MantineProvider theme={mantineTheme} forceColorScheme={theme}>
 			<App />
+			<Toaster
+				position="top-right"
+				richColors
+				closeButton
+				duration={3000}
+			/>
 			<Analytics />
 		</MantineProvider>
 	)

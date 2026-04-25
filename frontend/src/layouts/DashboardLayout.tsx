@@ -1,7 +1,8 @@
 import { useState } from 'react'
-import { Alert, AppShell, Modal } from '@mantine/core'
+import { AppShell, Modal } from '@mantine/core'
 import { useDisclosure } from '@mantine/hooks'
 import { Outlet } from 'react-router-dom'
+import { toast } from 'sonner'
 import Sidebar from '../components/Sidebar'
 import Navbar from '../components/Navbar'
 import NovaContaForm from '../components/NovaContaForm'
@@ -12,17 +13,16 @@ import type { Conta } from '../data/mockContas'
 export default function DashboardLayout() {
 	const [modalOpen, setModalOpen] = useState(false)
 	const contasState = useContas()
-	const [formError, setFormError] = useState<string | null>(null)
 	const [mobileOpened, { toggle: toggleMobile, close: closeMobile }] = useDisclosure(false)
 	const [desktopOpened, { toggle: toggleDesktop }] = useDisclosure(true)
 
 	async function handleAddConta(conta: Omit<Conta, 'id'>) {
 		try {
-			setFormError(null)
 			await contasState.adicionar(conta)
+			toast.success('Conta adicionada com sucesso')
 			setModalOpen(false)
 		} catch (err) {
-			setFormError(err instanceof Error ? err.message : 'Erro ao salvar conta')
+			toast.error(err instanceof Error ? err.message : 'Erro ao salvar conta')
 		}
 	}
 
@@ -66,11 +66,6 @@ export default function DashboardLayout() {
 						onSubmit={handleAddConta}
 						onCancel={() => setModalOpen(false)}
 					/>
-								{formError && (
-								<Alert color="red" mt="sm">
-										{formError}
-								</Alert>
-								)}
 				</Modal>
 			</AppShell>
 		</ContasContext.Provider>

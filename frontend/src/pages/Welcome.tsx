@@ -1,7 +1,6 @@
 import { useRef, useState } from 'react'
 import { Navigate, useNavigate } from 'react-router-dom'
 import {
-  Alert,
   Button,
   Container,
   Group,
@@ -17,7 +16,7 @@ import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
 import { AnimatePresence, motion } from 'motion/react'
-import { AlertCircle } from '../lib/icons'
+import { toast } from 'sonner'
 import { useAuth } from '../hooks/useAuth'
 
 type Tab = 'login' | 'register'
@@ -52,7 +51,6 @@ type RegisterFields = z.infer<typeof registerSchema>
 export default function Welcome() {
   const [tab, setTab] = useState<Tab>('login')
   const prevTabRef = useRef<Tab>('login')
-  const [serverError, setServerError] = useState<string | null>(null)
 
   const navigate = useNavigate()
   const { isAuthenticated, enterGuest, login, register } = useAuth()
@@ -65,31 +63,31 @@ export default function Welcome() {
   function handleTabChange(value: Tab) {
     prevTabRef.current = tab
     setTab(value)
-    setServerError(null)
   }
 
   async function handleLogin(data: LoginFields) {
-    setServerError(null)
     try {
       await login(data.email, data.senha)
+      toast.success('Login realizado com sucesso')
       navigate('/app')
     } catch (err) {
-      setServerError(err instanceof Error ? err.message : 'Falha ao entrar')
+      toast.error(err instanceof Error ? err.message : 'Falha ao entrar')
     }
   }
 
   async function handleRegister(data: RegisterFields) {
-    setServerError(null)
     try {
       await register(data.nome, data.email, data.senha)
+      toast.success('Conta criada com sucesso')
       navigate('/app')
     } catch (err) {
-      setServerError(err instanceof Error ? err.message : 'Falha ao criar conta')
+      toast.error(err instanceof Error ? err.message : 'Falha ao criar conta')
     }
   }
 
   function handleGuest() {
     enterGuest()
+    toast.success('Modo convidado ativado')
     navigate('/app')
   }
 
@@ -140,12 +138,6 @@ export default function Welcome() {
                         {...loginForm.register('senha')}
                       />
 
-                      {serverError && (
-                        <Alert color="red" variant="light" icon={<AlertCircle size={16} strokeWidth={1.8} />}>
-                          {serverError}
-                        </Alert>
-                      )}
-
                       <Button type="submit" loading={loginForm.formState.isSubmitting}>
                         Entrar
                       </Button>
@@ -184,12 +176,6 @@ export default function Welcome() {
                         error={registerForm.formState.errors.confirmarSenha?.message}
                         {...registerForm.register('confirmarSenha')}
                       />
-
-                      {serverError && (
-                        <Alert color="red" variant="light" icon={<AlertCircle size={16} strokeWidth={1.8} />}>
-                          {serverError}
-                        </Alert>
-                      )}
 
                       <Button type="submit" loading={registerForm.formState.isSubmitting}>
                         Criar conta
