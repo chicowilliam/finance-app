@@ -1,11 +1,13 @@
 import { useState, useMemo } from 'react'
 import { AnimatePresence, motion, useReducedMotion } from 'motion/react'
-import { ActionIcon, Badge, Button, Group, Pagination, Paper, Select, Stack, Table, Text, Title } from '@mantine/core'
+import { ActionIcon, Badge, Group, Pagination, Paper, Stack, Table, Text, Title } from '@mantine/core'
 import { useContasContext } from '../context/ContasContext'
 import { formatBRL, formatData } from '../data/mockContas'
 import type { Conta, StatusConta } from '../data/mockContas'
 import Loader from '../components/Loader'
 import { ChevronUp, ChevronDown, ChevronsUpDown } from '../lib/icons'
+import AppButton from '../components/AppButton'
+import { AppSelect } from '../components/AppInput'
 
 type Filtro = StatusConta | 'todas'
 type SortKey = 'descricao' | 'categoria' | 'vencimento' | 'valor' | 'status'
@@ -35,8 +37,8 @@ export default function Contas() {
 
   if (loading) return <Loader variant="table" />
 
-  const statusColor: Record<StatusConta, string> = {
-    paga: 'green', a_vencer: 'yellow', atrasada: 'red',
+  const statusTone: Record<StatusConta, 'success' | 'warning' | 'danger'> = {
+    paga: 'success', a_vencer: 'warning', atrasada: 'danger',
   }
 
   function handleSort(col: SortKey) {
@@ -91,13 +93,13 @@ export default function Contas() {
             whileTap={shouldReduceMotion ? undefined : { scale: 0.98 }}
             transition={{ duration: 0.16, ease: 'easeOut' }}
           >
-            <Button
-              variant={filtro === f ? 'filled' : 'light'}
-              color={f === 'todas' ? 'gray' : statusColor[f as StatusConta]}
+            <AppButton
+              appearance={filtro === f ? 'solid' : 'soft'}
+              tone={f === 'todas' ? 'neutral' : statusTone[f as StatusConta]}
               onClick={() => handleFiltro(f)}
             >
               {f === 'todas' ? 'Todas' : STATUS_LABEL[f as StatusConta]}
-            </Button>
+            </AppButton>
           </motion.div>
         ))}
       </Group>
@@ -133,7 +135,7 @@ export default function Contas() {
                   <td>{c.categoria}</td>
                   <td>{formatData(c.vencimento)}</td>
                   <td><Text fw={700}>{formatBRL(c.valor)}</Text></td>
-                  <td><Badge color={statusColor[c.status]} variant="light">{STATUS_LABEL[c.status]}</Badge></td>
+                  <td><Badge color={c.status === 'paga' ? 'green' : c.status === 'a_vencer' ? 'yellow' : 'red'} variant="light">{STATUS_LABEL[c.status]}</Badge></td>
                 </motion.tr>
               ))}
             </AnimatePresence>
@@ -157,7 +159,7 @@ export default function Contas() {
           <Group justify="space-between" align="center" mt="md" px="xs">
             <Group gap="xs" align="center">
               <Text size="sm" c="dimmed">Linhas por página:</Text>
-              <Select
+              <AppSelect
                 size="xs"
                 w={70}
                 data={PAGE_SIZE_OPTIONS}
