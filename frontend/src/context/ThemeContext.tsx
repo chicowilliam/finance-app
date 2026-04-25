@@ -1,4 +1,4 @@
-import { createContext, useCallback, useMemo, useState } from 'react'
+import { createContext, useCallback, useEffect, useMemo, useState } from 'react'
 import type { ReactNode } from 'react'
 
 export type AppTheme = 'light' | 'dark'
@@ -18,6 +18,11 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
 		const stored = localStorage.getItem(THEME_KEY)
 		return stored === 'dark' ? 'dark' : 'light'
 	})
+
+	useEffect(() => {
+		document.documentElement.dataset.theme = theme
+		document.documentElement.style.colorScheme = theme
+	}, [theme])
 
 	const setTheme = useCallback((nextTheme: AppTheme) => {
 		setThemeState(nextTheme)

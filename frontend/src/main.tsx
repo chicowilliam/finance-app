@@ -22,9 +22,38 @@ const queryClient = new QueryClient({
 })
 
 const mantineTheme = createTheme({
-	primaryColor: 'teal',
+	primaryColor: 'brand',
+	colors: {
+		brand: [
+			'#edf8f3',
+			'#d7f1e5',
+			'#b0e2cc',
+			'#87d2b2',
+			'#65c39b',
+			'#4fb98d',
+			'#3cb38a',
+			'#278567',
+			'#1e7a5d',
+			'#165e48',
+		],
+	},
 	defaultRadius: 'md',
-	fontFamily: 'Segoe UI, Tahoma, Geneva, Verdana, sans-serif',
+	fontFamily: 'var(--font-sans)',
+	headings: {
+		fontFamily: 'var(--font-sans)',
+	},
+	radius: {
+		xs: 'var(--radius-sm)',
+		sm: 'var(--radius-sm)',
+		md: 'var(--radius-md)',
+		lg: 'var(--radius-lg)',
+		xl: 'var(--radius-xl)',
+	},
+	shadows: {
+		xs: 'var(--shadow-xs)',
+		sm: 'var(--shadow-sm)',
+		md: 'var(--shadow-md)',
+	},
 })
 
 function AppWithProviders() {
