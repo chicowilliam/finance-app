@@ -1,11 +1,12 @@
 import { useState } from 'react'
-import { AppShell, Modal } from '@mantine/core'
+import { AppShell } from '@mantine/core'
 import { useDisclosure } from '@mantine/hooks'
 import { Outlet } from 'react-router-dom'
 import { toast } from 'sonner'
 import Sidebar from '../components/Sidebar'
 import Navbar from '../components/Navbar'
 import NovaContaForm from '../components/NovaContaForm'
+import AppModal from '../components/AppModal'
 import { useContas } from '../hooks/useBills'
 import { ContasContext } from '../context/ContasContext'
 import type { Conta } from '../data/mockContas'
@@ -39,8 +40,8 @@ export default function DashboardLayout() {
 				<AppShell.Navbar
 					p={0}
 					style={{
-						backgroundColor: '#0f3d30',
-						borderInlineEnd: '1px solid rgba(255, 255, 255, 0.08)',
+						backgroundColor: 'var(--sidebar-bg)',
+						borderInlineEnd: '1px solid var(--sidebar-border)',
 					}}
 				>
 					<Sidebar
@@ -61,12 +62,12 @@ export default function DashboardLayout() {
 					</div>
 				</AppShell.Main>
 
-				<Modal opened={modalOpen} onClose={() => setModalOpen(false)} title="Nova Conta" centered>
+				<AppModal opened={modalOpen} onClose={() => setModalOpen(false)} title="Nova Conta">
 					<NovaContaForm
 						onSubmit={handleAddConta}
 						onCancel={() => setModalOpen(false)}
 					/>
-				</Modal>
+				</AppModal>
 			</AppShell>
 		</ContasContext.Provider>
 	)

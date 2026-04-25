@@ -1,11 +1,93 @@
 :root {
+  --font-sans: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+
   --color-bg: #f3f5f4;
   --color-surface: #ffffff;
+  --color-surface-muted: #f6faf8;
   --color-text: #1e2a24;
   --color-text-muted: #5a6b62;
   --color-border: #d8e1db;
+  --color-border-strong: #b8c7be;
   --color-brand: #1e7a5d;
   --color-brand-strong: #165e48;
+  --color-sidebar: #143328;
+  --color-sidebar-text: #d3ebdf;
+  --sidebar-bg: #143328;
+  --sidebar-border: rgba(255, 255, 255, 0.08);
+  --sidebar-icon: rgba(240, 250, 246, 0.66);
+  --sidebar-link-bg-active: rgba(255, 255, 255, 0.16);
+  --focus-ring-color: rgba(30, 122, 93, 0.22);
+
+  --panel-bg: var(--color-surface);
+  --panel-subtle-bg: var(--color-surface-muted);
+  --panel-border: var(--color-border);
+  --panel-shadow: var(--shadow-sm);
+
+  --button-brand-solid-bg: var(--color-brand);
+  --button-brand-solid-hover: var(--color-brand-strong);
+  --button-brand-solid-border: var(--color-brand);
+  --button-brand-solid-color: #f7fcfa;
+  --button-brand-soft-bg: rgba(30, 122, 93, 0.12);
+  --button-brand-soft-hover: rgba(30, 122, 93, 0.18);
+  --button-brand-soft-color: var(--color-brand-strong);
+  --button-brand-outline-border: rgba(30, 122, 93, 0.26);
+  --button-brand-outline-hover: rgba(30, 122, 93, 0.38);
+  --button-brand-outline-color: var(--color-brand-strong);
+
+  --button-neutral-solid-bg: #25332d;
+  --button-neutral-solid-hover: #1d2823;
+  --button-neutral-solid-border: #25332d;
+  --button-neutral-solid-color: #f5f8f6;
+  --button-neutral-soft-bg: var(--color-surface-muted);
+  --button-neutral-soft-hover: #e9f1ed;
+  --button-neutral-soft-color: var(--color-text);
+  --button-neutral-outline-border: var(--color-border);
+  --button-neutral-outline-hover: var(--color-border-strong);
+  --button-neutral-outline-color: var(--color-text);
+
+  --button-success-solid-bg: var(--status-paid);
+  --button-success-solid-hover: #166534;
+  --button-success-solid-border: var(--status-paid);
+  --button-success-solid-color: #f4fff8;
+  --button-success-soft-bg: var(--status-paid-bg);
+  --button-success-soft-hover: #dcfce7;
+  --button-success-soft-color: var(--status-paid);
+  --button-success-outline-border: rgba(21, 128, 61, 0.28);
+  --button-success-outline-hover: rgba(21, 128, 61, 0.4);
+  --button-success-outline-color: var(--status-paid);
+
+  --button-warning-solid-bg: var(--status-due);
+  --button-warning-solid-hover: #92400e;
+  --button-warning-solid-border: var(--status-due);
+  --button-warning-solid-color: #fffdf5;
+  --button-warning-soft-bg: var(--status-due-bg);
+  --button-warning-soft-hover: #fff3d6;
+  --button-warning-soft-color: var(--status-due);
+  --button-warning-outline-border: rgba(183, 121, 31, 0.32);
+  --button-warning-outline-hover: rgba(183, 121, 31, 0.44);
+  --button-warning-outline-color: var(--status-due);
+
+  --button-danger-solid-bg: var(--status-late);
+  --button-danger-solid-hover: #912018;
+  --button-danger-solid-border: var(--status-late);
+  --button-danger-solid-color: #fff7f6;
+  --button-danger-soft-bg: var(--status-late-bg);
+  --button-danger-soft-hover: #fde2e1;
+  --button-danger-soft-color: var(--status-late);
+  --button-danger-outline-border: rgba(180, 35, 24, 0.28);
+  --button-danger-outline-hover: rgba(180, 35, 24, 0.4);
+  --button-danger-outline-color: var(--status-late);
+
+  --input-bg: var(--color-surface);
+  --input-bg-disabled: #eef3f0;
+  --input-text: var(--color-text);
+  --input-placeholder: #70847a;
+  --input-border: var(--color-border);
+  --input-border-hover: var(--color-border-strong);
+  --input-border-focus: var(--color-brand);
+  --input-border-error: #c2410c;
+  --input-ring-error: rgba(194, 65, 12, 0.2);
+  --input-text-error: #9a3412;
 
   --status-paid: #15803d;
   --status-paid-bg: #ecfdf3;
@@ -22,9 +104,13 @@
   --radius-sm: 8px;
   --radius-md: 12px;
   --radius-lg: 16px;
+  --radius-xl: 24px;
+  --shadow-xs: 0 1px 2px rgba(18, 24, 21, 0.05);
   --shadow-sm: 0 1px 2px rgba(18, 24, 21, 0.08);
+  --shadow-md: 0 12px 32px rgba(18, 24, 21, 0.12);
 
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  color-scheme: light;
+  font-family: var(--font-sans);
   line-height: 1.5;
   font-weight: 400;
   color: var(--color-text);
@@ -33,6 +119,109 @@
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+:root[data-theme='dark'] {
+  --color-bg: #101714;
+  --color-surface: #18211d;
+  --color-surface-muted: #1e2a24;
+  --color-text: #edf5ef;
+  --color-text-muted: #9fb2a7;
+  --color-border: #304039;
+  --color-border-strong: #44574e;
+  --color-brand: #3cb38a;
+  --color-brand-strong: #2a8c6b;
+  --color-sidebar: #0d1c16;
+  --color-sidebar-text: #dff3e8;
+  --sidebar-bg: #0d1c16;
+  --sidebar-border: rgba(223, 243, 232, 0.14);
+  --sidebar-icon: rgba(223, 243, 232, 0.78);
+  --sidebar-link-bg-active: rgba(223, 243, 232, 0.2);
+  --focus-ring-color: rgba(60, 179, 138, 0.3);
+
+  --panel-bg: var(--color-surface);
+  --panel-subtle-bg: var(--color-surface-muted);
+  --panel-border: var(--color-border);
+  --panel-shadow: var(--shadow-md);
+
+  --button-brand-solid-bg: var(--color-brand);
+  --button-brand-solid-hover: var(--color-brand-strong);
+  --button-brand-solid-border: var(--color-brand);
+  --button-brand-solid-color: #08130f;
+  --button-brand-soft-bg: rgba(60, 179, 138, 0.16);
+  --button-brand-soft-hover: rgba(60, 179, 138, 0.24);
+  --button-brand-soft-color: #8de2bf;
+  --button-brand-outline-border: rgba(60, 179, 138, 0.34);
+  --button-brand-outline-hover: rgba(60, 179, 138, 0.5);
+  --button-brand-outline-color: #8de2bf;
+
+  --button-neutral-solid-bg: #dce7e1;
+  --button-neutral-solid-hover: #c7d5ce;
+  --button-neutral-solid-border: #dce7e1;
+  --button-neutral-solid-color: #101714;
+  --button-neutral-soft-bg: rgba(255, 255, 255, 0.06);
+  --button-neutral-soft-hover: rgba(255, 255, 255, 0.1);
+  --button-neutral-soft-color: var(--color-text);
+  --button-neutral-outline-border: var(--color-border);
+  --button-neutral-outline-hover: var(--color-border-strong);
+  --button-neutral-outline-color: var(--color-text);
+
+  --button-success-solid-bg: var(--status-paid);
+  --button-success-solid-hover: #22c55e;
+  --button-success-solid-border: var(--status-paid);
+  --button-success-solid-color: #07100b;
+  --button-success-soft-bg: var(--status-paid-bg);
+  --button-success-soft-hover: rgba(74, 222, 128, 0.24);
+  --button-success-soft-color: var(--status-paid);
+  --button-success-outline-border: rgba(74, 222, 128, 0.3);
+  --button-success-outline-hover: rgba(74, 222, 128, 0.45);
+  --button-success-outline-color: var(--status-paid);
+
+  --button-warning-solid-bg: var(--status-due);
+  --button-warning-solid-hover: #f59e0b;
+  --button-warning-solid-border: var(--status-due);
+  --button-warning-solid-color: #1d1406;
+  --button-warning-soft-bg: var(--status-due-bg);
+  --button-warning-soft-hover: rgba(251, 191, 36, 0.2);
+  --button-warning-soft-color: var(--status-due);
+  --button-warning-outline-border: rgba(251, 191, 36, 0.34);
+  --button-warning-outline-hover: rgba(251, 191, 36, 0.5);
+  --button-warning-outline-color: var(--status-due);
+
+  --button-danger-solid-bg: var(--status-late);
+  --button-danger-solid-hover: #ef4444;
+  --button-danger-solid-border: var(--status-late);
+  --button-danger-solid-color: #160807;
+  --button-danger-soft-bg: var(--status-late-bg);
+  --button-danger-soft-hover: rgba(248, 113, 113, 0.22);
+  --button-danger-soft-color: var(--status-late);
+  --button-danger-outline-border: rgba(248, 113, 113, 0.34);
+  --button-danger-outline-hover: rgba(248, 113, 113, 0.5);
+  --button-danger-outline-color: var(--status-late);
+
+  --input-bg: #121c18;
+  --input-bg-disabled: #0e1512;
+  --input-text: var(--color-text);
+  --input-placeholder: #7f988c;
+  --input-border: var(--color-border);
+  --input-border-hover: var(--color-border-strong);
+  --input-border-focus: var(--color-brand);
+  --input-border-error: #fb923c;
+  --input-ring-error: rgba(251, 146, 60, 0.24);
+  --input-text-error: #fdba74;
+
+  --status-paid: #4ade80;
+  --status-paid-bg: rgba(21, 128, 61, 0.18);
+  --status-due: #fbbf24;
+  --status-due-bg: rgba(183, 121, 31, 0.2);
+  --status-late: #f87171;
+  --status-late-bg: rgba(180, 35, 24, 0.2);
+
+  --shadow-xs: 0 1px 2px rgba(0, 0, 0, 0.28);
+  --shadow-sm: 0 4px 14px rgba(0, 0, 0, 0.2);
+  --shadow-md: 0 16px 40px rgba(0, 0, 0, 0.28);
+
+  color-scheme: dark;
 }
 
 * {
@@ -49,6 +238,7 @@ body,
 body {
   background: var(--color-bg);
   color: var(--color-text);
+  font-family: var(--font-sans);
 }
 
 h1,
@@ -57,4 +247,15 @@ h3,
 h4,
 p {
   margin: 0;
+}
+
+a {
+  color: inherit;
+}
+
+button,
+input,
+select,
+textarea {
+  font: inherit;
 }
