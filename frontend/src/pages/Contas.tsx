@@ -1,6 +1,6 @@
 import { useState, useMemo } from 'react'
 import { AnimatePresence, motion, useReducedMotion } from 'motion/react'
-import { ActionIcon, Badge, Group, Pagination, Paper, Stack, Table, Text, Title } from '@mantine/core'
+import { ActionIcon, Badge, Group, Pagination, Stack, Table, Text, Title } from '@mantine/core'
 import { useContasContext } from '../context/ContasContext'
 import { formatBRL, formatData } from '../data/mockContas'
 import type { Conta, StatusConta } from '../data/mockContas'
