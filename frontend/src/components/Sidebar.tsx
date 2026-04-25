@@ -30,7 +30,7 @@ export default function Sidebar({ onToggleDesktop, onNavClick }: SidebarProps) {
 		<Box
 			style={{
 				height: '100%',
-				padding: '24px 12px',
+				padding: 'var(--space-3) var(--space-2)',
 				background: 'transparent',
 				display: 'flex',
 				flexDirection: 'column',
@@ -38,8 +38,8 @@ export default function Sidebar({ onToggleDesktop, onNavClick }: SidebarProps) {
 		>
 			<Group gap={8} mb="md" wrap="nowrap" justify="space-between">
 				<Group gap={8} wrap="nowrap">
-					<Wallet size={20} strokeWidth={1.5} color="#f0faf6" />
-					<Text c="#f0faf6" fw={700} size="lg">FinanceApp</Text>
+					<Wallet size={20} strokeWidth={1.5} color="var(--sidebar-text)" />
+					<Text c="var(--sidebar-text)" fw={700} size="lg">FinanceApp</Text>
 				</Group>
 				{/* Botão de recolher — visível somente desktop */}
 				<ActionIcon
@@ -47,7 +47,7 @@ export default function Sidebar({ onToggleDesktop, onNavClick }: SidebarProps) {
 					variant="subtle"
 					onClick={onToggleDesktop}
 					aria-label="Recolher menu"
-					style={{ color: 'rgba(240,250,246,0.6)' }}
+					style={{ color: 'var(--sidebar-icon)' }}
 				>
 					<PanelLeftClose size={18} strokeWidth={1.8} />
 				</ActionIcon>
@@ -66,8 +66,8 @@ export default function Sidebar({ onToggleDesktop, onNavClick }: SidebarProps) {
 						styles={{
 							root: {
 								borderRadius: 10,
-								color: '#d3ebdf',
-								background: isActive(l.to) ? 'rgba(255,255,255,0.16)' : 'transparent',
+								color: 'var(--sidebar-text)',
+								background: isActive(l.to) ? 'var(--sidebar-link-bg-active)' : 'transparent',
 							},
 							label: { fontWeight: 600 },
 						}}
@@ -76,7 +76,7 @@ export default function Sidebar({ onToggleDesktop, onNavClick }: SidebarProps) {
 			</Stack>
 
 			<Box mt="auto" pt="md">
-				<Divider color="rgba(255,255,255,0.2)" mb="sm" />
+				<Divider color="var(--sidebar-border)" mb="sm" />
 				<Stack gap={6}>
 					{bottomLinks.map((l) => (
 						<MantineNavLink
@@ -90,8 +90,8 @@ export default function Sidebar({ onToggleDesktop, onNavClick }: SidebarProps) {
 							styles={{
 								root: {
 									borderRadius: 10,
-									color: '#d3ebdf',
-									background: isActive(l.to) ? 'rgba(255,255,255,0.16)' : 'transparent',
+									color: 'var(--sidebar-text)',
+									background: isActive(l.to) ? 'var(--sidebar-link-bg-active)' : 'transparent',
 								},
 								label: { fontWeight: 600 },
 							}}
