@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { contasService } from '../services/billService';
+import { contasKeys } from '../services/queryKeys';
 import { useAuth } from './useAuth';
 import type { Conta } from '../data/mockContas';
 
@@ -29,19 +30,45 @@ export function useContas() {
   const [guestContas, setGuestContas] = useState<Conta[]>(loadGuestContas);
 
   const query = useQuery({
-    queryKey: ['contas'],
+    queryKey: contasKeys.list('auth'),
     queryFn: () => contasService.listar(),
     enabled: !isGuest,
   });
 
   const adicionarMutation = useMutation({
     mutationFn: (conta: Omit<Conta, 'id'>) => contasService.criar(conta),
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: ['contas'] }),
+    onMutate: async (conta) => {
+      await queryClient.cancelQueries({ queryKey: contasKeys.all });
+      const previous = queryClient.getQueryData<Conta[]>(contasKeys.list('auth')) ?? [];
+      const optimistic: Conta = { ...conta, id: -Date.now() };
+      queryClient.setQueryData<Conta[]>(contasKeys.list('auth'), [...previous, optimistic]);
+      return { previous };
+    },
+    onError: (_err, _vars, ctx) => {
+      if (ctx?.previous) {
+        queryClient.setQueryData(contasKeys.list('auth'), ctx.previous);
+      }
+    },
+    onSettled: () => queryClient.invalidateQueries({ queryKey: contasKeys.all }),
   });
 
   const removerMutation = useMutation({
     mutationFn: (id: number) => contasService.remover(id),
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: ['contas'] }),
+    onMutate: async (id) => {
+      await queryClient.cancelQueries({ queryKey: contasKeys.all });
+      const previous = queryClient.getQueryData<Conta[]>(contasKeys.list('auth')) ?? [];
+      queryClient.setQueryData<Conta[]>(
+        contasKeys.list('auth'),
+        previous.filter((conta) => conta.id !== id),
+      );
+      return { previous };
+    },
+    onError: (_err, _vars, ctx) => {
+      if (ctx?.previous) {
+        queryClient.setQueryData(contasKeys.list('auth'), ctx.previous);
+      }
+    },
+    onSettled: () => queryClient.invalidateQueries({ queryKey: contasKeys.all }),
   });
 
   async function adicionar(conta: Omit<Conta, 'id'>): Promise<Conta> {
@@ -69,7 +96,7 @@ export function useContas() {
     contas: isGuest ? guestContas : (query.data ?? []),
     loading: isGuest ? false : query.isLoading,
     error: isGuest ? null : (query.error instanceof Error ? query.error.message : null),
-    carregar: () => queryClient.invalidateQueries({ queryKey: ['contas'] }),
+    carregar: () => queryClient.invalidateQueries({ queryKey: contasKeys.all }),
     adicionar,
     remover,
   };

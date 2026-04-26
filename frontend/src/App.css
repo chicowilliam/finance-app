@@ -25,6 +25,24 @@
 	padding: 12px;
 	display: grid;
 	gap: 10px;
+	position: relative;
+	overflow: hidden;
+}
+
+.skeleton-card__glow {
+	position: absolute;
+	inset: -25% auto auto -10%;
+	width: 70%;
+	height: 120px;
+	background: radial-gradient(circle, rgba(65, 174, 136, 0.18), transparent 65%);
+	filter: blur(8px);
+	pointer-events: none;
+}
+
+.skeleton-card--magic,
+.skeleton-section--magic {
+	box-shadow: 0 16px 32px rgba(15, 23, 20, 0.08);
+	backdrop-filter: blur(14px);
 }
 
 .skeleton-section {
@@ -32,6 +50,8 @@
 	border-radius: 12px;
 	background: var(--skeleton-card-bg);
 	padding: 12px;
+	position: relative;
+	overflow: hidden;
 }
 
 .skeleton-list {

@@ -1,10 +1,13 @@
 import { useContasContext } from '../context/ContasContext'
 import { formatBRL, formatData } from '../data/mockContas'
-import { Box, Group, List, SimpleGrid, Stack, Text, Title } from '@mantine/core'
-import { AlertTriangle } from '../lib/icons'
+import { Group, List, SimpleGrid, Stack, Text, Title } from '@mantine/core'
+import { AlertTriangle, Clock, Plus, Wallet } from '../lib/icons'
 import { motion, useReducedMotion } from 'motion/react'
+import { Bar, BarChart, CartesianGrid, Cell, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts'
 import AppPanel from '../components/AppPanel'
 import Loader from '../components/Loader'
+import MagicEmptyState from '../components/MagicEmptyState'
+import MagicStatCard from '../components/MagicStatCard'
 
 export default function VisaoGeral() {
   const { contas, loading } = useContasContext()
@@ -15,12 +18,41 @@ export default function VisaoGeral() {
   const pagas     = contas.filter(c => c.status === 'paga')
   const aVencer   = contas.filter(c => c.status === 'a_vencer')
   const atrasadas = contas.filter(c => c.status === 'atrasada')
+  const isEmpty = contas.length === 0
 
   const cards = [
-    { label: 'Total Pago', valor: pagas.reduce((s, c) => s + c.valor, 0), qtd: pagas.length, color: 'green' },
-    { label: 'A Vencer', valor: aVencer.reduce((s, c) => s + c.valor, 0), qtd: aVencer.length, color: 'yellow' },
-    { label: 'Atrasadas', valor: atrasadas.reduce((s, c) => s + c.valor, 0), qtd: atrasadas.length, color: 'red' },
-    { label: 'Total do Mês', valor: contas.reduce((s, c) => s + c.valor, 0), qtd: contas.length, color: 'teal' },
+    {
+      label: 'Total Pago',
+      valor: pagas.reduce((s, c) => s + c.valor, 0),
+      qtd: pagas.length,
+      tone: 'emerald' as const,
+      description: 'Liquidadas sem pendências',
+      icon: <Wallet size={18} strokeWidth={1.8} />,
+    },
+    {
+      label: 'A Vencer',
+      valor: aVencer.reduce((s, c) => s + c.valor, 0),
+      qtd: aVencer.length,
+      tone: 'amber' as const,
+      description: 'Precisam de atenção nos próximos dias',
+      icon: <Clock size={18} strokeWidth={1.8} />,
+    },
+    {
+      label: 'Atrasadas',
+      valor: atrasadas.reduce((s, c) => s + c.valor, 0),
+      qtd: atrasadas.length,
+      tone: 'rose' as const,
+      description: 'Exigem ação imediata',
+      icon: <AlertTriangle size={18} strokeWidth={1.8} />,
+    },
+    {
+      label: 'Total do Mês',
+      valor: contas.reduce((s, c) => s + c.valor, 0),
+      qtd: contas.length,
+      tone: 'teal' as const,
+      description: 'Panorama consolidado do período',
+      icon: <Plus size={18} strokeWidth={1.8} />,
+    },
   ]
 
   const torresData = [
@@ -28,11 +60,21 @@ export default function VisaoGeral() {
     { label: 'A vencer', valor: cards[1].valor, cor: '#f08c00' },
     { label: 'Atrasadas', valor: cards[2].valor, cor: '#e03131' },
   ]
-  const maxTorre = Math.max(...torresData.map((item) => item.valor), 1)
 
   return (
     <Stack>
       <Title order={1} size="h3">Visão Geral do Mês</Title>
+
+      {isEmpty ? (
+        <MagicEmptyState
+          eyebrow="Pronto para começar"
+          title="Nenhuma conta cadastrada ainda"
+          description="Assim que você criar a primeira conta, este painel mostra totais, alertas e indicadores com profundidade visual sem perder a clareza financeira."
+          icon={<Wallet size={28} strokeWidth={1.8} />}
+          primaryActionLabel="Criar primeira conta"
+          onPrimaryAction={() => window.dispatchEvent(new Event('finance:new-bill'))}
+        />
+      ) : null}
 
       <motion.div
         initial="hidden"
@@ -49,24 +91,17 @@ export default function VisaoGeral() {
       >
         <SimpleGrid cols={{ base: 1, md: 2, xl: 4 }} spacing="md">
           {cards.map(c => (
-            <motion.div
-              key={c.label}
-              layout
-              variants={{
-                hidden: shouldReduceMotion ? { opacity: 0 } : { opacity: 0, y: 10 },
-                visible: shouldReduceMotion ? { opacity: 1 } : { opacity: 1, y: 0 },
-              }}
-              whileHover={shouldReduceMotion ? undefined : { y: -2 }}
-              transition={{ duration: shouldReduceMotion ? 0.12 : 0.24, ease: 'easeOut' }}
-            >
-              <AppPanel>
-                <Stack gap={4}>
-                  <Text c="dimmed" size="sm">{c.label}</Text>
-                  <Text fw={800} size="xl">{formatBRL(c.valor)}</Text>
-                  <Text c={c.color} fw={600} size="sm">{c.qtd} conta{c.qtd !== 1 ? 's' : ''}</Text>
-                </Stack>
-              </AppPanel>
-            </motion.div>
+            <div key={c.label}>
+              <MagicStatCard
+                label={c.label}
+                value={c.valor}
+                quantity={c.qtd}
+                tone={c.tone}
+                description={c.description}
+                formatter={formatBRL}
+                icon={c.icon}
+              />
+            </div>
           ))}
         </SimpleGrid>
       </motion.div>
@@ -76,55 +111,40 @@ export default function VisaoGeral() {
         animate={shouldReduceMotion ? { opacity: 1 } : { opacity: 1, y: 0 }}
         transition={{ duration: shouldReduceMotion ? 0.12 : 0.22, ease: 'easeOut' }}
       >
-        <AppPanel>
+        <AppPanel className="magic-chart-panel">
           <Stack gap="xs" mb="md">
             <Title order={2} size="h5">Torres de Controle Financeiro</Title>
             <Text size="sm" c="dimmed">Comparativo de valores por status das contas no mês.</Text>
           </Stack>
 
-          <Group align="end" justify="space-around" style={{ minHeight: 250 }}>
-            {torresData.map((item, idx) => {
-              const altura = item.valor === 0 ? 0 : Math.max((item.valor / maxTorre) * 180, 16)
-
-              return (
-                <Stack key={item.label} align="center" gap={8} style={{ flex: 1, maxWidth: 180 }}>
-                  <Text size="sm" fw={700}>{formatBRL(item.valor)}</Text>
-                  <Box
-                    style={{
-                      width: '100%',
-                      maxWidth: 72,
-                      minWidth: 56,
-                      height: 190,
-                      display: 'flex',
-                      alignItems: 'end',
-                    }}
-                  >
-                    <motion.div
-                      initial={shouldReduceMotion ? { opacity: 0 } : { opacity: 0, height: 0 }}
-                      animate={
-                        shouldReduceMotion
-                          ? { opacity: 1 }
-                          : { opacity: 1, height: altura }
-                      }
-                      transition={{
-                        duration: shouldReduceMotion ? 0.12 : 0.35,
-                        delay: shouldReduceMotion ? 0 : idx * 0.06,
-                        ease: 'easeOut',
-                      }}
-                      style={{
-                        width: '100%',
-                        height: shouldReduceMotion ? altura : undefined,
-                        background: `linear-gradient(180deg, ${item.cor}, ${item.cor}CC)`,
-                        borderRadius: '10px 10px 4px 4px',
-                        boxShadow: `0 10px 20px ${item.cor}33`,
-                      }}
-                    />
-                  </Box>
-                  <Text size="sm" fw={600}>{item.label}</Text>
-                </Stack>
-              )
-            })}
-          </Group>
+          <div style={{ width: '100%', height: 260 }}>
+            <ResponsiveContainer>
+              <BarChart data={torresData} margin={{ top: 8, right: 12, left: 0, bottom: 4 }}>
+                <CartesianGrid strokeDasharray="3 3" stroke="rgba(148,163,184,0.25)" />
+                <XAxis dataKey="label" tick={{ fill: 'var(--color-text-muted)', fontSize: 12 }} axisLine={false} tickLine={false} />
+                <YAxis
+                  tick={{ fill: 'var(--color-text-muted)', fontSize: 12 }}
+                  axisLine={false}
+                  tickLine={false}
+                  tickFormatter={(value) => formatBRL(value as number)}
+                />
+                <Tooltip
+                  cursor={{ fill: 'rgba(148,163,184,0.08)' }}
+                  contentStyle={{
+                    borderRadius: 12,
+                    border: '1px solid var(--panel-border)',
+                    background: 'var(--panel-bg)',
+                  }}
+                  formatter={(value) => [formatBRL(Number(value ?? 0)), 'Total']}
+                />
+                <Bar dataKey="valor" radius={[10, 10, 4, 4]}>
+                  {torresData.map((entry) => (
+                    <Cell key={entry.label} fill={entry.cor} />
+                  ))}
+                </Bar>
+              </BarChart>
+            </ResponsiveContainer>
+          </div>
         </AppPanel>
       </motion.section>
 
@@ -134,7 +154,7 @@ export default function VisaoGeral() {
           animate={shouldReduceMotion ? { opacity: 1 } : { opacity: 1, y: 0 }}
           transition={{ duration: shouldReduceMotion ? 0.12 : 0.22, ease: 'easeOut' }}
         >
-          <AppPanel>
+            <AppPanel className="magic-alert-panel">
             <Group mb="sm"><AlertTriangle size={18} strokeWidth={1.5} /> <Title order={2} size="h5">Contas Atrasadas</Title></Group>
             <List spacing="xs">
             {atrasadas.map((c, idx) => (

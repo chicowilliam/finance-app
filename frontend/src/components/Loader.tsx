@@ -95,10 +95,11 @@ export default function Loader({ variant = 'dashboard' }: LoaderProps) {
 				{Array.from({ length: 4 }).map((_, idx) => (
 					<motion.div
 						key={idx}
-						className="skeleton-card"
+						className="skeleton-card skeleton-card--magic"
 						animate={pulse}
 						transition={pulseTransition}
 					>
+						<div className="skeleton-card__glow" />
 						<SkeletonLine className="w-20" />
 						<SkeletonLine className="w-28" />
 						<SkeletonLine className="w-16" />
@@ -106,7 +107,7 @@ export default function Loader({ variant = 'dashboard' }: LoaderProps) {
 				))}
 			</div>
 
-			<section className="skeleton-section">
+			<section className="skeleton-section skeleton-section--magic">
 				<SkeletonLine className="w-36 mb-12" />
 				<div className="skeleton-list">
 					{Array.from({ length: 4 }).map((_, idx) => (

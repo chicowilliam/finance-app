@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { AppShell } from '@mantine/core'
 import { useDisclosure } from '@mantine/hooks'
 import { Outlet } from 'react-router-dom'
@@ -26,6 +26,12 @@ export default function DashboardLayout() {
 			toast.error(err instanceof Error ? err.message : 'Erro ao salvar conta')
 		}
 	}
+
+	useEffect(() => {
+		const openModal = () => setModalOpen(true)
+		window.addEventListener('finance:new-bill', openModal)
+		return () => window.removeEventListener('finance:new-bill', openModal)
+	}, [])
 
 	return (
 		<ContasContext.Provider value={contasState}>

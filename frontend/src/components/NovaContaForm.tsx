@@ -3,8 +3,9 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
 import { Group, Stack } from '@mantine/core'
 import type { Conta } from '../data/mockContas'
+import { isOverdue } from '../utils/formatDate'
 import AppButton from './AppButton'
-import { AppInput, AppNumberInput, AppSelect } from './AppInput'
+import { AppCurrencyInput, AppInput, AppSelect } from './AppInput'
 
 interface NovaContaFormProps {
   onSubmit: (conta: Omit<Conta, 'id'>) => Promise<void> | void
@@ -40,8 +41,7 @@ export default function NovaContaForm({ onSubmit, onCancel }: NovaContaFormProps
   })
 
   async function handleFormSubmit(data: NovaContaFields) {
-    const hoje = new Date().toISOString().split('T')[0]
-    const status = data.vencimento < hoje ? 'atrasada' : 'a_vencer'
+    const status = isOverdue(data.vencimento) ? 'atrasada' : 'a_vencer'
     await onSubmit({ ...data, status })
   }
 
@@ -59,15 +59,12 @@ export default function NovaContaForm({ onSubmit, onCancel }: NovaContaFormProps
           name="valor"
           control={control}
           render={({ field }) => (
-            <AppNumberInput
+            <AppCurrencyInput
               label="Valor (R$)"
-              min={0.01}
-              step={0.01}
-              decimalScale={2}
               placeholder="0,00"
               error={errors.valor?.message}
-              value={field.value ?? ''}
-              onChange={(v) => field.onChange(typeof v === 'number' ? v : undefined)}
+              value={field.value ?? undefined}
+              onValueChange={({ floatValue }) => field.onChange(floatValue ?? undefined)}
             />
           )}
         />

@@ -1,3 +1,5 @@
+import { formatDateBR } from '../utils/formatDate'
+
 export type StatusConta = 'paga' | 'a_vencer' | 'atrasada'
 
 export interface Conta {
@@ -32,5 +34,4 @@ export const mockContas: Conta[] = [
 export const formatBRL = (v: number) =>
   v.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })
 
-export const formatData = (iso: string) =>
-  new Date(iso + 'T00:00:00').toLocaleDateString('pt-BR')
+export const formatData = (iso: string) => formatDateBR(iso)

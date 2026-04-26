@@ -8,6 +8,7 @@ import {
   type SelectProps,
   type TextInputProps,
 } from '@mantine/core'
+import { NumericFormat, type NumericFormatProps } from 'react-number-format'
 
 function getSharedInputStyles() {
   return {
@@ -72,4 +73,23 @@ export function AppSelect(props: SelectProps) {
 
 export function AppNumberInput(props: NumberInputProps) {
   return <NumberInput {...props} styles={getSharedInputStyles()} />
+}
+
+type AppCurrencyInputProps = Omit<NumericFormatProps<TextInputProps>, 'customInput'> &
+  Pick<TextInputProps, 'label' | 'error' | 'description' | 'required' | 'disabled' | 'placeholder'>
+
+export function AppCurrencyInput(props: AppCurrencyInputProps) {
+  return (
+    <NumericFormat
+      {...props}
+      customInput={TextInput}
+      thousandSeparator="."
+      decimalSeparator="," 
+      decimalScale={2}
+      fixedDecimalScale
+      allowNegative={false}
+      prefix="R$ "
+      styles={getSharedInputStyles()}
+    />
+  )
 }

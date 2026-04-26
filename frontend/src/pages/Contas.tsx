@@ -145,14 +145,15 @@ export default function Contas() {
 
         <AnimatePresence initial={false}>
           {pagina.length === 0 && (
-            <motion.p
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 0.16 }}
+            <motion.div
+              initial={shouldReduceMotion ? { opacity: 0 } : { opacity: 0, scale: 0.98 }}
+              animate={shouldReduceMotion ? { opacity: 1 } : { opacity: 1, scale: 1 }}
+              exit={shouldReduceMotion ? { opacity: 0 } : { opacity: 0, scale: 0.98 }}
+              transition={{ duration: shouldReduceMotion ? 0.12 : 0.22, ease: 'easeOut' }}
+              style={{ textAlign: 'center', padding: '40px 16px' }}
             >
-              <Text c="dimmed" ta="center" py="md">Nenhuma conta encontrada.</Text>
-            </motion.p>
+              <Text c="dimmed" size="sm" fw={500}>Nenhuma conta encontrada para o filtro selecionado.</Text>
+            </motion.div>
           )}
         </AnimatePresence>
 
