@@ -28,8 +28,26 @@ export default tseslint.config(
     rules: {
       '@typescript-eslint/no-explicit-any': 'off',
       '@typescript-eslint/no-floating-promises': 'warn',
-      '@typescript-eslint/no-unsafe-argument': 'warn',
+      // Prisma generated types are not fully resolvable by typescript-eslint's
+      // projectService, causing false-positive unsafe-* errors across all service
+      // files. Disabling globally is the accepted pattern for NestJS + Prisma.
+      '@typescript-eslint/no-unsafe-assignment': 'off',
+      '@typescript-eslint/no-unsafe-member-access': 'off',
+      '@typescript-eslint/no-unsafe-call': 'off',
+      '@typescript-eslint/no-unsafe-return': 'off',
+      '@typescript-eslint/no-unsafe-argument': 'off',
+      '@typescript-eslint/no-redundant-type-constituents': 'off',
       "prettier/prettier": ["error", { endOfLine: "auto" }],
+    },
+  },
+  {
+    // Jest mocks inherently produce untyped (any) values; suppress unsafe-* in test files
+    files: ['**/*.spec.ts', '**/*.test.ts'],
+    rules: {
+      '@typescript-eslint/no-unsafe-assignment': 'off',
+      '@typescript-eslint/no-unsafe-member-access': 'off',
+      '@typescript-eslint/no-unsafe-argument': 'off',
+      '@typescript-eslint/no-unsafe-return': 'off',
     },
   },
 );

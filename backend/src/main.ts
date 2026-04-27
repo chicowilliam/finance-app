@@ -23,13 +23,20 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
   const configuredOrigins = process.env.CORS_ORIGIN
-    ? process.env.CORS_ORIGIN.split(',').map((origin) => origin.trim()).filter(Boolean)
+    ? process.env.CORS_ORIGIN.split(',')
+        .map((origin) => origin.trim())
+        .filter(Boolean)
     : [];
   const defaultOrigins = ['http://localhost:5173', 'http://localhost:5174'];
-  const allowedOrigins = [...new Set([...defaultOrigins, ...configuredOrigins])];
+  const allowedOrigins = [
+    ...new Set([...defaultOrigins, ...configuredOrigins]),
+  ];
 
   app.enableCors({
-    origin: (origin, callback) => {
+    origin: (
+      origin: string | undefined,
+      callback: (err: Error | null, allow?: boolean) => void,
+    ) => {
       // Allow requests with no origin (server-to-server, curl, etc.)
       if (!origin) {
         callback(null, true);

@@ -8,7 +8,7 @@ import { UpdateContaDto } from './dto/update-conta.dto';
 export class ContasService {
   constructor(private prisma: PrismaService) {}
 
-  async findAll(userId: number): Promise<Conta[]> {
+  findAll(userId: number): Promise<Conta[]> {
     return this.prisma.conta.findMany({ where: { userId } });
   }
 
@@ -20,7 +20,7 @@ export class ContasService {
     return conta;
   }
 
-  async create(dto: CreateContaDto, userId: number): Promise<Conta> {
+  create(dto: CreateContaDto, userId: number): Promise<Conta> {
     return this.prisma.conta.create({ data: { ...dto, userId } });
   }
 
