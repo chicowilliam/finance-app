@@ -38,8 +38,8 @@ export default function Sidebar({ onToggleDesktop, onNavClick }: SidebarProps) {
 		>
 			<Group gap={8} mb="md" wrap="nowrap" justify="space-between">
 				<Group gap={8} wrap="nowrap">
-					<Wallet size={20} strokeWidth={1.5} color="var(--sidebar-text)" />
-					<Text c="var(--sidebar-text)" fw={700} size="lg">FinanceApp</Text>
+					<Wallet size={20} strokeWidth={1.5} color="var(--color-sidebar-text)" />
+					<Text c="var(--color-sidebar-text)" fw={700} size="lg">FinanceApp</Text>
 				</Group>
 				{/* Botão de recolher — visível somente desktop */}
 				<ActionIcon
@@ -66,10 +66,11 @@ export default function Sidebar({ onToggleDesktop, onNavClick }: SidebarProps) {
 						styles={{
 							root: {
 								borderRadius: 10,
-								color: 'var(--sidebar-text)',
+								color: 'var(--color-sidebar-text)',
 								background: isActive(l.to) ? 'var(--sidebar-link-bg-active)' : 'transparent',
 							},
-							label: { fontWeight: 600 },
+							label: { fontWeight: 600, opacity: 1, color: 'var(--color-sidebar-text)' },
+							section: { opacity: 1, color: 'var(--color-sidebar-text)' },
 						}}
 					/>
 				))}
@@ -90,10 +91,11 @@ export default function Sidebar({ onToggleDesktop, onNavClick }: SidebarProps) {
 							styles={{
 								root: {
 									borderRadius: 10,
-									color: 'var(--sidebar-text)',
+									color: 'var(--color-sidebar-text)',
 									background: isActive(l.to) ? 'var(--sidebar-link-bg-active)' : 'transparent',
 								},
-								label: { fontWeight: 600 },
+								label: { fontWeight: 600, opacity: 1, color: 'var(--color-sidebar-text)' },
+								section: { opacity: 1, color: 'var(--color-sidebar-text)' },
 							}}
 						/>
 					))}
