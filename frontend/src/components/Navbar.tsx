@@ -1,5 +1,5 @@
 import { useLocation, useNavigate } from 'react-router-dom'
-import { ActionIcon, Badge, Group, Paper, Stack, Text, Title } from '@mantine/core'
+import { ActionIcon, Group, Paper, Stack, Text, Title } from '@mantine/core'
 import { motion, useReducedMotion } from 'motion/react'
 import AppButton from './AppButton'
 import { useAuth } from '../hooks/useAuth'
@@ -33,6 +33,7 @@ export default function Navbar({ onAddBill, onToggleMobile, desktopOpened, onTog
   const totalAVencer = contas
     .filter(c => c.status === 'a_vencer' || c.status === 'atrasada')
     .reduce((sum, c) => sum + c.valor, 0)
+  const contasEmAberto = contas.filter(c => c.status !== 'paga').length
   const possuiContas = contas.length > 0
 
   function handleLogout() {
@@ -89,11 +90,14 @@ export default function Navbar({ onAddBill, onToggleMobile, desktopOpened, onTog
           </Stack>
         </Group>
 
-          <Group gap="sm" align="center" wrap="wrap" justify="flex-end">
-            <Stack gap={2} className="magic-topbar__metric">
-            <Text size="xs" c="dimmed">Total a vencer</Text>
-              <Badge color="yellow" variant="light" size="lg" radius="xl">{formatBRL(totalAVencer)}</Badge>
-          </Stack>
+          <Group gap="sm" align="center" wrap="wrap" justify="flex-end" className="magic-topbar__actions">
+            <Stack gap={1} className="magic-topbar__metric-card">
+              <Text size="10px" fw={700} c="dimmed" style={{ letterSpacing: '0.16em', textTransform: 'uppercase' }}>
+                Total a vencer
+              </Text>
+              <Text fw={600} className="magic-topbar__metric-value">{formatBRL(totalAVencer)}</Text>
+              <Text size="xs" c="dimmed">{contasEmAberto} conta(s) em aberto</Text>
+            </Stack>
             <AppButton className="magic-cta-button" leftSection={<Plus size={15} strokeWidth={2} />} onClick={onAddBill}>
             Nova Conta
           </AppButton>

@@ -51,6 +51,7 @@ export default function Sidebar({ onToggleDesktop, onNavClick }: SidebarProps) {
 				padding: 'var(--space-3) var(--space-2)',
 				display: 'flex',
 				flexDirection: 'column',
+				gap: 2,
 			}}
 		>
 			<Group gap={8} mb="sm" wrap="nowrap" justify="space-between">
@@ -140,13 +141,29 @@ export default function Sidebar({ onToggleDesktop, onNavClick }: SidebarProps) {
 						styles={{
 							root: {
 								borderRadius: 10,
+								paddingBlock: 11,
+								paddingInline: 10,
+								minHeight: 42,
 								border: '1px solid transparent',
 								color: 'var(--color-sidebar-text)',
 								background: isActive(l.to) ? 'rgba(255,255,255,0.08)' : 'transparent',
 								backdropFilter: isActive(l.to) ? 'blur(6px)' : 'none',
 								borderColor: isActive(l.to) ? 'rgba(255,255,255,0.12)' : 'transparent',
+								'@media (max-width: 48rem)': {
+									paddingBlock: 13,
+									paddingInline: 12,
+									minHeight: 48,
+								},
 							},
-							label: { fontWeight: isActive(l.to) ? 500 : 400, opacity: 1, color: isActive(l.to) ? 'var(--color-sidebar-text)' : 'var(--color-aluminum)' },
+							label: {
+								fontWeight: isActive(l.to) ? 500 : 400,
+								opacity: 1,
+								fontSize: '0.92rem',
+								color: isActive(l.to) ? 'var(--color-sidebar-text)' : 'var(--color-aluminum)',
+								'@media (max-width: 48rem)': {
+									fontSize: '1rem',
+								},
+							},
 							section: { opacity: 1, color: 'var(--color-sidebar-text)' },
 						}}
 					/>
@@ -181,13 +198,29 @@ export default function Sidebar({ onToggleDesktop, onNavClick }: SidebarProps) {
 							styles={{
 								root: {
 									borderRadius: 10,
+									paddingBlock: 11,
+									paddingInline: 10,
+									minHeight: 42,
 									border: '1px solid transparent',
 									color: 'var(--color-sidebar-text)',
 									background: isActive(l.to) ? 'rgba(255,255,255,0.08)' : 'transparent',
 									backdropFilter: isActive(l.to) ? 'blur(6px)' : 'none',
 									borderColor: isActive(l.to) ? 'rgba(255,255,255,0.12)' : 'transparent',
+									'@media (max-width: 48rem)': {
+										paddingBlock: 13,
+										paddingInline: 12,
+										minHeight: 48,
+									},
 								},
-								label: { fontWeight: isActive(l.to) ? 500 : 400, opacity: 1, color: isActive(l.to) ? 'var(--color-sidebar-text)' : 'var(--color-aluminum)' },
+								label: {
+									fontWeight: isActive(l.to) ? 500 : 400,
+									opacity: 1,
+									fontSize: '0.92rem',
+									color: isActive(l.to) ? 'var(--color-sidebar-text)' : 'var(--color-aluminum)',
+									'@media (max-width: 48rem)': {
+										fontSize: '1rem',
+									},
+								},
 								section: { opacity: 1, color: 'var(--color-sidebar-text)' },
 							}}
 						/>
