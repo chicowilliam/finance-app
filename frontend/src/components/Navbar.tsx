@@ -90,8 +90,8 @@ export default function Navbar({ onAddBill, onToggleMobile, desktopOpened, onTog
           </Stack>
         </Group>
 
-          <Group gap="sm" align="center" wrap="wrap" justify="flex-end" className="magic-topbar__actions">
-            <Stack gap={1} className="magic-topbar__metric-card">
+          <Group gap="sm" align="center" wrap="wrap" justify="flex-end" className={`magic-topbar__actions ${pathname === '/app/configuracoes' ? 'magic-topbar__actions--no-metric' : ''}`}>
+            <Stack gap={1} className={`magic-topbar__metric-card ${pathname === '/app/configuracoes' ? 'magic-topbar__metric-card--hidden' : ''}`}>
               <Text size="10px" fw={700} c="dimmed" style={{ letterSpacing: '0.16em', textTransform: 'uppercase' }}>
                 Total a vencer
               </Text>

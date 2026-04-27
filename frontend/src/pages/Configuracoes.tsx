@@ -32,7 +32,7 @@ export default function Configuracoes() {
       <Grid>
         <Grid.Col span={{ base: 12, md: 6 }}>
           <AppPanel>
-            <Stack>
+            <Stack align="flex-start">
               <Title order={2} size="h5"><Group gap={8}><UserCircle size={18} strokeWidth={1.5} /> Perfil</Group></Title>
               {isGuest ? (
                 <Text size="sm" c="dimmed">Você está no modo convidado. Crie uma conta para salvar seu perfil.</Text>
@@ -51,7 +51,7 @@ export default function Configuracoes() {
 
         <Grid.Col span={{ base: 12, md: 6 }}>
           <AppPanel>
-            <Stack>
+            <Stack align="flex-start">
               <Title order={2} size="h5">
                 <Group gap={8}>{darkMode ? <Moon size={18} strokeWidth={1.5} /> : <Sun size={18} strokeWidth={1.5} />} Tema</Group>
               </Title>
@@ -67,7 +67,7 @@ export default function Configuracoes() {
 
         <Grid.Col span={{ base: 12, md: 6 }}>
           <AppPanel>
-            <Stack>
+            <Stack align="flex-start">
               <Title order={2} size="h5"><Group gap={8}><Bell size={18} strokeWidth={1.5} /> Notificações</Group></Title>
               <Switch
                 checked={notifications}
@@ -81,7 +81,7 @@ export default function Configuracoes() {
 
         <Grid.Col span={{ base: 12, md: 6 }}>
           <AppPanel>
-            <Stack>
+            <Stack align="flex-start">
               <Title order={2} size="h5"><Group gap={8}><Shield size={18} strokeWidth={1.5} /> Conta</Group></Title>
               <AppButton
                 appearance="outline"

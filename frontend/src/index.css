@@ -339,6 +339,10 @@ label {
   row-gap: 10px;
 }
 
+.magic-topbar__metric-card--hidden {
+  display: none !important;
+}
+
 .magic-cta-button {
   background-image: linear-gradient(135deg, color-mix(in srgb, var(--color-brand) 92%, #ffffff 8%), color-mix(in srgb, var(--color-brand-strong) 90%, #0a2219 10%));
   box-shadow: 0 14px 28px rgba(30, 122, 93, 0.22);
@@ -501,6 +505,26 @@ textarea {
 :where(a, button, [role='button'], input, select, textarea):focus-visible {
   outline: 2px solid var(--focus-ring-color);
   outline-offset: 2px;
+}
+
+.sidebar-resize-handle {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 4px;
+  height: 100%;
+  cursor: col-resize;
+  background: transparent;
+  transition: background-color 0.2s ease;
+  z-index: 1000;
+}
+
+.sidebar-resize-handle:hover {
+  background-color: var(--color-brand);
+}
+
+.sidebar-resize-handle:active {
+  background-color: var(--color-brand-strong);
 }
 
 @media (prefers-reduced-motion: reduce) {
