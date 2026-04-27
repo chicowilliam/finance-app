@@ -359,6 +359,34 @@ body {
     var(--panel-bg);
 }
 
+/* In light mode, avoid glassmorphism/transparency that reduces readability. */
+:root:not([data-theme='dark']) .magic-topbar {
+  background: var(--panel-bg);
+  border-color: var(--panel-border);
+  box-shadow: var(--shadow-sm);
+  backdrop-filter: none;
+}
+
+:root:not([data-theme='dark']) .magic-topbar__metric {
+  background: var(--panel-subtle-bg);
+  border-color: var(--panel-border);
+  backdrop-filter: none;
+}
+
+:root:not([data-theme='dark']) .magic-empty-state,
+:root:not([data-theme='dark']) .magic-stat-card,
+:root:not([data-theme='dark']) .magic-chart-panel,
+:root:not([data-theme='dark']) .magic-alert-panel {
+  background: var(--panel-bg);
+  border-color: var(--panel-border);
+}
+
+:root:not([data-theme='dark']) .magic-stat-card__icon {
+  background: var(--panel-subtle-bg);
+  border-color: var(--panel-border);
+  box-shadow: none;
+}
+
 h1,
 h2,
 h3,

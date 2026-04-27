@@ -184,6 +184,7 @@ export default function VisaoGeral() {
             </List>
           </AppPanel>
         </motion.section>
+      )}
       </>
       )}
     </Stack>

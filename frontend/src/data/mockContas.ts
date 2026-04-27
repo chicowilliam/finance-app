@@ -1,4 +1,5 @@
 import { formatDateBR } from '../utils/formatDate'
+import type { Conta } from '../types/Bill'
 
 // Re-export canonical types so legacy imports still resolve
 export type { StatusConta, Conta } from '../types/Bill'
