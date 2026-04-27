@@ -1,6 +1,6 @@
 import { useState, useMemo } from 'react'
 import { AnimatePresence, motion, useReducedMotion } from 'motion/react'
-import { ActionIcon, Badge, Group, Pagination, Stack, Table, Text, Title } from '@mantine/core'
+import { ActionIcon, Badge, Group, Pagination, ScrollArea, Stack, Table, Text, Title } from '@mantine/core'
 import { useContasContext } from '../context/ContasContext'
 import { formatBRL } from '../utils/formatCurrency'
 import { formatData } from '../data/mockContas'
@@ -110,8 +110,9 @@ export default function Contas() {
         ))}
       </Group>
 
-      <AppPanel p="sm">
-        <Table highlightOnHover striped>
+      <AppPanel p={0}>
+        <ScrollArea>
+        <Table highlightOnHover striped style={{ minWidth: 600 }}>
           <Table.Thead>
             <Table.Tr>
               {cols.map(({ key, label }) => (
@@ -147,6 +148,7 @@ export default function Contas() {
             </AnimatePresence>
           </Table.Tbody>
         </Table>
+        </ScrollArea>
 
         <AnimatePresence initial={false}>
           {pagina.length === 0 && (

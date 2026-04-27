@@ -257,6 +257,24 @@ body {
   background: var(--color-bg);
   color: var(--color-text);
   font-family: var(--font-sans);
+  /* Previne overscroll "bounce" no iOS que parece quebrado em apps */
+  overscroll-behavior: none;
+  /* Garante padding seguro para notch/home bar do iPhone */
+  padding-top: env(safe-area-inset-top);
+  padding-bottom: env(safe-area-inset-bottom);
+  padding-left: env(safe-area-inset-left);
+  padding-right: env(safe-area-inset-right);
+}
+
+/* Remove 300ms tap delay em mobile */
+a,
+button,
+[role='button'],
+input,
+select,
+textarea,
+label {
+  touch-action: manipulation;
 }
 
 .magic-topbar {
