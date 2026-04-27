@@ -6,14 +6,14 @@ import {
   Min,
   Matches,
 } from 'class-validator';
-import type { StatusConta } from '../entities/conta.entity';
+import { StatusConta } from '../../prisma/prisma-client';
 
 export class CreateContaDto {
   @IsString()
   @IsNotEmpty()
   descricao: string;
 
-  @IsNumber()
+  @IsNumber({ maxDecimalPlaces: 2 })
   @Min(0.01)
   valor: number;
 

@@ -1,4 +1,4 @@
-export type StatusConta = 'paga' | 'a_vencer' | 'atrasada';
+export { StatusConta } from '../../prisma/prisma-client';
 
 export class Conta {
   id: number;
@@ -6,6 +6,6 @@ export class Conta {
   descricao: string;
   valor: number;
   vencimento: string;
-  status: StatusConta;
+  status: string;
   categoria: string;
 }

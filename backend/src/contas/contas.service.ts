@@ -25,7 +25,15 @@ export class ContasService {
   }
 
   async createMany(dtos: CreateContaDto[], userId: number): Promise<Conta[]> {
-    return Promise.all(dtos.map((dto) => this.create(dto, userId)));
+    await this.prisma.conta.createMany({
+      data: dtos.map((dto) => ({ ...dto, userId })),
+    });
+    // createMany doesn’t return records — re-fetch the newly inserted rows
+    return this.prisma.conta.findMany({
+      where: { userId },
+      orderBy: { id: 'desc' },
+      take: dtos.length,
+    });
   }
 
   async update(

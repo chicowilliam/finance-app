@@ -7,6 +7,7 @@ import {
   UseGuards,
   Request,
 } from '@nestjs/common';
+import { Throttle, SkipThrottle } from '@nestjs/throttler';
 import { AuthService } from './auth.service';
 import { JwtAuthGuard } from './jwt-auth.guard';
 import { UpgradeFromGuestDto } from './dto/upgrade-from-guest.dto';
@@ -40,17 +41,20 @@ interface AuthRequest {
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
+  @Throttle({ default: { limit: 5, ttl: 60_000 } })
   @Post('register')
   register(@Body() dto: RegisterDto) {
     return this.authService.register(dto.nome, dto.email, dto.senha);
   }
 
+  @Throttle({ default: { limit: 10, ttl: 60_000 } })
   @Post('login')
   @HttpCode(HttpStatus.OK)
   login(@Body() dto: LoginDto) {
     return this.authService.login(dto.email, dto.senha);
   }
 
+  @SkipThrottle()
   @UseGuards(JwtAuthGuard)
   @Post('upgrade-from-guest')
   @HttpCode(HttpStatus.OK)

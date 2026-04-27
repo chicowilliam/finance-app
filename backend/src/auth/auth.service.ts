@@ -21,13 +21,16 @@ export class AuthService {
 
   async login(email: string, senha: string) {
     const user = await this.usersService.findByEmail(email);
+    // Use a same generic message to prevent user enumeration (OWASP A07)
+    const invalidCredentials = new UnauthorizedException('E-mail ou senha inválidos');
+
     if (!user) {
-      throw new UnauthorizedException('Usuário não encontrado');
+      throw invalidCredentials;
     }
 
     const valid = await bcrypt.compare(senha, user.passwordHash);
     if (!valid) {
-      throw new UnauthorizedException('Senha incorreta');
+      throw invalidCredentials;
     }
 
     const payload = { sub: user.id, email: user.email };

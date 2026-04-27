@@ -10,6 +10,12 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+enum StatusConta {
+  paga
+  a_vencer
+  atrasada
+}
+
 model User {
   id           Int     @id @default(autoincrement())
   nome         String
@@ -19,12 +25,12 @@ model User {
 }
 
 model Conta {
-  id         Int    @id @default(autoincrement())
+  id         Int         @id @default(autoincrement())
   userId     Int
   descricao  String
   valor      Float
   vencimento String
-  status     String
+  status     StatusConta
   categoria  String
-  user       User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user       User        @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
