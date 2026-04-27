@@ -37,6 +37,24 @@ export default function Contas() {
   const { contas, loading } = useContasContext()
   const shouldReduceMotion = useReducedMotion()
 
+  // Hooks must all be called before any early return (Rules of Hooks)
+  const filtrada = useMemo(
+    () => (filtro === 'todas' ? contas : contas.filter(c => c.status === filtro)),
+    [contas, filtro],
+  )
+
+  const ordenada = useMemo(() => {
+    if (!sortKey) return filtrada
+    return [...filtrada].sort((a, b) => {
+      const av = a[sortKey as keyof Conta]
+      const bv = b[sortKey as keyof Conta]
+      const cmp = typeof av === 'number' && typeof bv === 'number'
+        ? av - bv
+        : String(av).localeCompare(String(bv), 'pt-BR')
+      return sortDir === 'asc' ? cmp : -cmp
+    })
+  }, [filtrada, sortKey, sortDir])
+
   if (loading) return <Loader variant="table" />
 
   const statusTone: Record<StatusConta, 'success' | 'warning' | 'danger'> = {
@@ -57,23 +75,6 @@ export default function Contas() {
     setFiltro(f)
     setPage(1)
   }
-
-  const filtrada = useMemo(
-    () => (filtro === 'todas' ? contas : contas.filter(c => c.status === filtro)),
-    [contas, filtro],
-  )
-
-  const ordenada = useMemo(() => {
-    if (!sortKey) return filtrada
-    return [...filtrada].sort((a, b) => {
-      const av = a[sortKey as keyof Conta]
-      const bv = b[sortKey as keyof Conta]
-      const cmp = typeof av === 'number' && typeof bv === 'number'
-        ? av - bv
-        : String(av).localeCompare(String(bv), 'pt-BR')
-      return sortDir === 'asc' ? cmp : -cmp
-    })
-  }, [filtrada, sortKey, sortDir])
 
   const totalPages = Math.max(1, Math.ceil(ordenada.length / pageSize))
   const pagina = ordenada.slice((page - 1) * pageSize, page * pageSize)
