@@ -1,17 +1,9 @@
-import { createContext, useCallback, useEffect, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import type { ReactNode } from 'react'
-
-export type AppTheme = 'light' | 'dark'
-
-interface ThemeContextValue {
-	theme: AppTheme
-	setTheme: (nextTheme: AppTheme) => void
-	toggleTheme: () => void
-}
+import { ThemeContext } from './ThemeStateContext'
+import type { AppTheme } from './ThemeStateContext'
 
 const THEME_KEY = 'finance.theme'
-
-export const ThemeContext = createContext<ThemeContextValue | null>(null)
 
 export function ThemeProvider({ children }: { children: ReactNode }) {
 	const [theme, setThemeState] = useState<AppTheme>(() => {
