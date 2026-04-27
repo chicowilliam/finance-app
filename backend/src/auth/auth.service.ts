@@ -22,7 +22,9 @@ export class AuthService {
   async login(email: string, senha: string) {
     const user = await this.usersService.findByEmail(email);
     // Use a same generic message to prevent user enumeration (OWASP A07)
-    const invalidCredentials = new UnauthorizedException('E-mail ou senha inválidos');
+    const invalidCredentials = new UnauthorizedException(
+      'E-mail ou senha inválidos',
+    );
 
     if (!user) {
       throw invalidCredentials;

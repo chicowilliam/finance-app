@@ -21,7 +21,6 @@
   },
   "homepage": "https://github.com/chicowilliam/finance-app#readme",
   "devDependencies": {
-    "concurrently": "^9.2.1",
     "prisma": "^6.19.3"
   },
   "dependencies": {
