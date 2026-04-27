@@ -3,7 +3,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { contasService } from '../services/billService';
 import { contasKeys } from '../services/queryKeys';
 import { useAuth } from './useAuth';
-import type { Conta } from '../data/mockContas';
+import type { Conta } from '../types/Bill';
 
 const GUEST_CONTAS_KEY = 'finance.guest.contas';
 

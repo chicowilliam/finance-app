@@ -1,5 +1,5 @@
 import { createContext, useContext } from 'react';
-import type { Conta } from '../data/mockContas';
+import type { Conta } from '../types/Bill';
 
 interface ContasContextType {
   contas: Conta[];

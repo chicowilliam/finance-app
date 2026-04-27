@@ -1,15 +1,12 @@
 import { formatDateBR } from '../utils/formatDate'
 
-export type StatusConta = 'paga' | 'a_vencer' | 'atrasada'
+// Re-export canonical types so legacy imports still resolve
+export type { StatusConta, Conta } from '../types/Bill'
 
-export interface Conta {
-  id: number
-  descricao: string
-  valor: number
-  vencimento: string
-  status: StatusConta
-  categoria: string
-}
+// Re-export formatBRL so legacy imports still resolve
+export { formatBRL } from '../utils/formatCurrency'
+
+export const formatData = (iso: string) => formatDateBR(iso)
 
 const hoje = new Date()
 const addDias = (n: number) => {
@@ -30,8 +27,3 @@ export const mockContas: Conta[] = [
   { id: 9,  descricao: 'Seguro Residencial', valor: 145.00,  vencimento: addDias(-15), status: 'paga',      categoria: 'Moradia'       },
   { id: 10, descricao: 'Telefone',           valor: 89.90,   vencimento: addDias(-8),  status: 'paga',      categoria: 'Serviços'      },
 ]
-
-export const formatBRL = (v: number) =>
-  v.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })
-
-export const formatData = (iso: string) => formatDateBR(iso)

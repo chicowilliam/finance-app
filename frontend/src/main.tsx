@@ -8,6 +8,7 @@ import { Toaster } from 'sonner'
 import { AuthProvider } from './context/AuthContext'
 import { ThemeProvider } from './context/ThemeContext'
 import { useTheme } from './hooks/useTheme'
+import { ErrorBoundary } from './components/ErrorBoundary'
 import '@mantine/core/styles.css'
 import './index.css'
 import App from './App'
@@ -73,8 +74,13 @@ function AppWithProviders() {
 	)
 }
 
-createRoot(document.getElementById('root')!).render(
+const rootElement = document.getElementById('root')
+if (!rootElement) {
+  throw new Error('Elemento #root não encontrado no DOM. Verifique o index.html.')
+}
+createRoot(rootElement).render(
 <StrictMode>
+<ErrorBoundary>
 <BrowserRouter>
 <QueryClientProvider client={queryClient}>
 <AuthProvider>
@@ -84,5 +90,6 @@ createRoot(document.getElementById('root')!).render(
 </AuthProvider>
 </QueryClientProvider>
 </BrowserRouter>
+</ErrorBoundary>
 </StrictMode>,
 )

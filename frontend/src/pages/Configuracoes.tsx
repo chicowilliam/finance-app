@@ -8,15 +8,19 @@ import {
   Text,
   Title,
 } from '@mantine/core'
-import { Settings, Moon, Sun, UserCircle, Bell, Shield } from '../lib/icons'
+import { Settings, Moon, Sun, UserCircle, Bell, Shield, LogOut } from '../lib/icons'
 import { useTheme } from '../hooks/useTheme'
+import { useAuth } from '../hooks/useAuth'
 import AppButton from '../components/AppButton'
 import AppPanel from '../components/AppPanel'
 
 export default function Configuracoes() {
   const { theme, setTheme } = useTheme()
+  const { mode, logout } = useAuth()
   const [notifications, setNotifications] = useState(true)
   const darkMode = theme === 'dark'
+
+  const isGuest = mode === 'guest'
 
   return (
     <Stack gap="md">
@@ -30,14 +34,17 @@ export default function Configuracoes() {
           <AppPanel>
             <Stack>
               <Title order={2} size="h5"><Group gap={8}><UserCircle size={18} strokeWidth={1.5} /> Perfil</Group></Title>
-              <Group>
-                <Avatar size="lg" radius="xl" color="teal">W</Avatar>
-                <div>
-                  <Text fw={700}>William Costa</Text>
-                  <Text size="sm" c="dimmed">william@email.com</Text>
-                </div>
-              </Group>
-              <AppButton appearance="outline" tone="neutral">Alterar foto</AppButton>
+              {isGuest ? (
+                <Text size="sm" c="dimmed">Você está no modo convidado. Crie uma conta para salvar seu perfil.</Text>
+              ) : (
+                <Group>
+                  <Avatar size="lg" radius="xl" color="teal">U</Avatar>
+                  <div>
+                    <Text fw={700}>Usuário autenticado</Text>
+                    <Text size="sm" c="dimmed">Conta ativa</Text>
+                  </div>
+                </Group>
+              )}
             </Stack>
           </AppPanel>
         </Grid.Col>
@@ -76,10 +83,13 @@ export default function Configuracoes() {
           <AppPanel>
             <Stack>
               <Title order={2} size="h5"><Group gap={8}><Shield size={18} strokeWidth={1.5} /> Conta</Group></Title>
-              <Group>
-                <AppButton appearance="outline" tone="neutral">Alterar senha</AppButton>
-                <AppButton appearance="outline" tone="neutral">Gerenciar sessão</AppButton>
-              </Group>
+              <AppButton
+                appearance="outline"
+                tone="danger"
+                onClick={logout}
+              >
+                <Group gap={6}><LogOut size={16} strokeWidth={1.8} /> Sair da conta</Group>
+              </AppButton>
             </Stack>
           </AppPanel>
         </Grid.Col>

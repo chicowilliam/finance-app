@@ -1,5 +1,5 @@
 import { useContasContext } from '../context/ContasContext'
-import { formatBRL } from '../data/mockContas'
+import { formatBRL } from '../utils/formatCurrency'
 import styles from './Calendario.module.css'
 
 export default function Calendario() {

@@ -4,7 +4,7 @@ import { motion, useReducedMotion } from 'motion/react'
 import AppButton from './AppButton'
 import { useAuth } from '../hooks/useAuth'
 import { useContasContext } from '../context/ContasContext'
-import { formatBRL } from '../data/mockContas'
+import { formatBRL } from '../utils/formatCurrency'
 import { LogOut, Menu, PanelLeftOpen, Plus } from '../lib/icons'
 
 const pageTitles: Record<string, string> = {

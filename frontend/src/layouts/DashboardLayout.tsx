@@ -9,7 +9,7 @@ import NovaContaForm from '../components/NovaContaForm'
 import AppModal from '../components/AppModal'
 import { useContas } from '../hooks/useBills'
 import { ContasContext } from '../context/ContasContext'
-import type { Conta } from '../data/mockContas'
+import type { Conta } from '../types/Bill'
 
 export default function DashboardLayout() {
 	const [modalOpen, setModalOpen] = useState(false)

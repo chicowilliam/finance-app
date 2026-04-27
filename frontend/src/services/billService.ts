@@ -1,5 +1,5 @@
 import { get, postAuth, put, del } from './api';
-import type { Conta } from '../data/mockContas';
+import type { Conta } from '../types/Bill';
 
 export const contasService = {
   listar: () => get<Conta[]>('/contas'),

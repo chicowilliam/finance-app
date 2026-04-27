@@ -2,8 +2,9 @@ import { useState, useMemo } from 'react'
 import { AnimatePresence, motion, useReducedMotion } from 'motion/react'
 import { ActionIcon, Badge, Group, Pagination, Stack, Table, Text, Title } from '@mantine/core'
 import { useContasContext } from '../context/ContasContext'
-import { formatBRL, formatData } from '../data/mockContas'
-import type { Conta, StatusConta } from '../data/mockContas'
+import { formatBRL } from '../utils/formatCurrency'
+import { formatData } from '../data/mockContas'
+import type { Conta, StatusConta } from '../types/Bill'
 import AppPanel from '../components/AppPanel'
 import Loader from '../components/Loader'
 import { ChevronUp, ChevronDown, ChevronsUpDown } from '../lib/icons'
@@ -57,7 +58,10 @@ export default function Contas() {
     setPage(1)
   }
 
-  const filtrada = filtro === 'todas' ? contas : contas.filter(c => c.status === filtro)
+  const filtrada = useMemo(
+    () => (filtro === 'todas' ? contas : contas.filter(c => c.status === filtro)),
+    [contas, filtro],
+  )
 
   const ordenada = useMemo(() => {
     if (!sortKey) return filtrada

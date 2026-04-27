@@ -1,5 +1,6 @@
 import { useContasContext } from '../context/ContasContext'
-import { formatBRL, formatData } from '../data/mockContas'
+import { formatBRL } from '../utils/formatCurrency'
+import { formatData } from '../data/mockContas'
 import { Group, List, SimpleGrid, Stack, Text, Title } from '@mantine/core'
 import { AlertTriangle, Clock, Plus, Wallet } from '../lib/icons'
 import { motion, useReducedMotion } from 'motion/react'
@@ -74,8 +75,8 @@ export default function VisaoGeral() {
           primaryActionLabel="Criar primeira conta"
           onPrimaryAction={() => window.dispatchEvent(new Event('finance:new-bill'))}
         />
-      ) : null}
-
+      ) : (
+      <>
       <motion.div
         initial="hidden"
         animate="visible"
@@ -91,7 +92,13 @@ export default function VisaoGeral() {
       >
         <SimpleGrid cols={{ base: 1, md: 2, xl: 4 }} spacing="md">
           {cards.map(c => (
-            <div key={c.label}>
+            <motion.div
+              key={c.label}
+              variants={{
+                hidden: { opacity: 0, y: 10 },
+                visible: { opacity: 1, y: 0, transition: { duration: 0.22, ease: 'easeOut' } },
+              }}
+            >
               <MagicStatCard
                 label={c.label}
                 value={c.valor}
@@ -101,7 +108,7 @@ export default function VisaoGeral() {
                 formatter={formatBRL}
                 icon={c.icon}
               />
-            </div>
+            </motion.div>
           ))}
         </SimpleGrid>
       </motion.div>
@@ -177,6 +184,7 @@ export default function VisaoGeral() {
             </List>
           </AppPanel>
         </motion.section>
+      </>
       )}
     </Stack>
   )

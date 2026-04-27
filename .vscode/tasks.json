@@ -11,6 +11,397 @@
 				"status",
 				"--short"
 			]
+		},
+		{
+			"label": "backend-build-check",
+			"type": "shell",
+			"command": "npm",
+			"args": [
+				"-C",
+				"backend",
+				"run",
+				"build"
+			],
+			"isBackground": false
+		},
+		{
+			"label": "backend-install-clean",
+			"type": "shell",
+			"command": "npm",
+			"args": [
+				"-C",
+				"backend",
+				"install",
+				"--no-audit",
+				"--no-fund",
+				"--progress=false"
+			],
+			"isBackground": false
+		},
+		{
+			"label": "backend-install-nest-direct",
+			"type": "shell",
+			"command": "npm",
+			"args": [
+				"-C",
+				"backend",
+				"install",
+				"@nestjs/common@11.1.19",
+				"@nestjs/core@11.1.19",
+				"@nestjs/platform-express@11.1.19",
+				"@nestjs/jwt@11.0.1",
+				"@nestjs/passport@11.0.5",
+				"@nestjs/mapped-types@2.1.0",
+				"--no-audit",
+				"--no-fund",
+				"--progress=false"
+			],
+			"isBackground": false
+		},
+		{
+			"label": "backend-build-check-2",
+			"type": "shell",
+			"command": "npm",
+			"args": [
+				"-C",
+				"backend",
+				"run",
+				"build"
+			],
+			"isBackground": false
+		},
+		{
+			"label": "backend-install-nest-direct-2",
+			"type": "shell",
+			"command": "npm",
+			"args": [
+				"-C",
+				"backend",
+				"install",
+				"@nestjs/common@11.1.19",
+				"@nestjs/core@11.1.19",
+				"@nestjs/platform-express@11.1.19",
+				"@nestjs/jwt@11.0.1",
+				"@nestjs/passport@11.0.5",
+				"@nestjs/mapped-types@2.1.0",
+				"--no-audit",
+				"--no-fund",
+				"--progress=false",
+				"--loglevel=info"
+			],
+			"isBackground": false
+		},
+		{
+			"label": "backend-build-final-check",
+			"type": "shell",
+			"command": "npm",
+			"args": [
+				"-C",
+				"backend",
+				"run",
+				"build"
+			],
+			"isBackground": false
+		},
+		{
+			"label": "backend-repair-prisma-runtime",
+			"type": "shell",
+			"command": "npm",
+			"args": [
+				"-C",
+				"backend",
+				"install",
+				"prisma@6.19.3",
+				"@prisma/client@6.19.3",
+				"--no-audit",
+				"--no-fund",
+				"--progress=false"
+			],
+			"isBackground": false
+		},
+		{
+			"label": "backend-build-final-check-2",
+			"type": "shell",
+			"command": "npm",
+			"args": [
+				"-C",
+				"backend",
+				"run",
+				"build"
+			],
+			"isBackground": false
+		},
+		{
+			"label": "backend-build-final-check-3",
+			"type": "shell",
+			"command": "npm",
+			"args": [
+				"-C",
+				"backend",
+				"run",
+				"build"
+			],
+			"isBackground": false
+		},
+		{
+			"label": "backend-start-dev-check",
+			"type": "shell",
+			"command": "npm",
+			"args": [
+				"-C",
+				"backend",
+				"run",
+				"start:dev"
+			],
+			"isBackground": true
+		},
+		{
+			"label": "frontend-build-magic-ui-pass",
+			"type": "shell",
+			"command": "npm",
+			"args": [
+				"-C",
+				"frontend",
+				"run",
+				"build"
+			],
+			"isBackground": false,
+			"group": "build"
+		},
+		{
+			"label": "build-frontend-final",
+			"type": "shell",
+			"command": "npm",
+			"args": [
+				"-C",
+				"frontend",
+				"run",
+				"build"
+			],
+			"group": "build"
+		},
+		{
+			"label": "install-frontend-missing-libs",
+			"type": "shell",
+			"command": "npm",
+			"args": [
+				"-C",
+				"frontend",
+				"install",
+				"date-fns",
+				"recharts",
+				"react-number-format",
+				"--save",
+				"--no-audit",
+				"--no-fund",
+				"--progress=false"
+			],
+			"group": "build"
+		},
+		{
+			"label": "check-frontend-libs",
+			"type": "shell",
+			"command": "npm",
+			"args": [
+				"-C",
+				"frontend",
+				"ls",
+				"date-fns",
+				"recharts",
+				"react-number-format",
+				"--depth=0"
+			],
+			"group": "build"
+		},
+		{
+			"label": "repair-datefns-install",
+			"type": "shell",
+			"command": "powershell",
+			"args": [
+				"-NoProfile",
+				"-Command",
+				"Remove-Item -Recurse -Force frontend/node_modules/date-fns -ErrorAction SilentlyContinue; npm -C frontend install date-fns@4.1.0 --save --force --no-audit --no-fund --progress=false"
+			],
+			"group": "build"
+		},
+		{
+			"label": "check-datefns-installed",
+			"type": "shell",
+			"command": "npm",
+			"args": [
+				"-C",
+				"frontend",
+				"ls",
+				"date-fns",
+				"--depth=0"
+			],
+			"group": "build"
+		},
+		{
+			"label": "install-datefns-v2",
+			"type": "shell",
+			"command": "powershell",
+			"args": [
+				"-NoProfile",
+				"-Command",
+				"Remove-Item -Recurse -Force frontend/node_modules/date-fns -ErrorAction SilentlyContinue; npm -C frontend install date-fns@2.30.0 --save --no-audit --no-fund --progress=false"
+			],
+			"group": "build"
+		},
+		{
+			"label": "check-datefns-v2",
+			"type": "shell",
+			"command": "npm",
+			"args": [
+				"-C",
+				"frontend",
+				"ls",
+				"date-fns",
+				"--depth=0"
+			],
+			"group": "build"
+		},
+		{
+			"label": "build-frontend-after-fixes",
+			"type": "shell",
+			"command": "npm",
+			"args": [
+				"-C",
+				"frontend",
+				"run",
+				"build"
+			],
+			"group": "build"
+		},
+		{
+			"label": "build-backend-after-fixes",
+			"type": "shell",
+			"command": "npm",
+			"args": [
+				"-C",
+				"backend",
+				"run",
+				"build"
+			],
+			"group": "build"
+		},
+		{
+			"label": "git-status-short-now",
+			"type": "shell",
+			"command": "git",
+			"args": [
+				"status",
+				"--short"
+			],
+			"group": "build"
+		},
+		{
+			"label": "git-status-all-now",
+			"type": "shell",
+			"command": "git",
+			"args": [
+				"status",
+				"--short",
+				"-uall"
+			],
+			"group": "build"
+		},
+		{
+			"label": "git-status-after-frontend-commit-attempt",
+			"type": "shell",
+			"command": "git",
+			"args": [
+				"status",
+				"--short"
+			],
+			"group": "build"
+		},
+		{
+			"label": "git-add-frontend-batch",
+			"type": "shell",
+			"command": "git",
+			"args": [
+				"add",
+				"frontend/package.json",
+				"frontend/package-lock.json",
+				"frontend/src/App.css",
+				"frontend/src/components/AppInput.tsx",
+				"frontend/src/components/CountUpValue.tsx",
+				"frontend/src/components/Loader.tsx",
+				"frontend/src/components/MagicEmptyState.tsx",
+				"frontend/src/components/MagicStatCard.tsx",
+				"frontend/src/components/Navbar.tsx",
+				"frontend/src/components/NovaContaForm.tsx",
+				"frontend/src/components/PageTransition.tsx",
+				"frontend/src/data/mockContas.ts",
+				"frontend/src/hooks/useBills.ts",
+				"frontend/src/index.css",
+				"frontend/src/layouts/DashboardLayout.tsx",
+				"frontend/src/pages/Alertas.tsx",
+				"frontend/src/pages/Contas.tsx",
+				"frontend/src/pages/VisaoGeral.tsx",
+				"frontend/src/services/queryKeys.ts",
+				"frontend/src/utils/formatDate.ts"
+			],
+			"group": "build"
+		},
+		{
+			"label": "git-commit-frontend-batch",
+			"type": "shell",
+			"command": "git",
+			"args": [
+				"commit",
+				"-m",
+				"feat(frontend): add premium dashboard UX and data-layer improvements"
+			],
+			"group": "build"
+		},
+		{
+			"label": "git-add-backend-batch",
+			"type": "shell",
+			"command": "git",
+			"args": [
+				"add",
+				"backend/package.json",
+				"backend/package-lock.json",
+				"backend/src/prisma/prisma-client.ts",
+				"backend/src/prisma/prisma.service.ts",
+				"backend/src/contas/contas.service.ts",
+				"backend/src/users/users.service.ts"
+			],
+			"group": "build"
+		},
+		{
+			"label": "git-commit-backend-batch",
+			"type": "shell",
+			"command": "git",
+			"args": [
+				"commit",
+				"-m",
+				"fix(backend): resolve prisma client typing for nest build"
+			],
+			"group": "build"
+		},
+		{
+			"label": "git-status-post-commits",
+			"type": "shell",
+			"command": "git",
+			"args": [
+				"status",
+				"--short"
+			],
+			"group": "build"
+		},
+		{
+			"label": "git-log-last-2-now",
+			"type": "shell",
+			"command": "git",
+			"args": [
+				"log",
+				"--oneline",
+				"-2"
+			],
+			"group": "build"
 		}
 	]
 }

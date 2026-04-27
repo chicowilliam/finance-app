@@ -4,7 +4,7 @@ import { AuthContext } from './AuthStateContext'
 import type { AuthMode } from './AuthStateContext'
 import { apiLogin, apiRegister, apiUpgradeFromGuest } from '../services/authService'
 import { AUTH_EXPIRED_EVENT } from '../services/api'
-import type { Conta } from '../data/mockContas'
+import type { Conta } from '../types/Bill'
 
 const AUTH_MODE_KEY = 'finance.auth.mode'
 const GUEST_CONTAS_KEY = 'finance.guest.contas'

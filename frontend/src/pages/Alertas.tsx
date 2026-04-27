@@ -1,6 +1,6 @@
 import { useContasContext } from '../context/ContasContext'
-import { formatBRL } from '../data/mockContas'
-import type { Conta } from '../data/mockContas'
+import { formatBRL } from '../utils/formatCurrency'
+import type { Conta } from '../types/Bill'
 import { Badge, Group, SimpleGrid, Stack, Text, ThemeIcon, Title } from '@mantine/core'
 import { AlertCircle, Clock, Shield } from '../lib/icons'
 import { AnimatePresence, motion, useReducedMotion } from 'motion/react'
@@ -87,7 +87,9 @@ export default function Alertas() {
               <Title order={2} size="h5">Contas Atrasadas ({atrasadas.length})</Title>
             </Group>
             <SimpleGrid cols={{ base: 1, md: 2 }} spacing="sm">
-              {atrasadas.map((c, idx) => (
+              {atrasadas.map((c, idx) => {
+                const atraso = diasAtraso(c)
+                return (
                 <motion.div
                   key={c.id}
                   layout
@@ -105,13 +107,14 @@ export default function Alertas() {
                       <Group justify="space-between">
                         <Text size="sm" c="dimmed">{c.categoria}</Text>
                         <Badge color="red" variant="light">
-                          {diasAtraso(c)} dia{diasAtraso(c) !== 1 ? 's' : ''} em atraso
+                          {atraso} dia{atraso !== 1 ? 's' : ''} em atraso
                         </Badge>
                       </Group>
                     </Stack>
                   </div>
                 </motion.div>
-              ))}
+                )
+              })}
             </SimpleGrid>
           </motion.section>
         )}
