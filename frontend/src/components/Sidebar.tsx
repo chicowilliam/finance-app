@@ -146,9 +146,9 @@ export default function Sidebar({ onToggleDesktop, onNavClick }: SidebarProps) {
 								minHeight: 42,
 								border: '1px solid transparent',
 								color: 'var(--color-sidebar-text)',
-								background: isActive(l.to) ? 'rgba(255,255,255,0.08)' : 'transparent',
+								background: isActive(l.to) ? 'var(--sidebar-link-bg-active)' : 'transparent',
 								backdropFilter: isActive(l.to) ? 'blur(6px)' : 'none',
-								borderColor: isActive(l.to) ? 'rgba(255,255,255,0.12)' : 'transparent',
+								borderColor: isActive(l.to) ? 'var(--sidebar-link-border-active)' : 'transparent',
 								'@media (max-width: 48rem)': {
 									paddingBlock: 13,
 									paddingInline: 12,
@@ -203,9 +203,9 @@ export default function Sidebar({ onToggleDesktop, onNavClick }: SidebarProps) {
 									minHeight: 42,
 									border: '1px solid transparent',
 									color: 'var(--color-sidebar-text)',
-									background: isActive(l.to) ? 'rgba(255,255,255,0.08)' : 'transparent',
+									background: isActive(l.to) ? 'var(--sidebar-link-bg-active)' : 'transparent',
 									backdropFilter: isActive(l.to) ? 'blur(6px)' : 'none',
-									borderColor: isActive(l.to) ? 'rgba(255,255,255,0.12)' : 'transparent',
+									borderColor: isActive(l.to) ? 'var(--sidebar-link-border-active)' : 'transparent',
 									'@media (max-width: 48rem)': {
 										paddingBlock: 13,
 										paddingInline: 12,
