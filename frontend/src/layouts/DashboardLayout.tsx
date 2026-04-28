@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { AppShell } from '@mantine/core'
+import { Drawer } from '@mantine/core'
 import { useDisclosure } from '@mantine/hooks'
 import { Outlet } from 'react-router-dom'
 import { toast } from 'sonner'
@@ -38,53 +38,55 @@ export default function DashboardLayout() {
 
 	return (
 		<ContasContext.Provider value={contasState}>
-			<AppShell
-				mode="fixed"
-				layout="alt"
-				navbar={{
-					width: sidebarWidth,
-					breakpoint: 'md',
-					collapsed: { mobile: !mobileOpened, desktop: !desktopOpened },
-				}}
-				padding="lg"
-			>
-				<AppShell.Navbar
-					className="dashboard-navbar-shell"
-					p={0}
-					style={{
-						backgroundColor: 'var(--sidebar-bg)',
-						borderInlineEnd: '1px solid var(--sidebar-border)',
-						position: 'relative',
-						top: 0,
-						height: '100dvh',
-						overflow: 'auto',
+			<div className="dashboard-layout-shell">
+				{desktopOpened && (
+					<aside
+						className="dashboard-sidebar-shell dashboard-sidebar-shell--desktop"
+						style={{ width: sidebarWidth }}
+					>
+						<Sidebar
+							onToggleDesktop={toggleDesktop}
+							onNavClick={closeMobile}
+						/>
+					</aside>
+				)}
+
+				<Drawer
+					opened={mobileOpened}
+					onClose={closeMobile}
+					size={sidebarWidth}
+					padding={0}
+					withCloseButton={false}
+					hiddenFrom="md"
+					overlayProps={{ opacity: 0.45, blur: 3 }}
+					styles={{
+						content: { background: 'var(--sidebar-bg)' },
+						body: { padding: 0, height: '100%' },
 					}}
 				>
 					<Sidebar
 						onToggleDesktop={toggleDesktop}
 						onNavClick={closeMobile}
 					/>
-				</AppShell.Navbar>
-				<AppShell.Main
-					className="dashboard-main-shell"
-					style={{
-						marginTop: 0,
-						display: 'flex',
-						flexDirection: 'column',
-						alignItems: 'stretch',
-					}}
+				</Drawer>
+
+				<div
+					className="dashboard-content-shell"
+					style={{ ['--dashboard-sidebar-width' as string]: desktopOpened ? `${sidebarWidth}px` : '0px' }}
 				>
-					<Navbar
-						onAddBill={() => setModalOpen(true)}
-						mobileOpened={mobileOpened}
-						onToggleMobile={toggleMobile}
-						desktopOpened={desktopOpened}
-						onToggleDesktop={toggleDesktop}
-					/>
-					<div style={{ paddingTop: '1rem' }}>
-						<Outlet />
-					</div>
-				</AppShell.Main>
+					<main className="dashboard-main-shell">
+						<Navbar
+							onAddBill={() => setModalOpen(true)}
+							mobileOpened={mobileOpened}
+							onToggleMobile={toggleMobile}
+							desktopOpened={desktopOpened}
+							onToggleDesktop={toggleDesktop}
+						/>
+						<div className="dashboard-page-shell">
+							<Outlet />
+						</div>
+					</main>
+				</div>
 
 				<AppModal opened={modalOpen} onClose={() => setModalOpen(false)} title="Nova Conta">
 					<NovaContaForm
@@ -92,7 +94,7 @@ export default function DashboardLayout() {
 						onCancel={() => setModalOpen(false)}
 					/>
 				</AppModal>
-			</AppShell>
+			</div>
 		</ContasContext.Provider>
 	)
 }
