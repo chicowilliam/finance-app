@@ -3,10 +3,7 @@ import { NavLink, useLocation } from 'react-router-dom'
 import { ActionIcon, Box, Divider, Group, NavLink as MantineNavLink, Stack, Text } from '@mantine/core'
 import { Bell, CalendarDays, Eye, EyeOff, LayoutDashboard, List, PanelLeftClose, Settings, TrendingUp, Wallet } from '../lib/icons'
 import { useContasContext } from '../context/ContasContext'
-import { useTheme } from '../hooks/useTheme'
 import { formatBRL } from '../utils/formatCurrency'
-import LogoClaro from '../assets/gemini-claro-svg.svg'
-import LogoEscuro from '../assets/gemini-escuro-svg.svg'
 
 const mainLinks = [
 	{ to: '/app',            label: 'Visão Geral',  icon: LayoutDashboard },
@@ -28,7 +25,6 @@ export default function Sidebar({ onToggleDesktop, onNavClick }: SidebarProps) {
 	const { pathname } = useLocation()
 	const [showValues, setShowValues] = useState(true)
 	const { contas } = useContasContext()
-	const { theme } = useTheme()
 
 	const totais = useMemo(() => {
 		const saldoProjetado = contas.reduce((acc, conta) => acc + conta.valor, 0)
@@ -61,24 +57,18 @@ export default function Sidebar({ onToggleDesktop, onNavClick }: SidebarProps) {
 			<Group gap={8} mb="sm" wrap="nowrap" justify="space-between">
 				<Group gap={8} wrap="nowrap">
 					<Wallet size={20} strokeWidth={1.5} color="var(--color-sidebar-text)" />
-					<Group gap={6} wrap="nowrap" align="center">
-						<div
-							style={{
-								width: 8,
-								height: 8,
-								borderRadius: 999,
-								background: 'var(--color-brand)',
-								boxShadow: '0 0 0 3px rgba(30, 122, 93, 0.22)',
-							}}
-						/>
-						<div style={{ height: 28, width: 160, display: 'flex', alignItems: 'center' }}>
-							<img
-								src={theme === 'dark' ? LogoEscuro : LogoClaro}
-								alt="Finance App"
-								style={{ width: '100%', height: '100%', objectFit: 'contain' }}
-							/>
-						</div>
-					</Group>
+					<div
+						style={{
+							width: 8,
+							height: 8,
+							borderRadius: 999,
+							background: 'var(--color-brand)',
+							boxShadow: '0 0 0 3px rgba(30, 122, 93, 0.22)',
+						}}
+					/>
+					<div style={{ height: 28, width: 160, display: 'flex', alignItems: 'center' }}>
+						<Text c="var(--color-sidebar-text)" fw={600} size="sm">FinanceApp</Text>
+					</div>
 				</Group>
 				{/* Botão de recolher — visível somente desktop */}
 				<ActionIcon
