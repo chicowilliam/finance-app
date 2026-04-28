@@ -3,7 +3,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { contasService } from '../services/billService';
 import { contasKeys } from '../services/queryKeys';
 import { useAuth } from './useAuth';
-import type { Conta } from '../types/Bill';
+import type { Conta, StatusConta } from '../types/Bill';
 
 const GUEST_CONTAS_KEY = 'finance.guest.contas';
 
@@ -71,6 +71,26 @@ export function useContas() {
     onSettled: () => queryClient.invalidateQueries({ queryKey: contasKeys.all }),
   });
 
+  const atualizarMutation = useMutation({
+    mutationFn: ({ id, data }: { id: number; data: Partial<Omit<Conta, 'id'>> }) =>
+      contasService.atualizar(id, data),
+    onMutate: async ({ id, data }) => {
+      await queryClient.cancelQueries({ queryKey: contasKeys.all });
+      const previous = queryClient.getQueryData<Conta[]>(contasKeys.list('auth')) ?? [];
+      queryClient.setQueryData<Conta[]>(
+        contasKeys.list('auth'),
+        previous.map((c) => (c.id === id ? { ...c, ...data } : c)),
+      );
+      return { previous };
+    },
+    onError: (_err, _vars, ctx) => {
+      if (ctx?.previous) {
+        queryClient.setQueryData(contasKeys.list('auth'), ctx.previous);
+      }
+    },
+    onSettled: () => queryClient.invalidateQueries({ queryKey: contasKeys.all }),
+  });
+
   async function adicionar(conta: Omit<Conta, 'id'>): Promise<Conta> {
     if (isGuest) {
       const nova: Conta = { ...conta, id: guestNextId-- };
@@ -92,6 +112,16 @@ export function useContas() {
     await removerMutation.mutateAsync(id);
   }
 
+  async function atualizarStatus(id: number, status: StatusConta): Promise<void> {
+    if (isGuest) {
+      const updated = guestContas.map(c => c.id === id ? { ...c, status } : c);
+      setGuestContas(updated);
+      saveGuestContas(updated);
+      return;
+    }
+    await atualizarMutation.mutateAsync({ id, data: { status } });
+  }
+
   return {
     contas: isGuest ? guestContas : (query.data ?? []),
     loading: isGuest ? false : query.isLoading,
@@ -99,5 +129,6 @@ export function useContas() {
     carregar: () => queryClient.invalidateQueries({ queryKey: contasKeys.all }),
     adicionar,
     remover,
+    atualizarStatus,
   };
 }

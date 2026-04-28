@@ -1,13 +1,14 @@
 import { useState, useMemo } from 'react'
 import { AnimatePresence, motion, useReducedMotion } from 'motion/react'
-import { ActionIcon, Badge, Group, Pagination, ScrollArea, Stack, Table, Text, Title } from '@mantine/core'
+import { ActionIcon, Badge, Group, Pagination, ScrollArea, Stack, Table, Text, Title, Tooltip } from '@mantine/core'
+import { toast } from 'sonner'
 import { useContasContext } from '../context/ContasContext'
 import { formatBRL } from '../utils/formatCurrency'
 import { formatData } from '../data/mockContas'
 import type { Conta, StatusConta } from '../types/Bill'
 import AppPanel from '../components/AppPanel'
 import Loader from '../components/Loader'
-import { ChevronUp, ChevronDown, ChevronsUpDown } from '../lib/icons'
+import { ChevronUp, ChevronDown, ChevronsUpDown, CheckCircle } from '../lib/icons'
 import AppButton from '../components/AppButton'
 import { AppSelect } from '../components/AppInput'
 
@@ -34,7 +35,7 @@ export default function Contas() {
   const [sortDir, setSortDir] = useState<SortDir>('asc')
   const [page, setPage] = useState(1)
   const [pageSize, setPageSize] = useState(10)
-  const { contas, loading } = useContasContext()
+  const { contas, loading, atualizarStatus } = useContasContext()
   const shouldReduceMotion = useReducedMotion()
 
   // Hooks must all be called before any early return (Rules of Hooks)
@@ -87,6 +88,15 @@ export default function Contas() {
     { key: 'status', label: 'Status' },
   ]
 
+  async function handlePagar(c: Conta) {
+    try {
+      await atualizarStatus(c.id, 'paga')
+      toast.success(`"${c.descricao}" marcada como paga`)
+    } catch {
+      toast.error('Erro ao atualizar o status da conta')
+    }
+  }
+
   return (
     <Stack>
       <Title order={1} size="h3">Lista de Contas</Title>
@@ -125,6 +135,7 @@ export default function Contas() {
                   </Group>
                 </Table.Th>
               ))}
+              <Table.Th><Text size="sm" fw={600}>Ações</Text></Table.Th>
             </Table.Tr>
           </Table.Thead>
           <Table.Tbody>
@@ -143,6 +154,21 @@ export default function Contas() {
                   <td>{formatData(c.vencimento)}</td>
                   <td><Text fw={700}>{formatBRL(c.valor)}</Text></td>
                   <td><Badge color={c.status === 'paga' ? 'green' : c.status === 'a_vencer' ? 'yellow' : 'red'} variant="light">{STATUS_LABEL[c.status]}</Badge></td>
+                  <td>
+                    {c.status !== 'paga' && (
+                      <Tooltip label="Marcar como paga" withArrow openDelay={300}>
+                        <ActionIcon
+                          variant="light"
+                          color="green"
+                          size="sm"
+                          onClick={() => handlePagar(c)}
+                          aria-label="Marcar como paga"
+                        >
+                          <CheckCircle size={14} strokeWidth={2} />
+                        </ActionIcon>
+                      </Tooltip>
+                    )}
+                  </td>
                 </motion.tr>
               ))}
             </AnimatePresence>

@@ -1,5 +1,5 @@
 import { createContext, useContext } from 'react';
-import type { Conta } from '../types/Bill';
+import type { Conta, StatusConta } from '../types/Bill';
 
 interface ContasContextType {
   contas: Conta[];
@@ -8,6 +8,7 @@ interface ContasContextType {
   carregar: () => Promise<void>;
   adicionar: (conta: Omit<Conta, 'id'>) => Promise<Conta>;
   remover: (id: number) => Promise<void>;
+  atualizarStatus: (id: number, status: StatusConta) => Promise<void>;
 }
 
 export const ContasContext = createContext<ContasContextType | null>(null);
