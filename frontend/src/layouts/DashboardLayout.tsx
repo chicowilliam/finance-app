@@ -1,5 +1,4 @@
 import { useEffect, useRef, useState } from 'react'
-import type { CSSProperties } from 'react'
 import { AppShell } from '@mantine/core'
 import { useDisclosure } from '@mantine/hooks'
 import { Outlet } from 'react-router-dom'
@@ -88,10 +87,6 @@ export default function DashboardLayout() {
 			<AppShell
 				mode="fixed"
 				layout="alt"
-				style={{
-					'--app-shell-header-offset': '0rem',
-					'--app-shell-footer-offset': '0rem',
-				} as CSSProperties}
 				navbar={{
 					width: sidebarWidth,
 					breakpoint: 'md',
@@ -100,11 +95,15 @@ export default function DashboardLayout() {
 				padding="lg"
 			>
 				<AppShell.Navbar
+					className="dashboard-navbar-shell"
 					p={0}
 					style={{
 						backgroundColor: 'var(--sidebar-bg)',
 						borderInlineEnd: '1px solid var(--sidebar-border)',
 						position: 'relative',
+						top: 0,
+						height: '100dvh',
+						overflow: 'auto',
 					}}
 				>
 					<div
@@ -118,8 +117,8 @@ export default function DashboardLayout() {
 					/>
 				</AppShell.Navbar>
 				<AppShell.Main
+					className="dashboard-main-shell"
 					style={{
-						paddingTop: 'var(--mantine-spacing-lg)',
 						marginTop: 0,
 						display: 'flex',
 						flexDirection: 'column',

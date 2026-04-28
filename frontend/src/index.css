@@ -527,6 +527,15 @@ textarea {
   background-color: var(--color-brand-strong);
 }
 
+.dashboard-navbar-shell {
+  top: 0 !important;
+  height: 100dvh !important;
+}
+
+.dashboard-main-shell {
+  padding-top: var(--mantine-spacing-lg) !important;
+}
+
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {
     scroll-behavior: auto !important;
