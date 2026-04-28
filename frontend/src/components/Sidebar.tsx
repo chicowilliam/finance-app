@@ -25,6 +25,7 @@ export default function Sidebar({ onToggleDesktop, onNavClick }: SidebarProps) {
 	const { pathname } = useLocation()
 	const [showValues, setShowValues] = useState(true)
 	const { contas } = useContasContext()
+	const showSidebarSummary = pathname !== '/app'
 
 	const totais = useMemo(() => {
 		const saldoProjetado = contas.reduce((acc, conta) => acc + conta.valor, 0)
@@ -82,38 +83,40 @@ export default function Sidebar({ onToggleDesktop, onNavClick }: SidebarProps) {
 				</ActionIcon>
 			</Group>
 
-			<Box
-				className="matte-surface brushed-edge"
-				style={{
-					border: '1px solid rgba(255, 255, 255, 0.08)',
-					borderRadius: 14,
-					padding: '12px 12px 10px',
-					marginBottom: 16,
-				}}
-			>
-				<Group justify="space-between" align="center" mb={6}>
-					<Text size="10px" fw={700} c="var(--color-aluminum)" className="sidebar-section-label">Resumo</Text>
-					<ActionIcon
-						variant="subtle"
-						size="sm"
-						onClick={() => setShowValues((v) => !v)}
-						aria-label={showValues ? 'Ocultar valores' : 'Exibir valores'}
-						style={{ color: 'var(--sidebar-icon)' }}
-					>
-						{showValues ? <EyeOff size={15} strokeWidth={1.8} /> : <Eye size={15} strokeWidth={1.8} />}
-					</ActionIcon>
-				</Group>
-				<Text size="xs" c="var(--color-aluminum)">Saldo projetado</Text>
-				<Text size="xl" fw={500} c="var(--color-sidebar-text)" className="sidebar-balance-value" style={{ letterSpacing: '-0.01em' }}>
-					{showValues ? formatBRL(totais.saldoProjetado) : 'R$ ••••••'}
-				</Text>
-				<Group gap={6} mt={6} wrap="nowrap">
-					<TrendingUp size={14} strokeWidth={1.9} color="var(--color-brand)" />
-					<Text size="xs" c="var(--color-aluminum)">
-						Em aberto: {showValues ? formatBRL(totais.emAberto) : 'R$ ••••••'}
+			{showSidebarSummary && (
+				<Box
+					className="matte-surface brushed-edge"
+					style={{
+						border: '1px solid rgba(255, 255, 255, 0.08)',
+						borderRadius: 14,
+						padding: '12px 12px 10px',
+						marginBottom: 16,
+					}}
+				>
+					<Group justify="space-between" align="center" mb={6}>
+						<Text size="10px" fw={700} c="var(--color-aluminum)" className="sidebar-section-label">Resumo</Text>
+						<ActionIcon
+							variant="subtle"
+							size="sm"
+							onClick={() => setShowValues((v) => !v)}
+							aria-label={showValues ? 'Ocultar valores' : 'Exibir valores'}
+							style={{ color: 'var(--sidebar-icon)' }}
+						>
+							{showValues ? <EyeOff size={15} strokeWidth={1.8} /> : <Eye size={15} strokeWidth={1.8} />}
+						</ActionIcon>
+					</Group>
+					<Text size="xs" c="var(--color-aluminum)">Saldo projetado</Text>
+					<Text size="xl" fw={500} c="var(--color-sidebar-text)" className="sidebar-balance-value" style={{ letterSpacing: '-0.01em' }}>
+						{showValues ? formatBRL(totais.saldoProjetado) : 'R$ ••••••'}
 					</Text>
-				</Group>
-			</Box>
+					<Group gap={6} mt={6} wrap="nowrap">
+						<TrendingUp size={14} strokeWidth={1.9} color="var(--color-brand)" />
+						<Text size="xs" c="var(--color-aluminum)">
+							Em aberto: {showValues ? formatBRL(totais.emAberto) : 'R$ ••••••'}
+						</Text>
+					</Group>
+				</Box>
+			)}
 
 			<Stack gap={4} mb="md">
 				<Text size="10px" fw={700} c="var(--color-aluminum)" className="sidebar-section-label" px={8}>Navegação</Text>
