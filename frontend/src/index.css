@@ -292,6 +292,9 @@ label {
 .magic-topbar {
   position: relative;
   overflow: hidden;
+  width: fit-content;
+  max-width: 100%;
+  margin-inline: auto;
   background:
     linear-gradient(135deg, color-mix(in srgb, var(--panel-bg) 90%, transparent), color-mix(in srgb, var(--panel-subtle-bg) 94%, transparent)),
     var(--panel-bg);
@@ -588,7 +591,7 @@ textarea {
   }
 
   .magic-topbar__actions {
-    width: 100%;
+    max-width: 100%;
   }
 
   .magic-empty-state__glow {
