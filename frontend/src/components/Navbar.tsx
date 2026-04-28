@@ -48,7 +48,7 @@ export default function Navbar({ onAddBill, onToggleMobile, desktopOpened, onTog
       radius="xl"
       p="md"
       className="magic-topbar"
-      initial={shouldReduceMotion ? { opacity: 0 } : { opacity: 0, y: -10 }}
+      initial={false}
       animate={shouldReduceMotion ? { opacity: 1 } : { opacity: 1, y: 0 }}
       transition={{ duration: shouldReduceMotion ? 0.12 : 0.24, ease: 'easeOut' }}
     >

@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
+import type { CSSProperties } from 'react'
 import { AppShell } from '@mantine/core'
 import { useDisclosure } from '@mantine/hooks'
 import { Outlet } from 'react-router-dom'
@@ -22,8 +23,15 @@ export default function DashboardLayout() {
 	const [mobileOpened, { toggle: toggleMobile, close: closeMobile }] = useDisclosure(false)
 	const [desktopOpened, { toggle: toggleDesktop }] = useDisclosure(true)
 	const [sidebarWidth, setSidebarWidth] = useState(() => {
-		const stored = localStorage.getItem(SIDEBAR_STORAGE_KEY)
-		return stored ? Math.min(Math.max(parseInt(stored, 10), SIDEBAR_MIN_WIDTH), SIDEBAR_MAX_WIDTH) : SIDEBAR_DEFAULT_WIDTH
+		if (typeof window === 'undefined') return SIDEBAR_DEFAULT_WIDTH
+		try {
+			const stored = window.localStorage.getItem(SIDEBAR_STORAGE_KEY)
+			const parsed = stored ? Number.parseInt(stored, 10) : NaN
+			if (!Number.isFinite(parsed)) return SIDEBAR_DEFAULT_WIDTH
+			return Math.min(Math.max(parsed, SIDEBAR_MIN_WIDTH), SIDEBAR_MAX_WIDTH)
+		} catch {
+			return SIDEBAR_DEFAULT_WIDTH
+		}
 	})
 	const isResizingRef = useRef(false)
 
@@ -50,7 +58,7 @@ export default function DashboardLayout() {
 			const newWidth = e.clientX
 			if (newWidth >= SIDEBAR_MIN_WIDTH && newWidth <= SIDEBAR_MAX_WIDTH) {
 				setSidebarWidth(newWidth)
-				localStorage.setItem(SIDEBAR_STORAGE_KEY, newWidth.toString())
+				window.localStorage.setItem(SIDEBAR_STORAGE_KEY, newWidth.toString())
 			}
 		}
 
@@ -60,10 +68,8 @@ export default function DashboardLayout() {
 			document.body.style.cursor = ''
 		}
 
-		if (isResizingRef.current) {
-			window.addEventListener('mousemove', handleMouseMove)
-			window.addEventListener('mouseup', handleMouseUp)
-		}
+		window.addEventListener('mousemove', handleMouseMove)
+		window.addEventListener('mouseup', handleMouseUp)
 
 		return () => {
 			window.removeEventListener('mousemove', handleMouseMove)
@@ -80,6 +86,12 @@ export default function DashboardLayout() {
 	return (
 		<ContasContext.Provider value={contasState}>
 			<AppShell
+				mode="fixed"
+				layout="alt"
+				style={{
+					'--app-shell-header-offset': '0rem',
+					'--app-shell-footer-offset': '0rem',
+				} as CSSProperties}
 				navbar={{
 					width: sidebarWidth,
 					breakpoint: 'md',
@@ -105,7 +117,15 @@ export default function DashboardLayout() {
 						onNavClick={closeMobile}
 					/>
 				</AppShell.Navbar>
-				<AppShell.Main>
+				<AppShell.Main
+					style={{
+						paddingTop: 'var(--mantine-spacing-lg)',
+						marginTop: 0,
+						display: 'flex',
+						flexDirection: 'column',
+						alignItems: 'stretch',
+					}}
+				>
 					<Navbar
 						onAddBill={() => setModalOpen(true)}
 						mobileOpened={mobileOpened}

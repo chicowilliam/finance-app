@@ -10,7 +10,7 @@ export default function PageTransition({ children }: PageTransitionProps) {
 
   return (
     <motion.div
-      initial={shouldReduceMotion ? { opacity: 0 } : { opacity: 0, filter: 'blur(6px)', scale: 0.995 }}
+      initial={false}
       animate={shouldReduceMotion ? { opacity: 1 } : { opacity: 1, filter: 'blur(0px)', scale: 1 }}
       exit={shouldReduceMotion ? { opacity: 0 } : { opacity: 0, filter: 'blur(4px)', scale: 0.995 }}
       transition={

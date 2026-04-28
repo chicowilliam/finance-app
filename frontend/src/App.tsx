@@ -50,6 +50,7 @@ export default function App() {
           )}
         >
           <Route
+            path="/app"
             element={(
               <Suspense fallback={<RouteFallback />}>
                 <DashboardLayout />
@@ -57,7 +58,7 @@ export default function App() {
             )}
           >
             <Route
-              path="/app"
+              index
               element={(
                 <PageTransition>
                   <Suspense fallback={<RouteFallback />}>
@@ -67,7 +68,7 @@ export default function App() {
               )}
             />
             <Route
-              path="/app/contas"
+              path="contas"
               element={(
                 <PageTransition>
                   <Suspense fallback={<RouteFallback />}>
@@ -77,7 +78,7 @@ export default function App() {
               )}
             />
             <Route
-              path="/app/calendario"
+              path="calendario"
               element={(
                 <PageTransition>
                   <Suspense fallback={<RouteFallback />}>
@@ -87,7 +88,7 @@ export default function App() {
               )}
             />
             <Route
-              path="/app/alertas"
+              path="alertas"
               element={(
                 <PageTransition>
                   <Suspense fallback={<RouteFallback />}>
@@ -97,7 +98,7 @@ export default function App() {
               )}
             />
             <Route
-              path="/app/configuracoes"
+              path="configuracoes"
               element={(
                 <PageTransition>
                   <Suspense fallback={<RouteFallback />}>
