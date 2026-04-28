@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { Drawer } from '@mantine/core'
 import { useDisclosure } from '@mantine/hooks'
 import { Outlet } from 'react-router-dom'
@@ -12,13 +12,27 @@ import { ContasContext } from '../context/ContasContext'
 import type { Conta } from '../types/Bill'
 
 const SIDEBAR_DEFAULT_WIDTH = 280
+const SIDEBAR_MIN_WIDTH = 220
+const SIDEBAR_MAX_WIDTH = 460
+const SIDEBAR_STORAGE_KEY = 'finance-app:sidebar-width'
 
 export default function DashboardLayout() {
 	const [modalOpen, setModalOpen] = useState(false)
 	const contasState = useContas()
 	const [mobileOpened, { toggle: toggleMobile, close: closeMobile }] = useDisclosure(false)
 	const [desktopOpened, { toggle: toggleDesktop }] = useDisclosure(true)
-	const [sidebarWidth] = useState(SIDEBAR_DEFAULT_WIDTH)
+	const [sidebarWidth, setSidebarWidth] = useState(() => {
+		if (typeof window === 'undefined') return SIDEBAR_DEFAULT_WIDTH
+		try {
+			const stored = window.localStorage.getItem(SIDEBAR_STORAGE_KEY)
+			const parsed = stored ? Number.parseInt(stored, 10) : NaN
+			if (!Number.isFinite(parsed)) return SIDEBAR_DEFAULT_WIDTH
+			return Math.min(Math.max(parsed, SIDEBAR_MIN_WIDTH), SIDEBAR_MAX_WIDTH)
+		} catch {
+			return SIDEBAR_DEFAULT_WIDTH
+		}
+	})
+	const isResizingRef = useRef(false)
 
 	async function handleAddConta(conta: Omit<Conta, 'id'>) {
 		try {
@@ -36,6 +50,37 @@ export default function DashboardLayout() {
 		return () => window.removeEventListener('finance:new-bill', openModal)
 	}, [])
 
+	const handleMouseDown = () => {
+		isResizingRef.current = true
+		document.body.style.userSelect = 'none'
+		document.body.style.cursor = 'col-resize'
+	}
+
+	useEffect(() => {
+		const handleMouseMove = (e: MouseEvent) => {
+			if (!isResizingRef.current) return
+
+			const nextWidth = Math.min(Math.max(e.clientX, SIDEBAR_MIN_WIDTH), SIDEBAR_MAX_WIDTH)
+			setSidebarWidth(nextWidth)
+			window.localStorage.setItem(SIDEBAR_STORAGE_KEY, String(nextWidth))
+		}
+
+		const handleMouseUp = () => {
+			if (!isResizingRef.current) return
+			isResizingRef.current = false
+			document.body.style.userSelect = ''
+			document.body.style.cursor = ''
+		}
+
+		window.addEventListener('mousemove', handleMouseMove)
+		window.addEventListener('mouseup', handleMouseUp)
+
+		return () => {
+			window.removeEventListener('mousemove', handleMouseMove)
+			window.removeEventListener('mouseup', handleMouseUp)
+		}
+	}, [])
+
 	return (
 		<ContasContext.Provider value={contasState}>
 			<div className="dashboard-layout-shell">
@@ -47,6 +92,11 @@ export default function DashboardLayout() {
 						<Sidebar
 							onToggleDesktop={toggleDesktop}
 							onNavClick={closeMobile}
+						/>
+						<div
+							className="sidebar-resize-handle"
+							title="Arraste para redimensionar a barra lateral"
+							onMouseDown={handleMouseDown}
 						/>
 					</aside>
 				)}
