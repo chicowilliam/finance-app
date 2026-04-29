@@ -34,6 +34,30 @@ export class LoginDto {
   senha: string;
 }
 
+export class VerifyEmailDto {
+  @IsString()
+  token: string;
+}
+
+export class RequestEmailVerificationDto {
+  @IsEmail()
+  email: string;
+}
+
+export class ForgotPasswordDto {
+  @IsEmail()
+  email: string;
+}
+
+export class ResetPasswordDto {
+  @IsString()
+  token: string;
+
+  @IsString()
+  @MinLength(6)
+  novaSenha: string;
+}
+
 interface AuthRequest {
   user: { userId: number; email: string; role: 'user' | 'admin' };
 }
@@ -53,6 +77,34 @@ export class AuthController {
   @HttpCode(HttpStatus.OK)
   login(@Body() dto: LoginDto) {
     return this.authService.login(dto.email, dto.senha);
+  }
+
+  @Throttle({ default: { limit: 5, ttl: 60_000 } })
+  @Post('request-email-verification')
+  @HttpCode(HttpStatus.OK)
+  requestEmailVerification(@Body() dto: RequestEmailVerificationDto) {
+    return this.authService.requestEmailVerification(dto.email);
+  }
+
+  @Throttle({ default: { limit: 10, ttl: 60_000 } })
+  @Post('verify-email')
+  @HttpCode(HttpStatus.OK)
+  verifyEmail(@Body() dto: VerifyEmailDto) {
+    return this.authService.verifyEmail(dto.token);
+  }
+
+  @Throttle({ default: { limit: 5, ttl: 60_000 } })
+  @Post('forgot-password')
+  @HttpCode(HttpStatus.OK)
+  forgotPassword(@Body() dto: ForgotPasswordDto) {
+    return this.authService.forgotPassword(dto.email);
+  }
+
+  @Throttle({ default: { limit: 10, ttl: 60_000 } })
+  @Post('reset-password')
+  @HttpCode(HttpStatus.OK)
+  resetPassword(@Body() dto: ResetPasswordDto) {
+    return this.authService.resetPassword(dto.token, dto.novaSenha);
   }
 
   @SkipThrottle()

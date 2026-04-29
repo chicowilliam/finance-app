@@ -70,4 +70,82 @@ export class UsersService {
   countUsers(): Promise<number> {
     return this.prisma.user.count();
   }
+
+  async setEmailVerificationToken(
+    userId: number,
+    tokenHash: string,
+    expiresAt: Date,
+  ): Promise<void> {
+    await this.prisma.user.update({
+      where: { id: userId },
+      data: {
+        emailVerificationTokenHash: tokenHash,
+        emailVerificationTokenExpiresAt: expiresAt,
+      },
+    });
+  }
+
+  async verifyEmailByTokenHash(tokenHash: string): Promise<boolean> {
+    const now = new Date();
+    const user = await this.prisma.user.findFirst({
+      where: {
+        emailVerificationTokenHash: tokenHash,
+        emailVerificationTokenExpiresAt: { gt: now },
+      },
+      select: { id: true },
+    });
+
+    if (!user) return false;
+
+    await this.prisma.user.update({
+      where: { id: user.id },
+      data: {
+        emailVerifiedAt: now,
+        emailVerificationTokenHash: null,
+        emailVerificationTokenExpiresAt: null,
+      },
+    });
+
+    return true;
+  }
+
+  async setPasswordResetTokenByEmail(
+    email: string,
+    tokenHash: string,
+    expiresAt: Date,
+  ): Promise<boolean> {
+    const result = await this.prisma.user.updateMany({
+      where: { email },
+      data: {
+        passwordResetTokenHash: tokenHash,
+        passwordResetTokenExpiresAt: expiresAt,
+      },
+    });
+
+    return result.count > 0;
+  }
+
+  async findByPasswordResetTokenHash(tokenHash: string): Promise<User | null> {
+    return this.prisma.user.findFirst({
+      where: {
+        passwordResetTokenHash: tokenHash,
+        passwordResetTokenExpiresAt: { gt: new Date() },
+      },
+    });
+  }
+
+  async updatePasswordAndClearResetToken(
+    userId: number,
+    newPassword: string,
+  ): Promise<void> {
+    const passwordHash = await bcrypt.hash(newPassword, 10);
+    await this.prisma.user.update({
+      where: { id: userId },
+      data: {
+        passwordHash,
+        passwordResetTokenHash: null,
+        passwordResetTokenExpiresAt: null,
+      },
+    });
+  }
 }

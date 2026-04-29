@@ -34,6 +34,11 @@ model User {
   passwordHash String
   role         UserRole @default(user)
   isActive     Boolean @default(true)
+  emailVerifiedAt DateTime?
+  emailVerificationTokenHash String?
+  emailVerificationTokenExpiresAt DateTime?
+  passwordResetTokenHash String?
+  passwordResetTokenExpiresAt DateTime?
   contas       Conta[]
   auditLogs    AdminAuditLog[] @relation("TargetUserLogs")
   adminActions AdminAuditLog[] @relation("ActorUserLogs")
