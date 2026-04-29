@@ -1,8 +1,14 @@
-import { post, postAuth } from './api'
+import { get, post, postAuth } from './api'
 import type { Conta } from '../types/Bill'
 
 export interface AuthResponse {
   access_token: string
+}
+
+export interface AuthMeResponse {
+  id: number
+  email: string
+  role: 'user' | 'admin'
 }
 
 export async function apiRegister(
@@ -21,4 +27,8 @@ export async function apiUpgradeFromGuest(
   contas: Omit<Conta, 'id'>[],
 ): Promise<Conta[]> {
   return postAuth<Conta[]>('/auth/upgrade-from-guest', { contas })
+}
+
+export async function apiMe(): Promise<AuthMeResponse> {
+  return get<AuthMeResponse>('/auth/me')
 }

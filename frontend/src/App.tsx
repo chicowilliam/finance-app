@@ -7,11 +7,13 @@ import './App.css'
 
 const DashboardLayout = lazy(() => import('./layouts/DashboardLayout'))
 const PrivateRoute = lazy(() => import('./routes/PrivateRoute'))
+const AdminRoute = lazy(() => import('./routes/AdminRoute'))
 const VisaoGeral = lazy(() => import('./pages/VisaoGeral'))
 const Contas = lazy(() => import('./pages/Contas'))
 const Calendario = lazy(() => import('./pages/Calendario'))
 const Alertas = lazy(() => import('./pages/Alertas'))
 const Configuracoes = lazy(() => import('./pages/Configuracoes'))
+const AdminUsuarios = lazy(() => import('./pages/AdminUsuarios'))
 const Welcome = lazy(() => import('./pages/Welcome'))
 
 function RouteFallback() {
@@ -107,6 +109,25 @@ export default function App() {
                 </PageTransition>
               )}
             />
+
+            <Route
+              element={(
+                <Suspense fallback={<RouteFallback />}>
+                  <AdminRoute />
+                </Suspense>
+              )}
+            >
+              <Route
+                path="admin/usuarios"
+                element={(
+                  <PageTransition>
+                    <Suspense fallback={<RouteFallback />}>
+                      <AdminUsuarios />
+                    </Suspense>
+                  </PageTransition>
+                )}
+              />
+            </Route>
           </Route>
         </Route>
 

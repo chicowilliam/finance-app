@@ -1,12 +1,13 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import type { ReactNode } from 'react'
 import { AuthContext } from './AuthStateContext'
-import type { AuthMode } from './AuthStateContext'
-import { apiLogin, apiRegister, apiUpgradeFromGuest } from '../services/authService'
+import type { AuthMode, AuthRole } from './AuthStateContext'
+import { apiLogin, apiMe, apiRegister, apiUpgradeFromGuest } from '../services/authService'
 import { AUTH_EXPIRED_EVENT } from '../services/api'
 import type { Conta } from '../types/Bill'
 
 const AUTH_MODE_KEY = 'finance.auth.mode'
+const AUTH_ROLE_KEY = 'finance.auth.role'
 const GUEST_CONTAS_KEY = 'finance.guest.contas'
 
 function popGuestContas(): Omit<Conta, 'id'>[] {
@@ -27,6 +28,14 @@ function popGuestContas(): Omit<Conta, 'id'>[] {
 }
 
 export function AuthProvider({ children }: { children: ReactNode }) {
+	const [role, setRole] = useState<AuthRole>(() => {
+		const savedRole = localStorage.getItem(AUTH_ROLE_KEY)
+		if (savedRole === 'admin' || savedRole === 'user') {
+			return savedRole
+		}
+		return null
+	})
+
 	const [mode, setMode] = useState<AuthMode>(() => {
 		const savedMode = localStorage.getItem(AUTH_MODE_KEY) as AuthMode | null
 		if (savedMode === 'guest' || savedMode === 'user') {
@@ -35,20 +44,38 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 		return 'anonymous'
 	})
 
+	const persistRole = useCallback((nextRole: AuthRole) => {
+		setRole(nextRole)
+		if (!nextRole) {
+			localStorage.removeItem(AUTH_ROLE_KEY)
+			return
+		}
+		localStorage.setItem(AUTH_ROLE_KEY, nextRole)
+	}, [])
+
 	const persistMode = useCallback((nextMode: AuthMode) => {
 		setMode(nextMode)
 
 		if (nextMode === 'anonymous') {
 			localStorage.removeItem(AUTH_MODE_KEY)
 			localStorage.removeItem('token')
+			persistRole(null)
 			return
 		}
 
 		localStorage.setItem(AUTH_MODE_KEY, nextMode)
-	}, [])
+	}, [persistRole])
+
+	const refreshProfile = useCallback(async () => {
+		const me = await apiMe()
+		persistRole(me.role)
+	}, [persistRole])
 
 	const enterGuest = useCallback(() => {
 		persistMode('guest')
+		persistRole(null)
+		localStorage.removeItem('token')
+		localStorage.removeItem(AUTH_ROLE_KEY)
 	}, [persistMode])
 
 	const login = useCallback(async (email: string, senha: string) => {
@@ -58,11 +85,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 		const { access_token } = await apiLogin(email, senha)
 		localStorage.setItem('token', access_token)
 		persistMode('user')
+		await refreshProfile()
 
 		if (wasGuest && guestContas.length > 0) {
 			await apiUpgradeFromGuest(guestContas)
 		}
-	}, [persistMode])
+	}, [persistMode, refreshProfile])
 
 	const register = useCallback(async (nome: string, email: string, senha: string) => {
 		const wasGuest = localStorage.getItem(AUTH_MODE_KEY) === 'guest'
@@ -71,15 +99,26 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 		const { access_token } = await apiRegister(nome, email, senha)
 		localStorage.setItem('token', access_token)
 		persistMode('user')
+		await refreshProfile()
 
 		if (wasGuest && guestContas.length > 0) {
 			await apiUpgradeFromGuest(guestContas)
 		}
-	}, [persistMode])
+	}, [persistMode, refreshProfile])
 
 	const logout = useCallback(() => {
 		persistMode('anonymous')
 	}, [persistMode])
+
+	useEffect(() => {
+		if (mode !== 'user') {
+			return
+		}
+
+		void refreshProfile().catch(() => {
+			persistMode('anonymous')
+		})
+	}, [mode, refreshProfile, persistMode])
 
 	useEffect(() => {
 		function handleAuthExpired() {
@@ -93,13 +132,15 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 	const value = useMemo(
 		() => ({
 			mode,
+			role,
+			isAdmin: role === 'admin',
 			isAuthenticated: mode === 'guest' || mode === 'user',
 			enterGuest,
 			login,
 			register,
 			logout,
 		}),
-		[mode, enterGuest, login, register, logout],
+		[mode, role, enterGuest, login, register, logout],
 	)
 
 	return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>

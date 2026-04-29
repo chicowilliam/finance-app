@@ -1,8 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { Drawer } from '@mantine/core'
 import { useDisclosure } from '@mantine/hooks'
-import { Outlet, useLocation } from 'react-router-dom'
-import { AnimatePresence, motion } from 'motion/react'
+import { Outlet } from 'react-router-dom'
 import { toast } from 'sonner'
 import Sidebar from '../components/Sidebar'
 import Navbar from '../components/Navbar'
@@ -16,24 +15,6 @@ const SIDEBAR_DEFAULT_WIDTH = 280
 const SIDEBAR_MIN_WIDTH = 220
 const SIDEBAR_MAX_WIDTH = 460
 const SIDEBAR_STORAGE_KEY = 'finance-app:sidebar-width'
-
-function PageTransition() {
-	const { pathname } = useLocation()
-	return (
-		<AnimatePresence mode="wait" initial={false}>
-			<motion.div
-				key={pathname}
-				className="dashboard-page-shell"
-				initial={{ opacity: 0, y: 6 }}
-				animate={{ opacity: 1, y: 0 }}
-				exit={{ opacity: 0, y: -6 }}
-				transition={{ duration: 0.18, ease: 'easeInOut' }}
-			>
-				<Outlet />
-			</motion.div>
-		</AnimatePresence>
-	)
-}
 
 export default function DashboardLayout() {
 	const [modalOpen, setModalOpen] = useState(false)

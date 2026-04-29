@@ -113,6 +113,20 @@ export async function put<T>(path: string, body: unknown): Promise<T> {
   return res.json();
 }
 
+export async function patch<T>(path: string, body: unknown): Promise<T> {
+  const res = await fetch(buildApiUrl(path), {
+    method: 'PATCH',
+    headers: { 'Content-Type': 'application/json', ...authHeaders() },
+    body: JSON.stringify(body),
+  });
+  if (!res.ok) {
+    const unauthorizedError = handleUnauthorized(path, res);
+    if (unauthorizedError) throw unauthorizedError;
+    throw new Error(await readErrorMessage(res, `PATCH ${path} failed: ${res.status}`));
+  }
+  return res.json();
+}
+
 export async function del(path: string): Promise<void> {
   const res = await fetch(buildApiUrl(path), {
     method: 'DELETE',
@@ -123,6 +137,20 @@ export async function del(path: string): Promise<void> {
     if (unauthorizedError) throw unauthorizedError;
     throw new Error(await readErrorMessage(res, `DELETE ${path} failed: ${res.status}`));
   }
+}
+
+export async function delWithBody<T>(path: string, body: unknown): Promise<T> {
+  const res = await fetch(buildApiUrl(path), {
+    method: 'DELETE',
+    headers: { 'Content-Type': 'application/json', ...authHeaders() },
+    body: JSON.stringify(body),
+  });
+  if (!res.ok) {
+    const unauthorizedError = handleUnauthorized(path, res);
+    if (unauthorizedError) throw unauthorizedError;
+    throw new Error(await readErrorMessage(res, `DELETE ${path} failed: ${res.status}`));
+  }
+  return res.json();
 }
 
 export { AUTH_EXPIRED_EVENT };

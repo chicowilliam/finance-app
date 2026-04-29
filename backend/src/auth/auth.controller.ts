@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Get,
   Post,
   HttpCode,
   HttpStatus,
@@ -34,7 +35,7 @@ export class LoginDto {
 }
 
 interface AuthRequest {
-  user: { userId: number; email: string };
+  user: { userId: number; email: string; role: 'user' | 'admin' };
 }
 
 @Controller('api/auth')
@@ -52,6 +53,17 @@ export class AuthController {
   @HttpCode(HttpStatus.OK)
   login(@Body() dto: LoginDto) {
     return this.authService.login(dto.email, dto.senha);
+  }
+
+  @SkipThrottle()
+  @UseGuards(JwtAuthGuard)
+  @Get('me')
+  me(@Request() req: AuthRequest) {
+    return {
+      id: req.user.userId,
+      email: req.user.email,
+      role: req.user.role,
+    };
   }
 
   @SkipThrottle()

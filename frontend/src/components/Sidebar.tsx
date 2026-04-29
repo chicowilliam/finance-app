@@ -3,6 +3,7 @@ import { NavLink, useLocation } from 'react-router-dom'
 import { ActionIcon, Box, Divider, Group, NavLink as MantineNavLink, Stack, Text } from '@mantine/core'
 import { Bell, CalendarDays, Eye, EyeOff, LayoutDashboard, List, PanelLeftClose, Settings, TrendingUp, Wallet } from '../lib/icons'
 import { useContasContext } from '../context/ContasContext'
+import { useAuth } from '../hooks/useAuth'
 import { formatBRL } from '../utils/formatCurrency'
 
 const mainLinks = [
@@ -10,10 +11,6 @@ const mainLinks = [
 	{ to: '/app/contas',      label: 'Contas',       icon: List },
 	{ to: '/app/calendario',  label: 'Calendário',   icon: CalendarDays },
 	{ to: '/app/alertas',     label: 'Alertas',      icon: Bell },
-]
-
-const bottomLinks = [
-	{ to: '/app/configuracoes', label: 'Configurações', icon: Settings },
 ]
 
 interface SidebarProps {
@@ -24,8 +21,20 @@ interface SidebarProps {
 export default function Sidebar({ onToggleDesktop, onNavClick }: SidebarProps) {
 	const { pathname } = useLocation()
 	const [showValues, setShowValues] = useState(true)
+	const { isAdmin } = useAuth()
 	const { contas } = useContasContext()
 	const showSidebarSummary = pathname !== '/app'
+	const bottomLinks = useMemo(() => {
+		const links: Array<{ to: string; label: string; icon: typeof Settings }> = [
+			{ to: '/app/configuracoes', label: 'Configurações', icon: Settings },
+		]
+
+		if (isAdmin) {
+			links.unshift({ to: '/app/admin/usuarios', label: 'Painel Admin', icon: Settings })
+		}
+
+		return links
+	}, [isAdmin])
 
 	const totais = useMemo(() => {
 		const saldoProjetado = contas.reduce((acc, conta) => acc + conta.valor, 0)

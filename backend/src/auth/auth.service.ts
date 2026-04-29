@@ -1,4 +1,4 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { ForbiddenException, Injectable, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
 import { UsersService } from '../users/users.service';
@@ -14,8 +14,10 @@ export class AuthService {
   ) {}
 
   async register(nome: string, email: string, senha: string) {
-    const user = await this.usersService.create(nome, email, senha);
-    const payload = { sub: user.id, email: user.email };
+    const totalUsers = await this.usersService.countUsers();
+    const role = totalUsers === 0 ? 'admin' : 'user';
+    const user = await this.usersService.create(nome, email, senha, role);
+    const payload = { sub: user.id, email: user.email, role: user.role };
     return { access_token: this.jwtService.sign(payload) };
   }
 
@@ -35,7 +37,11 @@ export class AuthService {
       throw invalidCredentials;
     }
 
-    const payload = { sub: user.id, email: user.email };
+    if (!user.isActive) {
+      throw new ForbiddenException('Conta desativada. Fale com o administrador.');
+    }
+
+    const payload = { sub: user.id, email: user.email, role: user.role };
     return { access_token: this.jwtService.sign(payload) };
   }
 

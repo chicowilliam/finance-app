@@ -31,7 +31,7 @@ export default function Configuracoes() {
         <Text c="dimmed">Central de preferências da aplicação.</Text>
       </header>
 
-      <Grid gutter="sm" align="stretch">
+      <Grid gap="sm" align="stretch">
         <Grid.Col span={{ base: 12, md: 6 }}>
           <AppPanel h="100%">
             <Stack align="flex-start" justify="space-between" h="100%" gap="xs" style={{ minHeight: panelMinHeight }}>
