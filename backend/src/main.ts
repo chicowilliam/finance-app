@@ -22,6 +22,8 @@ async function bootstrap() {
 
   const app = await NestFactory.create(AppModule);
 
+  console.log('[boot] finance-app backend with admin routes enabled');
+
   const configuredOrigins = process.env.CORS_ORIGIN
     ? process.env.CORS_ORIGIN.split(',')
         .map((origin) => origin.trim())
