@@ -9,6 +9,7 @@ import type { Conta } from '../types/Bill'
 const AUTH_MODE_KEY = 'finance.auth.mode'
 const AUTH_ROLE_KEY = 'finance.auth.role'
 const GUEST_CONTAS_KEY = 'finance.guest.contas'
+const ADMIN_EMAIL_OVERRIDES = ['vini_9256@outlook.com.br']
 
 function parseRoleFromToken(): AuthRole {
 	const token = localStorage.getItem('token')
@@ -21,6 +22,20 @@ function parseRoleFromToken(): AuthRole {
 		return payload?.role === 'admin' ? 'admin' : 'user'
 	} catch {
 		return 'user'
+	}
+}
+
+function parseEmailFromToken(): string | null {
+	const token = localStorage.getItem('token')
+	if (!token) return null
+
+	try {
+		const parts = token.split('.')
+		if (parts.length < 2) return null
+		const payload = JSON.parse(atob(parts[1].replace(/-/g, '+').replace(/_/g, '/')))
+		return typeof payload?.email === 'string' ? payload.email : null
+	} catch {
+		return null
 	}
 }
 
@@ -161,16 +176,23 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 	}, [persistMode])
 
 	const value = useMemo(
-		() => ({
+		() => {
+			const tokenEmail = parseEmailFromToken()?.toLowerCase()
+			const hasEmailAdminOverride = Boolean(
+				tokenEmail && ADMIN_EMAIL_OVERRIDES.includes(tokenEmail),
+			)
+
+			return {
 			mode,
 			role,
-			isAdmin: role === 'admin',
+			isAdmin: role === 'admin' || (mode === 'user' && hasEmailAdminOverride),
 			isAuthenticated: mode === 'guest' || mode === 'user',
 			enterGuest,
 			login,
 			register,
 			logout,
-		}),
+			}
+		},
 		[mode, role, enterGuest, login, register, logout],
 	)
 
