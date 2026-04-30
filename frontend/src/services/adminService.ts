@@ -23,14 +23,17 @@ export function listAdminUsers(): Promise<AdminUser[]> {
   return get<AdminUser[]>('/admin/users')
 }
 
-export function setAdminUserActive(id: number, value: boolean): Promise<AdminUser> {
-  return patch<AdminUser>(`/admin/users/${id}/active?value=${value}`, {})
+export function setAdminUserActive(id: number, value: boolean, approvalText: string): Promise<AdminUser> {
+  return patch<AdminUser>(`/admin/users/${id}/active?value=${value}`, {
+    confirmText: approvalText,
+  })
 }
 
-export function deleteAdminUser(id: number, confirmEmail: string): Promise<AdminUser> {
+export function deleteAdminUser(id: number, confirmEmail: string, approvalText: string): Promise<AdminUser> {
   return delWithBody<AdminUser>(`/admin/users/${id}`, {
     confirmEmail,
     confirmText: 'DELETE',
+    approvalText,
   })
 }
 

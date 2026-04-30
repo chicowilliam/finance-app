@@ -1,6 +1,8 @@
 import {
+  BadRequestException,
   ForbiddenException,
   Injectable,
+  NotFoundException,
   UnauthorizedException,
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
@@ -159,5 +161,36 @@ export class AuthService {
     await this.usersService.updatePasswordAndClearResetToken(user.id, novaSenha);
 
     return { message: 'Senha atualizada com sucesso.' };
+  }
+
+  async deleteOwnAccount(userId: number, confirmText: string) {
+    if (confirmText.trim() !== 'Apagar minha conta') {
+      throw new BadRequestException(
+        'Texto de confirmacao invalido. Digite exatamente: Apagar minha conta',
+      );
+    }
+
+    const user = await this.usersService.findById(userId);
+    if (!user) {
+      throw new NotFoundException('Usuário não encontrado.');
+    }
+
+    if (user.role === 'admin' && user.isActive) {
+      const activeAdmins = await this.usersService.countActiveAdmins();
+      if (activeAdmins <= 1) {
+        throw new BadRequestException(
+          'Não é permitido apagar o último admin ativo.',
+        );
+      }
+    }
+
+    try {
+      await this.usersService.deleteUser(userId);
+      return { message: 'Conta apagada com sucesso.' };
+    } catch {
+      throw new BadRequestException(
+        'Não foi possível apagar esta conta por causa de vínculos de auditoria.',
+      );
+    }
   }
 }

@@ -48,3 +48,7 @@ export async function apiForgotPassword(email: string): Promise<void> {
 export async function apiResetPassword(token: string, novaSenha: string): Promise<void> {
   return post<void>('/auth/reset-password', { token, novaSenha })
 }
+
+export async function apiDeleteOwnAccount(confirmText: string): Promise<void> {
+  return postAuth<void>('/auth/delete-account', { confirmText })
+}

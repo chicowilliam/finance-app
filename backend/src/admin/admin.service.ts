@@ -7,6 +7,7 @@ import {
 import { PrismaService } from '../prisma/prisma.service';
 import { UsersService } from '../users/users.service';
 import { DeleteUserDto } from './dto/delete-user.dto';
+import { AdminApprovalDto } from './dto/admin-approval.dto';
 
 @Injectable()
 export class AdminService {
@@ -19,7 +20,12 @@ export class AdminService {
     return this.usersService.listUsers();
   }
 
-  async setUserActive(actorUserId: number, targetUserId: number, isActive: boolean) {
+  async setUserActive(
+    actorUserId: number,
+    targetUserId: number,
+    isActive: boolean,
+    _approval: AdminApprovalDto,
+  ) {
     if (actorUserId === targetUserId) {
       throw new ForbiddenException('Você não pode alterar o status da própria conta por aqui.');
     }
@@ -43,6 +49,7 @@ export class AdminService {
         action: isActive ? 'user_reactivated' : 'user_deactivated',
         actorUserId,
         targetUserId,
+        details: 'Aprovacao em 2 etapas: APROVAR',
       },
     });
 
@@ -77,7 +84,7 @@ export class AdminService {
         action: 'user_deleted',
         actorUserId,
         targetUserId,
-        details: `Deleted user ${target.email}`,
+        details: `Deleted user ${target.email} | Aprovacao em 2 etapas: ${dto.approvalText}`,
       },
     });
 

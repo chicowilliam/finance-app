@@ -7,4 +7,8 @@ export class DeleteUserDto {
   @IsString()
   @Matches(/^DELETE$/)
   confirmText: string;
+
+  @IsString()
+  @Matches(/^APROVAR$/)
+  approvalText: string;
 }

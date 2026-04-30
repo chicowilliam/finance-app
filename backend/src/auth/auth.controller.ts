@@ -58,6 +58,11 @@ export class ResetPasswordDto {
   novaSenha: string;
 }
 
+export class DeleteOwnAccountDto {
+  @IsString()
+  confirmText: string;
+}
+
 interface AuthRequest {
   user: { userId: number; email: string; role: 'user' | 'admin' };
 }
@@ -127,5 +132,16 @@ export class AuthController {
     @Request() req: AuthRequest,
   ) {
     return this.authService.upgradeFromGuest(req.user.userId, dto.contas);
+  }
+
+  @SkipThrottle()
+  @UseGuards(JwtAuthGuard)
+  @Post('delete-account')
+  @HttpCode(HttpStatus.OK)
+  deleteOwnAccount(
+    @Body() dto: DeleteOwnAccountDto,
+    @Request() req: AuthRequest,
+  ) {
+    return this.authService.deleteOwnAccount(req.user.userId, dto.confirmText);
   }
 }

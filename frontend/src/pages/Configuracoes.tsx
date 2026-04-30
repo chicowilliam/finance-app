@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import {
   Avatar,
   Grid,
@@ -8,21 +9,46 @@ import {
   Text,
   Title,
 } from '@mantine/core'
+import { toast } from 'sonner'
 import { Settings, Moon, Sun, UserCircle, Bell, Shield, LogOut } from '../lib/icons'
 import { useTheme } from '../hooks/useTheme'
 import { useAuth } from '../hooks/useAuth'
 import AppButton from '../components/AppButton'
 import AppPanel from '../components/AppPanel'
+import AppModal from '../components/AppModal'
+import { AppInput } from '../components/AppInput'
+import { apiDeleteOwnAccount } from '../services/authService'
 
 export default function Configuracoes() {
+  const navigate = useNavigate()
   const { theme, setTheme } = useTheme()
   const { mode, logout } = useAuth()
   const [notifications, setNotifications] = useState(true)
+  const [deleteOpen, setDeleteOpen] = useState(false)
+  const [deleteText, setDeleteText] = useState('')
+  const [deleting, setDeleting] = useState(false)
   const darkMode = theme === 'dark'
 
   const isGuest = mode === 'guest'
 
   const panelMinHeight = 168
+  const canDelete = deleteText.trim() === 'Apagar minha conta'
+
+  async function handleDeleteOwnAccount() {
+    if (!canDelete) return
+
+    setDeleting(true)
+    try {
+      await apiDeleteOwnAccount(deleteText.trim())
+      toast.success('Conta apagada com sucesso.')
+      logout()
+      navigate('/')
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : 'Falha ao apagar conta')
+    } finally {
+      setDeleting(false)
+    }
+  }
 
   return (
     <Stack gap="xs">
@@ -92,10 +118,48 @@ export default function Configuracoes() {
               >
                 <Group gap={6}><LogOut size={16} strokeWidth={1.8} /> Sair da conta</Group>
               </AppButton>
+              {!isGuest && (
+                <AppButton
+                  appearance="soft"
+                  tone="danger"
+                  onClick={() => {
+                    setDeleteText('')
+                    setDeleteOpen(true)
+                  }}
+                >
+                  Apagar minha conta
+                </AppButton>
+              )}
             </Stack>
           </AppPanel>
         </Grid.Col>
       </Grid>
+
+      <AppModal
+        opened={deleteOpen}
+        onClose={() => setDeleteOpen(false)}
+        title="Apagar conta permanentemente"
+      >
+        <Stack>
+          <Text size="sm" c="dimmed">
+            Para confirmar, digite exatamente: Apagar minha conta
+          </Text>
+          <AppInput
+            label="Texto de confirmação"
+            placeholder="Apagar minha conta"
+            value={deleteText}
+            onChange={(e) => setDeleteText(e.currentTarget.value)}
+          />
+          <Group justify="flex-end">
+            <AppButton appearance="soft" tone="neutral" onClick={() => setDeleteOpen(false)}>
+              Cancelar
+            </AppButton>
+            <AppButton tone="danger" onClick={() => void handleDeleteOwnAccount()} disabled={!canDelete || deleting}>
+              Confirmar exclusão
+            </AppButton>
+          </Group>
+        </Stack>
+      </AppModal>
     </Stack>
   )
 }

@@ -29,6 +29,12 @@ type DeleteModalState = {
   user: AdminUser | null
 }
 
+type ApprovalModalState = {
+  open: boolean
+  user: AdminUser | null
+  nextValue: boolean
+}
+
 const ACTION_LABEL: Record<AdminAuditLog['action'], string> = {
   user_deactivated: 'Desativou',
   user_reactivated: 'Reativou',
@@ -41,9 +47,16 @@ export default function AdminUsuarios() {
   const [loadingUsers, setLoadingUsers] = useState(true)
   const [loadingLogs, setLoadingLogs] = useState(true)
   const [deleting, setDeleting] = useState(false)
+  const [approving, setApproving] = useState(false)
   const [deleteState, setDeleteState] = useState<DeleteModalState>({ open: false, user: null })
+  const [approvalState, setApprovalState] = useState<ApprovalModalState>({
+    open: false,
+    user: null,
+    nextValue: true,
+  })
   const [confirmEmail, setConfirmEmail] = useState('')
   const [confirmText, setConfirmText] = useState('')
+  const [approvalText, setApprovalText] = useState('')
 
   const canDelete = useMemo(() => {
     return Boolean(
@@ -52,6 +65,8 @@ export default function AdminUsuarios() {
       confirmEmail.trim().toLowerCase() === deleteState.user.email.toLowerCase(),
     )
   }, [deleteState.user, confirmEmail, confirmText])
+
+  const canApproveAction = approvalText.trim() === 'APROVAR'
 
   async function loadUsers() {
     setLoadingUsers(true)
@@ -80,13 +95,31 @@ export default function AdminUsuarios() {
     void loadAuditLogs()
   }, [])
 
-  async function handleToggleActive(user: AdminUser) {
+  function openApprovalModal(user: AdminUser, nextValue: boolean) {
+    setApprovalState({ open: true, user, nextValue })
+    setApprovalText('')
+  }
+
+  function closeApprovalModal() {
+    setApprovalState({ open: false, user: null, nextValue: true })
+    setApprovalText('')
+  }
+
+  async function handleConfirmToggleActive() {
+    if (!approvalState.user || !canApproveAction) return
+
+    setApproving(true)
     try {
-      await setAdminUserActive(user.id, !user.isActive)
-      toast.success(`Conta ${!user.isActive ? 'reativada' : 'desativada'}: ${user.email}`)
+      await setAdminUserActive(approvalState.user.id, approvalState.nextValue, 'APROVAR')
+      toast.success(
+        `Conta ${approvalState.nextValue ? 'reativada' : 'desativada'}: ${approvalState.user.email}`,
+      )
+      closeApprovalModal()
       await Promise.all([loadUsers(), loadAuditLogs()])
     } catch (err) {
       toast.error(err instanceof Error ? err.message : 'Falha ao alterar status da conta')
+    } finally {
+      setApproving(false)
     }
   }
 
@@ -94,20 +127,22 @@ export default function AdminUsuarios() {
     setDeleteState({ open: true, user })
     setConfirmEmail('')
     setConfirmText('')
+    setApprovalText('')
   }
 
   function closeDeleteModal() {
     setDeleteState({ open: false, user: null })
     setConfirmEmail('')
     setConfirmText('')
+    setApprovalText('')
   }
 
   async function handleDeleteUser() {
-    if (!deleteState.user || !canDelete) return
+    if (!deleteState.user || !canDelete || !canApproveAction) return
 
     setDeleting(true)
     try {
-      await deleteAdminUser(deleteState.user.id, confirmEmail.trim())
+      await deleteAdminUser(deleteState.user.id, confirmEmail.trim(), 'APROVAR')
       toast.success(`Usuário excluído: ${deleteState.user.email}`)
       closeDeleteModal()
       await Promise.all([loadUsers(), loadAuditLogs()])
@@ -171,7 +206,7 @@ export default function AdminUsuarios() {
                         color={user.isActive ? 'yellow' : 'green'}
                         variant="light"
                         aria-label={user.isActive ? 'Desativar conta' : 'Reativar conta'}
-                        onClick={() => void handleToggleActive(user)}
+                        onClick={() => openApprovalModal(user, !user.isActive)}
                       >
                         {user.isActive ? <X size={14} strokeWidth={2} /> : <CheckCircle size={14} strokeWidth={2} />}
                       </ActionIcon>
@@ -252,14 +287,47 @@ export default function AdminUsuarios() {
             value={confirmText}
             onChange={(e) => setConfirmText(e.currentTarget.value)}
           />
+          <AppInput
+            label="Aprovação do admin"
+            placeholder="APROVAR"
+            value={approvalText}
+            onChange={(e) => setApprovalText(e.currentTarget.value)}
+          />
           <Group justify="flex-end">
             <AppButton appearance="soft" tone="neutral" onClick={closeDeleteModal}>Cancelar</AppButton>
             <AppButton
               tone="danger"
               onClick={() => void handleDeleteUser()}
-              disabled={!canDelete || deleting}
+              disabled={!canDelete || !canApproveAction || deleting}
             >
               Excluir definitivamente
+            </AppButton>
+          </Group>
+        </Stack>
+      </AppModal>
+
+      <AppModal
+        opened={approvalState.open}
+        onClose={closeApprovalModal}
+        title="Aprovação em 2 etapas"
+      >
+        <Stack>
+          <Text size="sm" c="dimmed">
+            Para continuar, digite APROVAR para confirmar a ação administrativa.
+          </Text>
+          <AppInput
+            label="Confirmação"
+            placeholder="APROVAR"
+            value={approvalText}
+            onChange={(e) => setApprovalText(e.currentTarget.value)}
+          />
+          <Group justify="flex-end">
+            <AppButton appearance="soft" tone="neutral" onClick={closeApprovalModal}>Cancelar</AppButton>
+            <AppButton
+              onClick={() => void handleConfirmToggleActive()}
+              disabled={!canApproveAction || approving}
+            >
+              Confirmar ação
             </AppButton>
           </Group>
         </Stack>
