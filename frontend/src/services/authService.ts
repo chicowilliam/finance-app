@@ -1,4 +1,4 @@
-import { get, post, postAuth } from './api'
+import { get, patch, post, postAuth } from './api'
 import type { Conta } from '../types/Bill'
 
 export interface AuthResponse {
@@ -51,4 +51,17 @@ export async function apiResetPassword(token: string, novaSenha: string): Promis
 
 export async function apiDeleteOwnAccount(confirmText: string): Promise<void> {
   return postAuth<void>('/auth/delete-account', { confirmText })
+}
+
+export interface UpdateProfilePayload {
+  nome?: string
+  email?: string
+}
+
+export async function apiUpdateProfile(payload: UpdateProfilePayload): Promise<AuthMeResponse> {
+  return patch<AuthMeResponse>('/auth/me', payload)
+}
+
+export async function apiChangePassword(senhaAtual: string, novaSenha: string): Promise<void> {
+  return patch<void>('/auth/me/password', { senhaAtual, novaSenha })
 }

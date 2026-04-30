@@ -7,6 +7,7 @@ import Sidebar from '../components/Sidebar'
 import Navbar from '../components/Navbar'
 import NovaContaForm from '../components/NovaContaForm'
 import AppModal from '../components/AppModal'
+import SettingsModal from '../components/SettingsModal'
 import { useContas } from '../hooks/useBills'
 import { ContasContext } from '../context/ContasContext'
 import type { Conta } from '../types/Bill'
@@ -18,6 +19,7 @@ const SIDEBAR_STORAGE_KEY = 'finance-app:sidebar-width'
 
 export default function DashboardLayout() {
 	const [modalOpen, setModalOpen] = useState(false)
+	const [settingsOpen, setSettingsOpen] = useState(false)
 	const contasState = useContas()
 	const [mobileOpened, { toggle: toggleMobile, close: closeMobile }] = useDisclosure(false)
 	const [desktopOpened, { toggle: toggleDesktop }] = useDisclosure(true)
@@ -46,8 +48,13 @@ export default function DashboardLayout() {
 
 	useEffect(() => {
 		const openModal = () => setModalOpen(true)
+		const openSettings = () => setSettingsOpen(true)
 		window.addEventListener('finance:new-bill', openModal)
-		return () => window.removeEventListener('finance:new-bill', openModal)
+		window.addEventListener('finance:open-settings', openSettings)
+		return () => {
+			window.removeEventListener('finance:new-bill', openModal)
+			window.removeEventListener('finance:open-settings', openSettings)
+		}
 	}, [])
 
 	const handleMouseDown = () => {
@@ -144,6 +151,8 @@ export default function DashboardLayout() {
 						onCancel={() => setModalOpen(false)}
 					/>
 				</AppModal>
+
+				<SettingsModal opened={settingsOpen} onClose={() => setSettingsOpen(false)} />
 			</div>
 		</ContasContext.Provider>
 	)

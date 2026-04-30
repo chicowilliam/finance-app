@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react'
-import { NavLink, useLocation, useNavigate } from 'react-router-dom'
+import { NavLink, useLocation } from 'react-router-dom'
 import { ActionIcon, Avatar, Box, Divider, Group, NavLink as MantineNavLink, Popover, Stack, Text, UnstyledButton } from '@mantine/core'
 import { Bell, CalendarDays, Eye, EyeOff, LayoutDashboard, List, LogOut, Moon, PanelLeftClose, Settings, Sun, TrendingUp, Wallet } from '../lib/icons'
 import { useContasContext } from '../context/ContasContext'
@@ -21,7 +21,6 @@ interface SidebarProps {
 
 export default function Sidebar({ onToggleDesktop, onNavClick }: SidebarProps) {
 	const { pathname } = useLocation()
-	const navigate = useNavigate()
 	const [showValues, setShowValues] = useState(true)
 	const { isAdmin, userName, userEmail, logout } = useAuth()
 	const { theme, toggleTheme } = useTheme()
@@ -257,8 +256,7 @@ export default function Sidebar({ onToggleDesktop, onNavClick }: SidebarProps) {
 								cursor: 'pointer',
 								transition: 'background 0.15s, border-color 0.15s',
 							}}
-							onClick={() => setProfileOpen((v) => !v)}
-						>
+							onClick={() => setProfileOpen((v) => !v)}						>
 							<Group justify="space-between" wrap="nowrap">
 								<Group gap={10} wrap="nowrap" style={{ minWidth: 0 }}>
 									<Avatar size={32} radius="xl" color="teal" variant="filled" style={{ flexShrink: 0 }}>
@@ -277,7 +275,7 @@ export default function Sidebar({ onToggleDesktop, onNavClick }: SidebarProps) {
 									variant="subtle"
 									size="sm"
 									style={{ color: 'var(--color-aluminum)' }}
-									onClick={(e) => { e.stopPropagation(); navigate('/app/configuracoes'); onNavClick() }}
+									onClick={(e) => { e.stopPropagation(); window.dispatchEvent(new CustomEvent('finance:open-settings')) }}
 									aria-label="Abrir configurações"
 								>
 									<Settings size={15} strokeWidth={1.8} />

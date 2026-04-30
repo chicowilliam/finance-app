@@ -150,7 +150,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 		return () => {
 			isMounted = false
 		}
-	}, [mode, persistMode]) // eslint-disable-line react-hooks/exhaustive-deps
+	}, [mode, persistMode, refreshProfile])
 
 	useEffect(() => {
 		function handleAuthExpired() {
@@ -174,9 +174,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 			login,
 			register,
 			logout,
+			refreshProfile,
 			}
 		},
-		[mode, role, userName, userEmail, enterGuest, login, register, logout],
+		[mode, role, userName, userEmail, enterGuest, login, register, logout, refreshProfile],
 	)
 
 	return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>
