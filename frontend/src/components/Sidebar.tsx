@@ -29,15 +29,8 @@ export default function Sidebar({ onToggleDesktop, onNavClick }: SidebarProps) {
 	const { contas } = useContasContext()
 	const showSidebarSummary = pathname !== '/app'
 	const bottomLinks = useMemo(() => {
-		const links: Array<{ to: string; label: string; icon: typeof Settings }> = [
-			{ to: '/app/configuracoes', label: 'Configurações', icon: Settings },
-		]
-
-		if (isAdmin) {
-			links.unshift({ to: '/app/admin/usuarios', label: 'Painel Admin', icon: Settings })
-		}
-
-		return links
+		if (!isAdmin) return []
+		return [{ to: '/app/admin/usuarios', label: 'Painel Admin', icon: Settings }]
 	}, [isAdmin])
 
 	const totais = useMemo(() => {
@@ -188,7 +181,8 @@ export default function Sidebar({ onToggleDesktop, onNavClick }: SidebarProps) {
 
 			<Box mt="auto" pt="md">
 				<Divider color="var(--sidebar-border)" mb="sm" />
-				<Stack gap={4}>
+				{bottomLinks.length > 0 && (
+				<Stack gap={4} mb="xs">
 					<Text size="10px" fw={700} c="var(--color-aluminum)" className="sidebar-section-label" px={8}>Sistema</Text>
 					{bottomLinks.map((l) => (
 						<MantineNavLink
@@ -241,8 +235,7 @@ export default function Sidebar({ onToggleDesktop, onNavClick }: SidebarProps) {
 							}}
 						/>
 					))}
-				</Stack>
-
+				</Stack>				)}
 				{/* Card de perfil com popover */}
 				<Popover
 					opened={profileOpen}
@@ -283,9 +276,9 @@ export default function Sidebar({ onToggleDesktop, onNavClick }: SidebarProps) {
 								<ActionIcon
 									variant="subtle"
 									size="sm"
-									style={{ color: 'var(--color-aluminum)', transition: 'transform 0.2s', transform: profileOpen ? 'rotate(180deg)' : 'rotate(0deg)' }}
-									onClick={(e) => { e.stopPropagation(); setProfileOpen((v) => !v) }}
-									aria-label="Abrir menu de perfil"
+									style={{ color: 'var(--color-aluminum)' }}
+									onClick={(e) => { e.stopPropagation(); navigate('/app/configuracoes'); onNavClick() }}
+									aria-label="Abrir configurações"
 								>
 									<Settings size={15} strokeWidth={1.8} />
 								</ActionIcon>
@@ -302,17 +295,6 @@ export default function Sidebar({ onToggleDesktop, onNavClick }: SidebarProps) {
 						}}
 					>
 						<Stack gap={2}>
-							<UnstyledButton
-								style={{ borderRadius: 8, padding: '8px 10px' }}
-								onClick={() => { setProfileOpen(false); navigate('/app/configuracoes'); onNavClick() }}
-								className="profile-menu-item"
-							>
-								<Group gap={10}>
-									<Settings size={15} strokeWidth={1.8} color="var(--color-aluminum)" />
-									<Text size="sm" c="var(--color-sidebar-text)">Configurações</Text>
-								</Group>
-							</UnstyledButton>
-
 							<UnstyledButton
 								style={{ borderRadius: 8, padding: '8px 10px' }}
 								onClick={() => { toggleTheme(); setProfileOpen(false) }}
