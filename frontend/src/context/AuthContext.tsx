@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import type { ReactNode } from 'react'
 import { AuthContext } from './AuthStateContext'
 import type { AuthMode, AuthRole } from './AuthStateContext'
@@ -43,6 +43,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 		}
 		return 'anonymous'
 	})
+
+	const isFirstRenderRef = useRef(true)
 
 	const persistRole = useCallback((nextRole: AuthRole) => {
 		setRole(nextRole)
@@ -122,14 +124,28 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 	}, [persistMode])
 
 	useEffect(() => {
+		if (isFirstRenderRef.current) {
+			isFirstRenderRef.current = false
+			return
+		}
+
 		if (mode !== 'user') {
 			return
 		}
 
+		let isMounted = true
+
+		// eslint-disable-next-line react-hooks/set-state-in-effect
 		void refreshProfile().catch(() => {
-			persistMode('anonymous')
+			if (isMounted) {
+				persistMode('anonymous')
+			}
 		})
-	}, [mode, refreshProfile, persistMode])
+
+		return () => {
+			isMounted = false
+		}
+	}, [mode, persistMode]) // eslint-disable-line react-hooks/exhaustive-deps
 
 	useEffect(() => {
 		function handleAuthExpired() {

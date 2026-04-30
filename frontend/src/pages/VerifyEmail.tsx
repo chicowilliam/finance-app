@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 import { Container, Stack, Text, Title } from '@mantine/core'
 import { toast } from 'sonner'
@@ -11,14 +11,20 @@ type Estado = 'verificando' | 'sucesso' | 'erro'
 export default function VerifyEmail() {
   const [searchParams] = useSearchParams()
   const navigate = useNavigate()
-  const [estado, setEstado] = useState<Estado>('verificando')
-  const [mensagem, setMensagem] = useState('')
+  const token = searchParams.get('token')
+  const [estado, setEstado] = useState<Estado>(token ? 'verificando' : 'erro')
+  const [mensagem, setMensagem] = useState(token ? '' : 'Link de verificação inválido ou expirado.')
+  const isFirstRenderRef = useRef(true)
 
   useEffect(() => {
-    const token = searchParams.get('token')
+    if (isFirstRenderRef.current) {
+      isFirstRenderRef.current = false
+      if (!token) {
+        return
+      }
+    }
+
     if (!token) {
-      setEstado('erro')
-      setMensagem('Link de verificação inválido ou expirado.')
       return
     }
 
@@ -33,7 +39,7 @@ export default function VerifyEmail() {
           err instanceof Error ? err.message : 'Não foi possível verificar o e-mail.',
         )
       })
-  }, [searchParams])
+  }, [token])
 
   return (
     <Container size={480} py={64}>
