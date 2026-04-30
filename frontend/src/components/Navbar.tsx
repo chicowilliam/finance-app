@@ -107,17 +107,19 @@ export default function Navbar({ onAddBill, onToggleMobile, desktopOpened, onTog
           </Stack>
 
           {/* Ações */}
-          <AppButton
-            appearance="soft"
-            tone="neutral"
-            leftSection={<Banknote size={15} strokeWidth={1.8} />}
-            onClick={openSaldoModal}
-          >
-            {saldo !== null ? 'Atualizar saldo' : 'Adicionar saldo'}
-          </AppButton>
-          <AppButton className="magic-cta-button" leftSection={<Plus size={15} strokeWidth={2} />} onClick={onAddBill}>
-            Nova Conta
-          </AppButton>
+          <Stack gap={6}>
+            <AppButton
+              appearance="soft"
+              tone="neutral"
+              leftSection={<Banknote size={15} strokeWidth={1.8} />}
+              onClick={openSaldoModal}
+            >
+              {saldo !== null ? 'Atualizar saldo' : 'Adicionar saldo'}
+            </AppButton>
+            <AppButton className="magic-cta-button" leftSection={<Plus size={15} strokeWidth={2} />} onClick={onAddBill}>
+              Nova Conta
+            </AppButton>
+          </Stack>
         </Group>
       </Paper>
 

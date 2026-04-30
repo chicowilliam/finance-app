@@ -258,25 +258,27 @@ export default function Contas() {
                           {c.status !== 'paga' && (
                             <Tooltip label="Marcar como paga" withArrow openDelay={300}>
                               <ActionIcon
-                                variant="light"
+                                variant="filled"
                                 color="green"
-                                size="sm"
+                                size="md"
+                                radius="md"
                                 onClick={() => void handlePagar(c)}
                                 aria-label="Marcar como paga"
                               >
-                                <CheckCircle size={14} strokeWidth={2} />
+                                <CheckCircle size={16} strokeWidth={2} />
                               </ActionIcon>
                             </Tooltip>
                           )}
                           <Tooltip label="Remover conta" withArrow openDelay={300}>
                             <ActionIcon
-                              variant="light"
+                              variant="filled"
                               color="red"
-                              size="sm"
+                              size="md"
+                              radius="md"
                               onClick={() => void handleRemover(c)}
                               aria-label="Remover conta"
                             >
-                              <Trash2 size={13} strokeWidth={2} />
+                              <Trash2 size={15} strokeWidth={2} />
                             </ActionIcon>
                           </Tooltip>
                         </Group>
