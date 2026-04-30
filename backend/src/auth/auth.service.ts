@@ -43,7 +43,7 @@ export class AuthService {
 
     await this.usersService.setEmailVerificationToken(userId, tokenHash, expiresAt);
 
-    const verifyLink = this.buildAppUrl(`/verificar-email?token=${rawToken}`);
+    const verifyLink = this.buildAppUrl(`/auth/verify-email?token=${rawToken}`);
     await this.emailService.sendEmail(
       email,
       'Confirme seu e-mail',
@@ -135,7 +135,7 @@ export class AuthService {
 
     await this.usersService.setPasswordResetTokenByEmail(email, tokenHash, expiresAt);
 
-    const resetLink = this.buildAppUrl(`/redefinir-senha?token=${rawToken}`);
+    const resetLink = this.buildAppUrl(`/auth/reset-password?token=${rawToken}`);
     await this.emailService.sendEmail(
       email,
       'Recuperacao de senha',
