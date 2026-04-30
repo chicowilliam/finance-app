@@ -1,7 +1,7 @@
 import { useMemo, useState } from 'react'
-import { NavLink, useLocation } from 'react-router-dom'
-import { ActionIcon, Box, Divider, Group, NavLink as MantineNavLink, Stack, Text } from '@mantine/core'
-import { Bell, CalendarDays, Eye, EyeOff, LayoutDashboard, List, PanelLeftClose, Settings, TrendingUp, Wallet } from '../lib/icons'
+import { NavLink, useLocation, useNavigate } from 'react-router-dom'
+import { ActionIcon, Avatar, Box, Divider, Group, NavLink as MantineNavLink, Stack, Text, Tooltip } from '@mantine/core'
+import { Bell, CalendarDays, Eye, EyeOff, LayoutDashboard, List, LogOut, PanelLeftClose, Settings, TrendingUp, Wallet } from '../lib/icons'
 import { useContasContext } from '../context/ContasContext'
 import { useAuth } from '../hooks/useAuth'
 import { formatBRL } from '../utils/formatCurrency'
@@ -20,8 +20,9 @@ interface SidebarProps {
 
 export default function Sidebar({ onToggleDesktop, onNavClick }: SidebarProps) {
 	const { pathname } = useLocation()
+	const navigate = useNavigate()
 	const [showValues, setShowValues] = useState(true)
-	const { isAdmin } = useAuth()
+	const { isAdmin, userName, userEmail, logout } = useAuth()
 	const { contas } = useContasContext()
 	const showSidebarSummary = pathname !== '/app'
 	const bottomLinks = useMemo(() => {
@@ -238,6 +239,57 @@ export default function Sidebar({ onToggleDesktop, onNavClick }: SidebarProps) {
 						/>
 					))}
 				</Stack>
+
+				{/* Card de perfil */}
+				<Box
+					mt="sm"
+					style={{
+						border: '1px solid rgba(255,255,255,0.08)',
+						borderRadius: 12,
+						padding: '10px 12px',
+						background: 'rgba(255,255,255,0.03)',
+						cursor: 'pointer',
+					}}
+					onClick={() => { navigate('/app/configuracoes'); onNavClick() }}
+				>
+					<Group justify="space-between" wrap="nowrap">
+						<Group gap={10} wrap="nowrap" style={{ minWidth: 0 }}>
+							<Avatar size={32} radius="xl" color="teal" variant="filled" style={{ flexShrink: 0 }}>
+								{userName ? userName.charAt(0).toUpperCase() : '?'}
+							</Avatar>
+							<Box style={{ minWidth: 0 }}>
+								<Text size="xs" fw={600} c="var(--color-sidebar-text)" style={{ lineHeight: 1.3, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+									{userName ?? 'Usuário'}
+								</Text>
+								<Text size="10px" c="var(--color-aluminum)" style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+									{userEmail ?? ''}
+								</Text>
+							</Box>
+						</Group>
+						<Group gap={4} wrap="nowrap" style={{ flexShrink: 0 }}>
+							<Tooltip label="Configurações" withArrow openDelay={400} position="top">
+								<ActionIcon
+									variant="subtle"
+									size="sm"
+									onClick={(e) => { e.stopPropagation(); navigate('/app/configuracoes'); onNavClick() }}
+									style={{ color: 'var(--color-aluminum)' }}
+								>
+									<Settings size={15} strokeWidth={1.8} />
+								</ActionIcon>
+							</Tooltip>
+							<Tooltip label="Sair" withArrow openDelay={400} position="top">
+								<ActionIcon
+									variant="subtle"
+									size="sm"
+									onClick={(e) => { e.stopPropagation(); logout() }}
+									style={{ color: 'var(--color-aluminum)' }}
+								>
+									<LogOut size={15} strokeWidth={1.8} />
+								</ActionIcon>
+							</Tooltip>
+						</Group>
+					</Group>
+				</Box>
 			</Box>
 		</Box>
 	)

@@ -46,6 +46,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
 	const isFirstRenderRef = useRef(true)
 
+	const [userName, setUserName] = useState<string | null>(null)
+	const [userEmail, setUserEmail] = useState<string | null>(null)
+
 	const persistRole = useCallback((nextRole: AuthRole) => {
 		setRole(nextRole)
 		if (!nextRole) {
@@ -72,6 +75,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 		try {
 			const me = await apiMe()
 			persistRole(me.role)
+			setUserName(me.nome ?? null)
+			setUserEmail(me.email ?? null)
 			return
 		} catch (err) {
 			const message = err instanceof Error ? err.message : ''
@@ -163,13 +168,15 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 			role,
 			isAdmin: role === 'admin',
 			isAuthenticated: mode === 'guest' || mode === 'user',
+			userName,
+			userEmail,
 			enterGuest,
 			login,
 			register,
 			logout,
 			}
 		},
-		[mode, role, enterGuest, login, register, logout],
+		[mode, role, userName, userEmail, enterGuest, login, register, logout],
 	)
 
 	return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>
