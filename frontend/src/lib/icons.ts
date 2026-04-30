@@ -1,6 +1,7 @@
 import {
   AlertCircle,
   AlertTriangle,
+  Banknote,
   Bell,
   CalendarDays,
   CheckCircle,
@@ -21,6 +22,7 @@ import {
   Settings,
   Shield,
   Sun,
+  Trash2,
   TrendingUp,
   UserCircle,
   Wallet,
@@ -30,6 +32,7 @@ import {
 export {
   AlertCircle,
   AlertTriangle,
+  Banknote,
   Bell,
   CalendarDays,
   CheckCircle,
@@ -50,6 +53,7 @@ export {
   Settings,
   Shield,
   Sun,
+  Trash2,
   TrendingUp,
   UserCircle,
   Wallet,

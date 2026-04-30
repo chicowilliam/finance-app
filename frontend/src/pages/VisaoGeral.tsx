@@ -1,8 +1,9 @@
 import { useContasContext } from '../context/ContasContext'
+import { useSaldo } from '../hooks/useSaldo'
 import { formatBRL } from '../utils/formatCurrency'
 import { formatData } from '../data/mockContas'
 import { Group, List, SimpleGrid, Stack, Text, Title } from '@mantine/core'
-import { AlertTriangle, Clock, Plus, Wallet } from '../lib/icons'
+import { AlertTriangle, Banknote, Clock, Plus, Wallet } from '../lib/icons'
 import { motion, useReducedMotion } from 'motion/react'
 import { Bar, BarChart, CartesianGrid, Cell, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts'
 import AppPanel from '../components/AppPanel'
@@ -12,6 +13,7 @@ import MagicStatCard from '../components/MagicStatCard'
 
 export default function VisaoGeral() {
   const { contas, loading } = useContasContext()
+  const { saldo } = useSaldo()
   const shouldReduceMotion = useReducedMotion()
 
   if (loading) return <Loader variant="dashboard" />
@@ -20,8 +22,20 @@ export default function VisaoGeral() {
   const aVencer   = contas.filter(c => c.status === 'a_vencer')
   const atrasadas = contas.filter(c => c.status === 'atrasada')
   const isEmpty = contas.length === 0
+  const totalEmAberto = aVencer.reduce((s, c) => s + c.valor, 0) + atrasadas.reduce((s, c) => s + c.valor, 0)
+  const saldoAposPagar = saldo !== null ? saldo - totalEmAberto : null
 
   const cards = [
+    {
+      label: 'Saldo Disponível',
+      valor: saldo ?? 0,
+      qtd: 0,
+      tone: 'teal' as const,
+      description: saldoAposPagar !== null
+        ? `Após pagar contas: ${formatBRL(saldoAposPagar)}`
+        : 'Adicione seu saldo na barra superior',
+      icon: <Banknote size={18} strokeWidth={1.8} />,
+    },
     {
       label: 'Total Pago',
       valor: pagas.reduce((s, c) => s + c.valor, 0),
@@ -45,14 +59,6 @@ export default function VisaoGeral() {
       tone: 'rose' as const,
       description: 'Exigem ação imediata',
       icon: <AlertTriangle size={18} strokeWidth={1.8} />,
-    },
-    {
-      label: 'Total do Mês',
-      valor: contas.reduce((s, c) => s + c.valor, 0),
-      qtd: contas.length,
-      tone: 'teal' as const,
-      description: 'Panorama consolidado do período',
-      icon: <Plus size={18} strokeWidth={1.8} />,
     },
   ]
 
