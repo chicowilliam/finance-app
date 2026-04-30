@@ -24,7 +24,6 @@ export class AdminService {
     actorUserId: number,
     targetUserId: number,
     isActive: boolean,
-    _approval: AdminApprovalDto,
   ) {
     if (actorUserId === targetUserId) {
       throw new ForbiddenException('Você não pode alterar o status da própria conta por aqui.');

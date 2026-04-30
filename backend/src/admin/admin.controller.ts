@@ -16,7 +16,6 @@ import { RolesGuard } from '../auth/roles.guard';
 import { Roles } from '../auth/roles.decorator';
 import { AdminService } from './admin.service';
 import { DeleteUserDto } from './dto/delete-user.dto';
-import { AdminApprovalDto } from './dto/admin-approval.dto';
 
 interface AuthRequest {
   user: { userId: number; email: string; role: 'user' | 'admin' };
@@ -37,10 +36,9 @@ export class AdminController {
   setUserActive(
     @Param('id', ParseIntPipe) id: number,
     @Query('value', ParseBoolPipe) value: boolean,
-    @Body() dto: AdminApprovalDto,
     @Request() req: AuthRequest,
   ) {
-    return this.adminService.setUserActive(req.user.userId, id, value, dto);
+    return this.adminService.setUserActive(req.user.userId, id, value);
   }
 
   @Delete('users/:id')
