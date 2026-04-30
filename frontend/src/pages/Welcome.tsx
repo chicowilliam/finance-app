@@ -1,5 +1,5 @@
 import { useRef, useState } from 'react'
-import { Navigate, useNavigate } from 'react-router-dom'
+import { Link, Navigate, useNavigate } from 'react-router-dom'
 import {
   Container,
   Group,
@@ -136,6 +136,12 @@ export default function Welcome() {
                         error={loginForm.formState.errors.senha?.message}
                         {...loginForm.register('senha')}
                       />
+
+                      <Text size="xs" ta="right" mt={-4}>
+                        <Link to="/auth/forgot-password" style={{ color: 'var(--mantine-color-brand-5)' }}>
+                          Esqueci minha senha
+                        </Link>
+                      </Text>
 
                       <AppButton type="submit" loading={loginForm.formState.isSubmitting}>
                         Entrar
