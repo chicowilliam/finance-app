@@ -1,9 +1,10 @@
 import { useMemo, useState } from 'react'
 import { NavLink, useLocation, useNavigate } from 'react-router-dom'
-import { ActionIcon, Avatar, Box, Divider, Group, NavLink as MantineNavLink, Stack, Text, Tooltip } from '@mantine/core'
-import { Bell, CalendarDays, Eye, EyeOff, LayoutDashboard, List, LogOut, PanelLeftClose, Settings, TrendingUp, Wallet } from '../lib/icons'
+import { ActionIcon, Avatar, Box, Divider, Group, NavLink as MantineNavLink, Popover, Stack, Text, UnstyledButton } from '@mantine/core'
+import { Bell, CalendarDays, Eye, EyeOff, LayoutDashboard, List, LogOut, Moon, PanelLeftClose, Settings, Sun, TrendingUp, Wallet } from '../lib/icons'
 import { useContasContext } from '../context/ContasContext'
 import { useAuth } from '../hooks/useAuth'
+import { useTheme } from '../hooks/useTheme'
 import { formatBRL } from '../utils/formatCurrency'
 
 const mainLinks = [
@@ -23,6 +24,8 @@ export default function Sidebar({ onToggleDesktop, onNavClick }: SidebarProps) {
 	const navigate = useNavigate()
 	const [showValues, setShowValues] = useState(true)
 	const { isAdmin, userName, userEmail, logout } = useAuth()
+	const { theme, toggleTheme } = useTheme()
+	const [profileOpen, setProfileOpen] = useState(false)
 	const { contas } = useContasContext()
 	const showSidebarSummary = pathname !== '/app'
 	const bottomLinks = useMemo(() => {
@@ -240,56 +243,105 @@ export default function Sidebar({ onToggleDesktop, onNavClick }: SidebarProps) {
 					))}
 				</Stack>
 
-				{/* Card de perfil */}
-				<Box
-					mt="sm"
-					style={{
-						border: '1px solid rgba(255,255,255,0.08)',
-						borderRadius: 12,
-						padding: '10px 12px',
-						background: 'rgba(255,255,255,0.03)',
-						cursor: 'pointer',
-					}}
-					onClick={() => { navigate('/app/configuracoes'); onNavClick() }}
+				{/* Card de perfil com popover */}
+				<Popover
+					opened={profileOpen}
+					onClose={() => setProfileOpen(false)}
+					position="top"
+					width="target"
+					withArrow={false}
+					offset={6}
+					shadow="lg"
 				>
-					<Group justify="space-between" wrap="nowrap">
-						<Group gap={10} wrap="nowrap" style={{ minWidth: 0 }}>
-							<Avatar size={32} radius="xl" color="teal" variant="filled" style={{ flexShrink: 0 }}>
-								{userName ? userName.charAt(0).toUpperCase() : '?'}
-							</Avatar>
-							<Box style={{ minWidth: 0 }}>
-								<Text size="xs" fw={600} c="var(--color-sidebar-text)" style={{ lineHeight: 1.3, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-									{userName ?? 'Usuário'}
-								</Text>
-								<Text size="10px" c="var(--color-aluminum)" style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-									{userEmail ?? ''}
-								</Text>
-							</Box>
-						</Group>
-						<Group gap={4} wrap="nowrap" style={{ flexShrink: 0 }}>
-							<Tooltip label="Configurações" withArrow openDelay={400} position="top">
+					<Popover.Target>
+						<Box
+							mt="sm"
+							style={{
+								border: `1px solid ${profileOpen ? 'rgba(255,255,255,0.16)' : 'rgba(255,255,255,0.08)'}`,
+								borderRadius: 12,
+								padding: '10px 12px',
+								background: profileOpen ? 'rgba(255,255,255,0.06)' : 'rgba(255,255,255,0.03)',
+								cursor: 'pointer',
+								transition: 'background 0.15s, border-color 0.15s',
+							}}
+							onClick={() => setProfileOpen((v) => !v)}
+						>
+							<Group justify="space-between" wrap="nowrap">
+								<Group gap={10} wrap="nowrap" style={{ minWidth: 0 }}>
+									<Avatar size={32} radius="xl" color="teal" variant="filled" style={{ flexShrink: 0 }}>
+										{userName ? userName.charAt(0).toUpperCase() : '?'}
+									</Avatar>
+									<Box style={{ minWidth: 0 }}>
+										<Text size="xs" fw={600} c="var(--color-sidebar-text)" style={{ lineHeight: 1.3, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+											{userName ?? 'Usuário'}
+										</Text>
+										<Text size="10px" c="var(--color-aluminum)" style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+											{userEmail ?? ''}
+										</Text>
+									</Box>
+								</Group>
 								<ActionIcon
 									variant="subtle"
 									size="sm"
-									onClick={(e) => { e.stopPropagation(); navigate('/app/configuracoes'); onNavClick() }}
-									style={{ color: 'var(--color-aluminum)' }}
+									style={{ color: 'var(--color-aluminum)', transition: 'transform 0.2s', transform: profileOpen ? 'rotate(180deg)' : 'rotate(0deg)' }}
+									onClick={(e) => { e.stopPropagation(); setProfileOpen((v) => !v) }}
+									aria-label="Abrir menu de perfil"
 								>
 									<Settings size={15} strokeWidth={1.8} />
 								</ActionIcon>
-							</Tooltip>
-							<Tooltip label="Sair" withArrow openDelay={400} position="top">
-								<ActionIcon
-									variant="subtle"
-									size="sm"
-									onClick={(e) => { e.stopPropagation(); logout() }}
-									style={{ color: 'var(--color-aluminum)' }}
-								>
-									<LogOut size={15} strokeWidth={1.8} />
-								</ActionIcon>
-							</Tooltip>
-						</Group>
-					</Group>
-				</Box>
+							</Group>
+						</Box>
+					</Popover.Target>
+
+					<Popover.Dropdown
+						style={{
+							background: 'var(--color-surface, #1a1a1a)',
+							border: '1px solid rgba(255,255,255,0.1)',
+							borderRadius: 12,
+							padding: '6px',
+						}}
+					>
+						<Stack gap={2}>
+							<UnstyledButton
+								style={{ borderRadius: 8, padding: '8px 10px' }}
+								onClick={() => { setProfileOpen(false); navigate('/app/configuracoes'); onNavClick() }}
+								className="profile-menu-item"
+							>
+								<Group gap={10}>
+									<Settings size={15} strokeWidth={1.8} color="var(--color-aluminum)" />
+									<Text size="sm" c="var(--color-sidebar-text)">Configurações</Text>
+								</Group>
+							</UnstyledButton>
+
+							<UnstyledButton
+								style={{ borderRadius: 8, padding: '8px 10px' }}
+								onClick={() => { toggleTheme(); setProfileOpen(false) }}
+								className="profile-menu-item"
+							>
+								<Group gap={10} justify="space-between">
+									<Group gap={10}>
+										{theme === 'dark' ? <Sun size={15} strokeWidth={1.8} color="var(--color-aluminum)" /> : <Moon size={15} strokeWidth={1.8} color="var(--color-aluminum)" />}
+										<Text size="sm" c="var(--color-sidebar-text)">Trocar tema</Text>
+									</Group>
+									<Text size="xs" c="var(--color-aluminum)">{theme === 'dark' ? 'Escuro' : 'Claro'}</Text>
+								</Group>
+							</UnstyledButton>
+
+							<Divider color="rgba(255,255,255,0.07)" my={2} />
+
+							<UnstyledButton
+								style={{ borderRadius: 8, padding: '8px 10px' }}
+								onClick={() => { setProfileOpen(false); logout() }}
+								className="profile-menu-item"
+							>
+								<Group gap={10}>
+									<LogOut size={15} strokeWidth={1.8} color="var(--color-error, #f87171)" />
+									<Text size="sm" c="var(--color-error, #f87171)">Sair</Text>
+								</Group>
+							</UnstyledButton>
+						</Stack>
+					</Popover.Dropdown>
+				</Popover>
 			</Box>
 		</Box>
 	)

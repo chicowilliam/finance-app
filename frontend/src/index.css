@@ -439,6 +439,19 @@ label {
   text-transform: uppercase;
 }
 
+.profile-menu-item {
+  width: 100%;
+  transition: background 0.12s;
+}
+
+.profile-menu-item:hover {
+  background: rgba(255, 255, 255, 0.07);
+}
+
+:root:not([data-theme='dark']) .profile-menu-item:hover {
+  background: rgba(0, 0, 0, 0.05);
+}
+
 /* In light mode, avoid glassmorphism/transparency that reduces readability. */
 :root:not([data-theme='dark']) .magic-topbar {
   background: var(--panel-bg);
