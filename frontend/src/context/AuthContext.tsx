@@ -10,20 +10,6 @@ const AUTH_MODE_KEY = 'finance.auth.mode'
 const AUTH_ROLE_KEY = 'finance.auth.role'
 const GUEST_CONTAS_KEY = 'finance.guest.contas'
 
-function parseRoleFromToken(): AuthRole {
-	const token = localStorage.getItem('token')
-	if (!token) return null
-
-	try {
-		const parts = token.split('.')
-		if (parts.length < 2) return 'user'
-		const payload = JSON.parse(atob(parts[1].replace(/-/g, '+').replace(/_/g, '/')))
-		return payload?.role === 'admin' ? 'admin' : 'user'
-	} catch {
-		return 'user'
-	}
-}
-
 function popGuestContas(): Omit<Conta, 'id'>[] {
   try {
     const raw = localStorage.getItem(GUEST_CONTAS_KEY)
@@ -88,17 +74,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 		} catch (err) {
 			const message = err instanceof Error ? err.message : ''
 
-			// Compatibilidade com backends antigos sem /auth/me.
-			if (message.includes('GET /auth/me failed: 404') || message.includes('Cannot GET /api/auth/me')) {
-				persistRole(parseRoleFromToken())
-				return
-			}
-
 			if (message.includes('Sessão expirada')) {
 				throw err
 			}
 
-			persistRole(parseRoleFromToken())
+			persistRole(null)
 		}
 	}, [persistRole])
 
@@ -107,7 +87,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 		persistRole(null)
 		localStorage.removeItem('token')
 		localStorage.removeItem(AUTH_ROLE_KEY)
-	}, [persistMode])
+	}, [persistMode, persistRole])
 
 	const login = useCallback(async (email: string, senha: string) => {
 		const wasGuest = localStorage.getItem(AUTH_MODE_KEY) === 'guest'
