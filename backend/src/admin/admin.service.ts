@@ -7,7 +7,6 @@ import {
 import { PrismaService } from '../prisma/prisma.service';
 import { UsersService } from '../users/users.service';
 import { DeleteUserDto } from './dto/delete-user.dto';
-import { AdminApprovalDto } from './dto/admin-approval.dto';
 
 @Injectable()
 export class AdminService {
