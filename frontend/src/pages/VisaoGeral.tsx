@@ -132,7 +132,7 @@ export default function VisaoGeral() {
 
           <div style={{ width: '100%', height: 260 }}>
             <ResponsiveContainer>
-              <BarChart data={torresData} margin={{ top: 8, right: 12, left: 0, bottom: 4 }}>
+              <BarChart data={torresData} margin={{ top: 8, right: 12, left: 0, bottom: 4 }} barCategoryGap="70%">
                 <CartesianGrid strokeDasharray="3 3" stroke="rgba(148,163,184,0.25)" />
                 <XAxis dataKey="label" tick={{ fill: 'var(--color-text-muted)', fontSize: 12 }} axisLine={false} tickLine={false} />
                 <YAxis
@@ -150,7 +150,7 @@ export default function VisaoGeral() {
                   }}
                   formatter={(value) => [formatBRL(Number(value ?? 0)), 'Total']}
                 />
-                <Bar dataKey="valor" radius={[10, 10, 4, 4]}>
+                <Bar dataKey="valor" radius={[8, 8, 3, 3]} maxBarSize={56}>
                   {torresData.map((entry) => (
                     <Cell key={entry.label} fill={entry.cor} />
                   ))}
