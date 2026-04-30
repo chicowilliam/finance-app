@@ -34,6 +34,24 @@ async function bootstrap() {
     ...new Set([...defaultOrigins, ...configuredOrigins]),
   ];
 
+  function isOriginAllowed(origin: string): boolean {
+    return allowedOrigins.some((allowedOrigin) => {
+      if (allowedOrigin === origin) {
+        return true;
+      }
+
+      if (!allowedOrigin.includes('*')) {
+        return false;
+      }
+
+      const pattern = allowedOrigin
+        .replace(/[.+?^${}()|[\]\\]/g, '\\$&')
+        .replace(/\*/g, '.*');
+
+      return new RegExp(`^${pattern}$`).test(origin);
+    });
+  }
+
   app.enableCors({
     origin: (
       origin: string | undefined,
@@ -45,7 +63,7 @@ async function bootstrap() {
         return;
       }
 
-      if (allowedOrigins.includes(origin)) {
+      if (isOriginAllowed(origin)) {
         callback(null, true);
       } else {
         callback(new Error(`CORS: origem não permitida: ${origin}`));
