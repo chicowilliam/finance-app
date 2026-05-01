@@ -179,10 +179,39 @@ export class AuthService {
     return { message: 'Senha atualizada com sucesso.' };
   }
 
+  async getProfile(userId: number) {
+    const user = await this.usersService.findById(userId);
+    if (!user) throw new UnauthorizedException('Usuário não encontrado.');
+    return { id: user.id, nome: user.nome, email: user.email, role: user.role };
+  }
+
+  async updateProfile(userId: number, nome?: string, email?: string) {
+    const user = await this.usersService.findById(userId);
+    if (!user) throw new NotFoundException('Usuário não encontrado.');
+    const updated = await this.usersService.updateProfile(userId, {
+      nome,
+      email,
+    });
+    return {
+      id: updated.id,
+      nome: updated.nome,
+      email: updated.email,
+      role: updated.role,
+    };
+  }
+
+  async changePassword(userId: number, senhaAtual: string, novaSenha: string) {
+    const user = await this.usersService.findById(userId);
+    if (!user) throw new NotFoundException('Usuário não encontrado.');
+    const valid = await bcrypt.compare(senhaAtual, user.passwordHash);
+    if (!valid) throw new BadRequestException('Senha atual incorreta.');
+    await this.usersService.updatePasswordById(userId, novaSenha);
+  }
+
   async deleteOwnAccount(userId: number, confirmText: string) {
-    if (confirmText.trim() !== 'Apagar minha conta') {
+    if (confirmText.trim() !== 'excluir minha conta') {
       throw new BadRequestException(
-        'Texto de confirmacao invalido. Digite exatamente: Apagar minha conta',
+        'Texto de confirmacao invalido. Digite exatamente: excluir minha conta',
       );
     }
 

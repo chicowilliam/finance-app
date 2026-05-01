@@ -148,4 +148,23 @@ export class UsersService {
       },
     });
   }
+
+  async updateProfile(userId: number, data: { nome?: string; email?: string }) {
+    return this.prisma.user.update({
+      where: { id: userId },
+      data: {
+        ...(data.nome ? { nome: data.nome } : {}),
+        ...(data.email ? { email: data.email } : {}),
+      },
+      select: { id: true, nome: true, email: true, role: true, isActive: true },
+    });
+  }
+
+  async updatePasswordById(userId: number, newPassword: string): Promise<void> {
+    const passwordHash = await bcrypt.hash(newPassword, 10);
+    await this.prisma.user.update({
+      where: { id: userId },
+      data: { passwordHash },
+    });
+  }
 }

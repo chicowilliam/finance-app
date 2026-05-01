@@ -2,6 +2,7 @@ import {
   Body,
   Controller,
   Get,
+  Patch,
   Post,
   HttpCode,
   HttpStatus,
@@ -63,6 +64,23 @@ export class DeleteOwnAccountDto {
   confirmText: string;
 }
 
+export class UpdateProfileDto {
+  @IsString()
+  nome?: string;
+
+  @IsEmail()
+  email?: string;
+}
+
+export class ChangePasswordDto {
+  @IsString()
+  senhaAtual: string;
+
+  @IsString()
+  @MinLength(6)
+  novaSenha: string;
+}
+
 interface AuthRequest {
   user: { userId: number; email: string; role: 'user' | 'admin' };
 }
@@ -116,11 +134,26 @@ export class AuthController {
   @UseGuards(JwtAuthGuard)
   @Get('me')
   me(@Request() req: AuthRequest) {
-    return {
-      id: req.user.userId,
-      email: req.user.email,
-      role: req.user.role,
-    };
+    return this.authService.getProfile(req.user.userId);
+  }
+
+  @SkipThrottle()
+  @UseGuards(JwtAuthGuard)
+  @Patch('me')
+  updateProfile(@Body() dto: UpdateProfileDto, @Request() req: AuthRequest) {
+    return this.authService.updateProfile(req.user.userId, dto.nome, dto.email);
+  }
+
+  @SkipThrottle()
+  @UseGuards(JwtAuthGuard)
+  @Patch('me/password')
+  @HttpCode(HttpStatus.NO_CONTENT)
+  changePassword(@Body() dto: ChangePasswordDto, @Request() req: AuthRequest) {
+    return this.authService.changePassword(
+      req.user.userId,
+      dto.senhaAtual,
+      dto.novaSenha,
+    );
   }
 
   @SkipThrottle()

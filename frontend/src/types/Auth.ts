@@ -6,8 +6,11 @@ export interface AuthContextValue {
   role: AuthRole
   isAdmin: boolean
   isAuthenticated: boolean
+  userName: string | null
+  userEmail: string | null
   enterGuest: () => void
   login: (email: string, senha: string) => Promise<void>
   register: (nome: string, email: string, senha: string) => Promise<void>
   logout: () => void
+  refreshProfile: () => Promise<void>
 }
