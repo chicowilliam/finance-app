@@ -275,7 +275,7 @@ export default function Sidebar({ onToggleDesktop, onNavClick }: SidebarProps) {
 									variant="subtle"
 									size="sm"
 									style={{ color: 'var(--color-aluminum)' }}
-									onClick={(e) => { e.stopPropagation(); window.dispatchEvent(new CustomEvent('finance:open-settings')) }}
+									onClick={(e) => { e.stopPropagation(); setProfileOpen(false); window.dispatchEvent(new CustomEvent('finance:open-settings')) }}
 									aria-label="Abrir configurações"
 								>
 									<Settings size={15} strokeWidth={1.8} />

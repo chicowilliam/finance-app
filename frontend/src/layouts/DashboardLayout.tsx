@@ -1,8 +1,9 @@
 import { useEffect, useRef, useState } from 'react'
-import { Drawer } from '@mantine/core'
+import { ActionIcon, Drawer } from '@mantine/core'
 import { useDisclosure } from '@mantine/hooks'
 import { Outlet } from 'react-router-dom'
 import { toast } from 'sonner'
+import { PanelLeftOpen } from 'lucide-react'
 import Sidebar from '../components/Sidebar'
 import Navbar from '../components/Navbar'
 import NovaContaForm from '../components/NovaContaForm'
@@ -131,6 +132,26 @@ export default function DashboardLayout() {
 					className="dashboard-content-shell"
 					style={{ ['--dashboard-sidebar-width' as string]: desktopOpened ? `${sidebarWidth}px` : '0px' }}
 				>
+					{/* Botão para reabrir a sidebar — aparece em todas as páginas quando fechada */}
+					{!desktopOpened && (
+						<ActionIcon
+							visibleFrom="md"
+							variant="subtle"
+							onClick={toggleDesktop}
+							aria-label="Abrir sidebar"
+							style={{
+								position: 'fixed',
+								top: 14,
+								left: 14,
+								zIndex: 200,
+								background: 'var(--color-surface, #111)',
+								border: '1px solid rgba(255,255,255,0.1)',
+								color: 'var(--color-aluminum)',
+							}}
+						>
+							<PanelLeftOpen size={18} strokeWidth={1.8} />
+						</ActionIcon>
+					)}
 					<main className="dashboard-main-shell">
 						<Navbar
 							onAddBill={() => setModalOpen(true)}
