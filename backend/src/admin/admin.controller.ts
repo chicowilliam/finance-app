@@ -53,6 +53,8 @@ export class AdminController {
   @Get('audit-logs')
   listAuditLogs(@Query('limit') limit?: string) {
     const parsed = limit ? Number.parseInt(limit, 10) : 100;
-    return this.adminService.listAuditLogs(Number.isFinite(parsed) ? parsed : 100);
+    return this.adminService.listAuditLogs(
+      Number.isFinite(parsed) ? parsed : 100,
+    );
   }
 }

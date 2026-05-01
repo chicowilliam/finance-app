@@ -10,7 +10,9 @@ export class EmailService {
     const from = process.env.EMAIL_FROM || 'onboarding@resend.dev';
 
     if (!apiKey) {
-      this.logger.warn('RESEND_API_KEY nao configurada; envio de e-mail ignorado.');
+      this.logger.warn(
+        'RESEND_API_KEY nao configurada; envio de e-mail ignorado.',
+      );
       return;
     }
 
@@ -18,7 +20,9 @@ export class EmailService {
     const result = await resend.emails.send({ from, to, subject, html });
 
     if (result.error) {
-      this.logger.error(`Falha ao enviar e-mail para ${to}: ${result.error.message}`);
+      this.logger.error(
+        `Falha ao enviar e-mail para ${to}: ${result.error.message}`,
+      );
       throw new Error('Nao foi possivel enviar o e-mail.');
     }
   }

@@ -15,7 +15,7 @@ export class AdminService {
     private readonly prisma: PrismaService,
   ) {}
 
-  async listUsers() {
+  listUsers() {
     return this.usersService.listUsers();
   }
 
@@ -25,7 +25,9 @@ export class AdminService {
     isActive: boolean,
   ) {
     if (actorUserId === targetUserId) {
-      throw new ForbiddenException('Você não pode alterar o status da própria conta por aqui.');
+      throw new ForbiddenException(
+        'Você não pode alterar o status da própria conta por aqui.',
+      );
     }
 
     const target = await this.usersService.findById(targetUserId);
@@ -36,11 +38,16 @@ export class AdminService {
     if (target.role === 'admin' && !isActive) {
       const activeAdmins = await this.usersService.countActiveAdmins();
       if (activeAdmins <= 1) {
-        throw new BadRequestException('Não é permitido desativar o último admin ativo.');
+        throw new BadRequestException(
+          'Não é permitido desativar o último admin ativo.',
+        );
       }
     }
 
-    const updated = await this.usersService.setUserActive(targetUserId, isActive);
+    const updated = await this.usersService.setUserActive(
+      targetUserId,
+      isActive,
+    );
 
     await this.prisma.adminAuditLog.create({
       data: {
@@ -54,9 +61,15 @@ export class AdminService {
     return updated;
   }
 
-  async deleteUser(actorUserId: number, targetUserId: number, dto: DeleteUserDto) {
+  async deleteUser(
+    actorUserId: number,
+    targetUserId: number,
+    dto: DeleteUserDto,
+  ) {
     if (actorUserId === targetUserId) {
-      throw new ForbiddenException('Você não pode excluir a própria conta por aqui.');
+      throw new ForbiddenException(
+        'Você não pode excluir a própria conta por aqui.',
+      );
     }
 
     const target = await this.usersService.findById(targetUserId);
@@ -71,7 +84,9 @@ export class AdminService {
     if (target.role === 'admin') {
       const activeAdmins = await this.usersService.countActiveAdmins();
       if (activeAdmins <= 1) {
-        throw new BadRequestException('Não é permitido excluir o último admin ativo.');
+        throw new BadRequestException(
+          'Não é permitido excluir o último admin ativo.',
+        );
       }
     }
 
@@ -89,7 +104,7 @@ export class AdminService {
     return deleted;
   }
 
-  async listAuditLogs(limit = 100) {
+  listAuditLogs(limit = 100) {
     const safeLimit = Math.max(1, Math.min(limit, 200));
 
     return this.prisma.adminAuditLog.findMany({

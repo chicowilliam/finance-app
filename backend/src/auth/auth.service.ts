@@ -43,7 +43,11 @@ export class AuthService {
     const tokenHash = this.hashToken(rawToken);
     const expiresAt = new Date(Date.now() + 1000 * 60 * 60); // 1h
 
-    await this.usersService.setEmailVerificationToken(userId, tokenHash, expiresAt);
+    await this.usersService.setEmailVerificationToken(
+      userId,
+      tokenHash,
+      expiresAt,
+    );
 
     const verifyLink = this.buildAppUrl(`/auth/verify-email?token=${rawToken}`);
     await this.emailService.sendEmail(
@@ -81,7 +85,9 @@ export class AuthService {
     }
 
     if (!user.isActive) {
-      throw new ForbiddenException('Conta desativada. Fale com o administrador.');
+      throw new ForbiddenException(
+        'Conta desativada. Fale com o administrador.',
+      );
     }
 
     const payload = { sub: user.id, email: user.email, role: user.role };
@@ -135,9 +141,15 @@ export class AuthService {
     const tokenHash = this.hashToken(rawToken);
     const expiresAt = new Date(Date.now() + 1000 * 60 * 30); // 30 min
 
-    await this.usersService.setPasswordResetTokenByEmail(email, tokenHash, expiresAt);
+    await this.usersService.setPasswordResetTokenByEmail(
+      email,
+      tokenHash,
+      expiresAt,
+    );
 
-    const resetLink = this.buildAppUrl(`/auth/reset-password?token=${rawToken}`);
+    const resetLink = this.buildAppUrl(
+      `/auth/reset-password?token=${rawToken}`,
+    );
     await this.emailService.sendEmail(
       email,
       'Recuperacao de senha',
@@ -152,13 +164,17 @@ export class AuthService {
 
   async resetPassword(token: string, novaSenha: string) {
     const tokenHash = this.hashToken(token);
-    const user = await this.usersService.findByPasswordResetTokenHash(tokenHash);
+    const user =
+      await this.usersService.findByPasswordResetTokenHash(tokenHash);
 
     if (!user) {
       throw new UnauthorizedException('Token invalido ou expirado.');
     }
 
-    await this.usersService.updatePasswordAndClearResetToken(user.id, novaSenha);
+    await this.usersService.updatePasswordAndClearResetToken(
+      user.id,
+      novaSenha,
+    );
 
     return { message: 'Senha atualizada com sucesso.' };
   }

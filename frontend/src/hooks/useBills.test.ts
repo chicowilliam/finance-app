@@ -1,5 +1,8 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { renderHook, waitFor, act } from '@testing-library/react';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { createElement } from 'react';
+import type { ReactNode } from 'react';
 import { useContas } from './useBills';
 import { contasService } from '../services/billService';
 
@@ -14,6 +17,14 @@ vi.mock('../services/billService', () => ({
     remover: vi.fn(),
   },
 }));
+
+function makeWrapper() {
+  const queryClient = new QueryClient({
+    defaultOptions: { queries: { retry: false } },
+  });
+  return ({ children }: { children: ReactNode }) =>
+    createElement(QueryClientProvider, { client: queryClient }, children);
+}
 
 describe('useContas', () => {
   beforeEach(() => {
@@ -32,7 +43,7 @@ describe('useContas', () => {
       },
     ]);
 
-    const { result } = renderHook(() => useContas());
+    const { result } = renderHook(() => useContas(), { wrapper: makeWrapper() });
 
     await waitFor(() => expect(result.current.loading).toBe(false));
 
@@ -41,17 +52,21 @@ describe('useContas', () => {
   });
 
   it('should add conta and append it to state', async () => {
-    vi.mocked(contasService.listar).mockResolvedValue([]);
-    vi.mocked(contasService.criar).mockResolvedValue({
+    const novaConta = {
       id: 2,
       descricao: 'Internet',
       valor: 120,
       vencimento: '2026-04-20',
-      status: 'a_vencer',
+      status: 'a_vencer' as const,
       categoria: 'Servicos',
-    });
+    };
+    // primeiro listar retorna vazio; após invalidação retorna a conta criada
+    vi.mocked(contasService.listar)
+      .mockResolvedValueOnce([])
+      .mockResolvedValue([novaConta]);
+    vi.mocked(contasService.criar).mockResolvedValue(novaConta);
 
-    const { result } = renderHook(() => useContas());
+    const { result } = renderHook(() => useContas(), { wrapper: makeWrapper() });
     await waitFor(() => expect(result.current.loading).toBe(false));
 
     await act(async () => {
@@ -64,7 +79,7 @@ describe('useContas', () => {
       });
     });
 
-    expect(result.current.contas).toHaveLength(1);
+    await waitFor(() => expect(result.current.contas).toHaveLength(1));
     expect(result.current.contas[0].descricao).toBe('Internet');
   });
 });

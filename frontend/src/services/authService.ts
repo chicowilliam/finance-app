@@ -7,6 +7,7 @@ export interface AuthResponse {
 
 export interface AuthMeResponse {
   id: number
+  nome?: string
   email: string
   role: 'user' | 'admin'
 }

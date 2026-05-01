@@ -530,33 +530,59 @@ export default function SettingsModal({ opened, onClose }: SettingsModalProps) {
 					<Stack gap={24}>
 						<Section
 							icon={<Zap size={18} strokeWidth={1.8} />}
-							title="Alertas in-app"
-							description="Notificações exibidas dentro do app"
+							title="Alertas e lembretes"
+							description="Escolha os avisos que ajudam você a não perder prazos"
 							color="yellow"
 						>
-							<SettingRow
-								label="Contas vencendo"
-								description="Avise quando uma conta estiver próxima do vencimento"
+							<Box
+								style={{
+									border: '1px solid rgba(250, 204, 21, 0.28)',
+									borderRadius: 12,
+									padding: '14px 16px',
+									background: 'linear-gradient(135deg, rgba(250,204,21,0.12), rgba(250,204,21,0.04))',
+								}}
 							>
-								<Switch
-									checked={notifBills}
-									onChange={(e) => { setNotifBills(e.currentTarget.checked); setBool(PREF_NOTIF_BILLS, e.currentTarget.checked) }}
-									color="teal"
-									size="md"
-								/>
-							</SettingRow>
+								<Group justify="space-between" align="flex-start" gap="xl" wrap="nowrap">
+									<Box style={{ minWidth: 0 }}>
+										<Text size="md" fw={700} style={{ letterSpacing: '0.01em' }}>Contas vencendo</Text>
+										<Text size="sm" c="dimmed" style={{ lineHeight: 1.45 }}>
+											Receba um alerta quando uma conta estiver perto do vencimento.
+										</Text>
+									</Box>
+									<Switch
+										checked={notifBills}
+										onChange={(e) => { setNotifBills(e.currentTarget.checked); setBool(PREF_NOTIF_BILLS, e.currentTarget.checked) }}
+										color="teal"
+										size="lg"
+										style={{ flexShrink: 0, marginTop: 2 }}
+									/>
+								</Group>
+							</Box>
 
-							<SettingRow
-								label="Resumo semanal"
-								description="Receba um resumo financeiro toda segunda-feira por e-mail"
+							<Box
+								style={{
+									border: '1px solid rgba(45, 212, 191, 0.28)',
+									borderRadius: 12,
+									padding: '14px 16px',
+									background: 'linear-gradient(135deg, rgba(45,212,191,0.12), rgba(45,212,191,0.04))',
+								}}
 							>
-								<Switch
-									checked={notifWeekly}
-									onChange={(e) => { setNotifWeekly(e.currentTarget.checked); setBool(PREF_NOTIF_WEEKLY, e.currentTarget.checked) }}
-									color="teal"
-									size="md"
-								/>
-							</SettingRow>
+								<Group justify="space-between" align="flex-start" gap="xl" wrap="nowrap">
+									<Box style={{ minWidth: 0 }}>
+										<Text size="md" fw={700} style={{ letterSpacing: '0.01em' }}>Resumo semanal</Text>
+										<Text size="sm" c="dimmed" style={{ lineHeight: 1.45 }}>
+											Receba por e-mail um panorama dos gastos e contas da semana.
+										</Text>
+									</Box>
+									<Switch
+										checked={notifWeekly}
+										onChange={(e) => { setNotifWeekly(e.currentTarget.checked); setBool(PREF_NOTIF_WEEKLY, e.currentTarget.checked) }}
+										color="teal"
+										size="lg"
+										style={{ flexShrink: 0, marginTop: 2 }}
+									/>
+								</Group>
+							</Box>
 						</Section>
 					</Stack>
 				)
@@ -715,6 +741,12 @@ export default function SettingsModal({ opened, onClose }: SettingsModalProps) {
 				<ScrollArea style={{ flex: 1 }} type="scroll">
 					<Box p={28}>
 						{renderTab()}
+						<Divider my={22} color="rgba(255,255,255,0.08)" />
+						<Group justify="flex-end">
+							<Button variant="default" onClick={onClose}>
+								Fechar configurações
+							</Button>
+						</Group>
 					</Box>
 				</ScrollArea>
 			</Group>
