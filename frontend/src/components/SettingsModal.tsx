@@ -129,7 +129,9 @@ export default function SettingsModal({ opened, onClose }: SettingsModalProps) {
 			setNome(userName ?? '')
 			setEmail(userEmail ?? '')
 		}
-	}, [opened, userName, userEmail])	const [savingProfile, setSavingProfile] = useState(false)
+	}, [opened, userName, userEmail])
+
+	const [savingProfile, setSavingProfile] = useState(false)
 
 	const [senhaAtual,  setSenhaAtual]  = useState('')
 	const [novaSenha,   setNovaSenha]   = useState('')
