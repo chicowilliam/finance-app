@@ -290,6 +290,14 @@ export default function SettingsModal({ opened, onClose }: SettingsModalProps) {
 							>
 								Salvar alterações
 							</Button>
+							<Button
+								size="sm"
+								variant="default"
+								onClick={onClose}
+								style={{ alignSelf: 'flex-start' }}
+							>
+								Fechar
+							</Button>
 						</Section>
 
 						<Divider />

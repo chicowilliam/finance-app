@@ -124,6 +124,9 @@ export async function patch<T>(path: string, body: unknown): Promise<T> {
     if (unauthorizedError) throw unauthorizedError;
     throw new Error(await readErrorMessage(res, `PATCH ${path} failed: ${res.status}`));
   }
+  if (res.status === 204) {
+    return undefined as T;
+  }
   return res.json();
 }
 
