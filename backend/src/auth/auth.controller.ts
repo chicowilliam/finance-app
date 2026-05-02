@@ -45,20 +45,6 @@ export class RequestEmailVerificationDto {
   email: string;
 }
 
-export class ForgotPasswordDto {
-  @IsEmail()
-  email: string;
-}
-
-export class ResetPasswordDto {
-  @IsString()
-  token: string;
-
-  @IsString()
-  @MinLength(6)
-  novaSenha: string;
-}
-
 export class DeleteOwnAccountDto {
   @IsString()
   confirmText: string;
@@ -114,20 +100,6 @@ export class AuthController {
   @HttpCode(HttpStatus.OK)
   verifyEmail(@Body() dto: VerifyEmailDto) {
     return this.authService.verifyEmail(dto.token);
-  }
-
-  @Throttle({ default: { limit: 5, ttl: 60_000 } })
-  @Post('forgot-password')
-  @HttpCode(HttpStatus.OK)
-  forgotPassword(@Body() dto: ForgotPasswordDto) {
-    return this.authService.forgotPassword(dto.email);
-  }
-
-  @Throttle({ default: { limit: 10, ttl: 60_000 } })
-  @Post('reset-password')
-  @HttpCode(HttpStatus.OK)
-  resetPassword(@Body() dto: ResetPasswordDto) {
-    return this.authService.resetPassword(dto.token, dto.novaSenha);
   }
 
   @SkipThrottle()

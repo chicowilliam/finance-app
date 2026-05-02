@@ -137,65 +137,6 @@ export class AuthService {
     return { message: 'E-mail confirmado com sucesso.' };
   }
 
-  async forgotPassword(email: string) {
-    const user = await this.usersService.findByEmail(email);
-
-    if (!user || !user.isActive) {
-      return {
-        message:
-          'Se o e-mail estiver cadastrado, enviaremos instrucoes de recuperacao.',
-      };
-    }
-
-    const rawToken = this.generateToken();
-    const tokenHash = this.hashToken(rawToken);
-    const expiresAt = new Date(Date.now() + 1000 * 60 * 30); // 30 min
-
-    await this.usersService.setPasswordResetTokenByEmail(
-      email,
-      tokenHash,
-      expiresAt,
-    );
-
-    const resetLink = this.buildAppUrl(
-      `/auth/reset-password?token=${rawToken}`,
-    );
-    try {
-      await this.emailService.sendEmail(
-        email,
-        'Recuperacao de senha',
-        `<p>Recebemos uma solicitacao para redefinir sua senha.</p><p><a href="${resetLink}">${resetLink}</a></p><p>Este link expira em 30 minutos.</p>`,
-      );
-    } catch (error) {
-      this.logger.error(
-        `Falha ao enviar e-mail de recuperacao para ${email}.`,
-        error instanceof Error ? error.stack : undefined,
-      );
-    }
-
-    return {
-      message:
-        'Se o e-mail estiver cadastrado, enviaremos instrucoes de recuperacao.',
-    };
-  }
-
-  async resetPassword(token: string, novaSenha: string) {
-    const tokenHash = this.hashToken(token);
-    const user =
-      await this.usersService.findByPasswordResetTokenHash(tokenHash);
-
-    if (!user) {
-      throw new UnauthorizedException('Token invalido ou expirado.');
-    }
-
-    await this.usersService.updatePasswordAndClearResetToken(
-      user.id,
-      novaSenha,
-    );
-
-    return { message: 'Senha atualizada com sucesso.' };
-  }
-
   async getProfile(userId: number) {
     const user = await this.usersService.findById(userId);
     if (!user) throw new UnauthorizedException('Usuário não encontrado.');

@@ -16,8 +16,6 @@ const Configuracoes = lazy(() => import('./pages/Configuracoes'))
 const AdminUsuarios = lazy(() => import('./pages/AdminUsuarios'))
 const Welcome = lazy(() => import('./pages/Welcome'))
 const VerifyEmail = lazy(() => import('./pages/VerifyEmail'))
-const ForgotPassword = lazy(() => import('./pages/ForgotPassword'))
-const ResetPassword = lazy(() => import('./pages/ResetPassword'))
 
 function RouteFallback() {
   return (
@@ -140,26 +138,6 @@ export default function App() {
             <PageTransition>
               <Suspense fallback={<RouteFallback />}>
                 <VerifyEmail />
-              </Suspense>
-            </PageTransition>
-          )}
-        />
-        <Route
-          path="/auth/forgot-password"
-          element={(
-            <PageTransition>
-              <Suspense fallback={<RouteFallback />}>
-                <ForgotPassword />
-              </Suspense>
-            </PageTransition>
-          )}
-        />
-        <Route
-          path="/auth/reset-password"
-          element={(
-            <PageTransition>
-              <Suspense fallback={<RouteFallback />}>
-                <ResetPassword />
               </Suspense>
             </PageTransition>
           )}
