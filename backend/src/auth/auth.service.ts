@@ -2,6 +2,7 @@ import {
   BadRequestException,
   ForbiddenException,
   Injectable,
+  Logger,
   NotFoundException,
   UnauthorizedException,
 } from '@nestjs/common';
@@ -15,6 +16,8 @@ import { EmailService } from './email.service';
 
 @Injectable()
 export class AuthService {
+  private readonly logger = new Logger(AuthService.name);
+
   constructor(
     private readonly usersService: UsersService,
     private readonly jwtService: JwtService,
@@ -50,11 +53,18 @@ export class AuthService {
     );
 
     const verifyLink = this.buildAppUrl(`/auth/verify-email?token=${rawToken}`);
-    await this.emailService.sendEmail(
-      email,
-      'Confirme seu e-mail',
-      `<p>Para confirmar sua conta, clique no link abaixo:</p><p><a href="${verifyLink}">${verifyLink}</a></p><p>Este link expira em 1 hora.</p>`,
-    );
+    try {
+      await this.emailService.sendEmail(
+        email,
+        'Confirme seu e-mail',
+        `<p>Para confirmar sua conta, clique no link abaixo:</p><p><a href="${verifyLink}">${verifyLink}</a></p><p>Este link expira em 1 hora.</p>`,
+      );
+    } catch (error) {
+      this.logger.error(
+        `Falha ao enviar e-mail de verificacao para ${email}.`,
+        error instanceof Error ? error.stack : undefined,
+      );
+    }
   }
 
   async register(nome: string, email: string, senha: string) {
@@ -150,11 +160,18 @@ export class AuthService {
     const resetLink = this.buildAppUrl(
       `/auth/reset-password?token=${rawToken}`,
     );
-    await this.emailService.sendEmail(
-      email,
-      'Recuperacao de senha',
-      `<p>Recebemos uma solicitacao para redefinir sua senha.</p><p><a href="${resetLink}">${resetLink}</a></p><p>Este link expira em 30 minutos.</p>`,
-    );
+    try {
+      await this.emailService.sendEmail(
+        email,
+        'Recuperacao de senha',
+        `<p>Recebemos uma solicitacao para redefinir sua senha.</p><p><a href="${resetLink}">${resetLink}</a></p><p>Este link expira em 30 minutos.</p>`,
+      );
+    } catch (error) {
+      this.logger.error(
+        `Falha ao enviar e-mail de recuperacao para ${email}.`,
+        error instanceof Error ? error.stack : undefined,
+      );
+    }
 
     return {
       message:
