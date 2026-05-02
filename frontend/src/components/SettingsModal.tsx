@@ -119,6 +119,7 @@ export default function SettingsModal({ opened, onClose }: SettingsModalProps) {
 	const { theme, toggleTheme } = useTheme()
 
 	const [activeTab, setActiveTab] = useState<Tab>('conta')
+	const [isCloseHovered, setIsCloseHovered] = useState(false)
 
 	// ── Conta state ──
 	const [nome,  setNome]  = useState(userName ?? '')
@@ -729,35 +730,26 @@ export default function SettingsModal({ opened, onClose }: SettingsModalProps) {
 						</Box>
 					))}
 
-					{/* Spacer + fechar */}
-					<Box mt="auto" pt={16}>
-						<Divider color="rgba(255,255,255,0.07)" mb={10} />
-						<Box
-							onClick={onClose}
-							className="profile-menu-item"
-							style={{
-								borderRadius: 8,
-								padding: '8px 10px',
-								cursor: 'pointer',
-							}}
-						>
-							<Group gap={9}>
-								<Box style={{ color: 'var(--color-aluminum, #8899aa)' }}>
-									<svg viewBox="0 0 24 24" width={16} height={16} stroke="currentColor" strokeWidth={1.8} fill="none">
-										<line x1="18" y1="6" x2="6" y2="18" /><line x1="6" y1="6" x2="18" y2="18" />
-									</svg>
-								</Box>
-								<Text size="sm" c="dimmed">Fechar</Text>
-							</Group>
-						</Box>
-					</Box>
 				</Box>
 
 				{/* ── Content ── */}
 				<ScrollArea style={{ flex: 1 }} type="scroll">
 					<Box p={28}>
 						<Group justify="flex-end" mb={4}>
-							<ActionIcon variant="subtle" onClick={onClose} aria-label="Fechar configurações" size="sm" style={{ color: 'var(--color-aluminum)' }}>
+							<ActionIcon
+								variant="subtle"
+								onClick={onClose}
+								onMouseEnter={() => setIsCloseHovered(true)}
+								onMouseLeave={() => setIsCloseHovered(false)}
+								aria-label="Fechar configurações"
+								size="sm"
+								style={{
+									color: isCloseHovered ? '#ef4444' : 'var(--color-aluminum)',
+									background: isCloseHovered ? 'rgba(239,68,68,0.08)' : 'transparent',
+									transform: isCloseHovered ? 'scale(1.015)' : 'scale(1)',
+									transition: 'color 140ms ease, background-color 140ms ease, transform 180ms ease',
+								}}
+							>
 								<svg viewBox="0 0 24 24" width={16} height={16} stroke="currentColor" strokeWidth={2} fill="none"><line x1="18" y1="6" x2="6" y2="18" /><line x1="6" y1="6" x2="18" y2="18" /></svg>
 							</ActionIcon>
 						</Group>
