@@ -256,7 +256,14 @@ export default function SettingsModal({ opened, onClose }: SettingsModalProps) {
 		switch (activeTab) {
 			case 'conta':
 				return (
-					<Stack gap={24}>
+					<Stack
+						gap={24}
+						style={{
+							maxHeight: 'calc(100vh - 240px)',
+							overflowY: 'auto',
+							paddingRight: 6,
+						}}
+					>
 						<Section
 							icon={<UserCog size={18} strokeWidth={1.8} />}
 							title="Informações pessoais"
