@@ -17,6 +17,7 @@ import { useAuth } from '../hooks/useAuth'
 import AppButton from '../components/AppButton'
 import { AppInput, AppPasswordInput } from '../components/AppInput'
 import AppPanel from '../components/AppPanel'
+import BrandLogo from '../components/BrandLogo'
 
 type Tab = 'login' | 'register'
 
@@ -95,7 +96,7 @@ export default function Welcome() {
       <AppPanel>
         <Stack gap="md">
           <div>
-            <Text c="brand" fw={700} size="xs" tt="uppercase">Finance App</Text>
+            <BrandLogo height={34} style={{ marginBottom: 10 }} />
             <Title order={1} size="h2">Controle financeiro sem fricção</Title>
             <Text c="dimmed" mt={6}>Entre, crie sua conta ou continue como convidado para testar tudo agora.</Text>
           </div>

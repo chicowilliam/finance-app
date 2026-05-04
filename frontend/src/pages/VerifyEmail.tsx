@@ -5,6 +5,7 @@ import { toast } from 'sonner'
 import AppPanel from '../components/AppPanel'
 import AppButton from '../components/AppButton'
 import { apiVerifyEmail } from '../services/authService'
+import BrandLogo from '../components/BrandLogo'
 
 type Estado = 'verificando' | 'sucesso' | 'erro'
 
@@ -45,7 +46,7 @@ export default function VerifyEmail() {
     <Container size={480} py={64}>
       <AppPanel>
         <Stack gap="md" align="center" ta="center">
-          <Text c="brand" fw={700} size="xs" tt="uppercase">Finance App</Text>
+          <BrandLogo height={34} />
 
           {estado === 'verificando' && (
             <>

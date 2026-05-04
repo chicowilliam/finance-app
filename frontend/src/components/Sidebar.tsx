@@ -1,11 +1,12 @@
 import { useMemo, useState } from 'react'
 import { NavLink, useLocation } from 'react-router-dom'
 import { ActionIcon, Avatar, Box, Divider, Group, NavLink as MantineNavLink, Popover, Stack, Text, UnstyledButton } from '@mantine/core'
-import { Bell, CalendarDays, Eye, EyeOff, LayoutDashboard, List, LogOut, Moon, PanelLeftClose, Settings, Sun, TrendingUp, Wallet } from '../lib/icons'
+import { Bell, CalendarDays, Eye, EyeOff, LayoutDashboard, List, LogOut, Moon, PanelLeftClose, Settings, Sun, TrendingUp } from '../lib/icons'
 import { useContasContext } from '../context/ContasContext'
 import { useAuth } from '../hooks/useAuth'
 import { useTheme } from '../hooks/useTheme'
 import { formatBRL } from '../utils/formatCurrency'
+import BrandLogo from './BrandLogo'
 
 const mainLinks = [
 	{ to: '/app',            label: 'Visão Geral',  icon: LayoutDashboard },
@@ -61,20 +62,8 @@ export default function Sidebar({ onToggleDesktop, onNavClick }: SidebarProps) {
 			}}
 		>
 			<Group gap={8} mb="sm" wrap="nowrap" justify="space-between">
-				<Group gap={8} wrap="nowrap">
-					<Wallet size={20} strokeWidth={1.5} color="var(--color-sidebar-text)" />
-					<div
-						style={{
-							width: 8,
-							height: 8,
-							borderRadius: 999,
-							background: 'var(--color-brand)',
-							boxShadow: '0 0 0 3px rgba(30, 122, 93, 0.22)',
-						}}
-					/>
-					<div style={{ height: 28, width: 160, display: 'flex', alignItems: 'center' }}>
-						<Text c="var(--color-sidebar-text)" fw={600} size="sm">FinanceApp</Text>
-					</div>
+				<Group gap={8} wrap="nowrap" style={{ minWidth: 0, overflow: 'hidden' }}>
+					<BrandLogo height={26} style={{ maxWidth: 164 }} />
 				</Group>
 				{/* Botão de recolher — visível somente desktop */}
 				<ActionIcon
