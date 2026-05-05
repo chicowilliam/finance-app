@@ -4,7 +4,8 @@ import { ActionIcon, Badge, Group, Pagination, Paper, ScrollArea, SimpleGrid, St
 import { toast } from 'sonner'
 import { useContasContext } from '../context/ContasContext'
 import { formatBRL } from '../utils/formatCurrency'
-import { formatData } from '../data/mockContas'
+import { formatDateBR } from '../utils/formatDate'
+import { diasRelativo } from '../utils/contasHelpers'
 import type { Conta, StatusConta } from '../types/Bill'
 import AppPanel from '../components/AppPanel'
 import Loader from '../components/Loader'
@@ -31,17 +32,6 @@ function SortIcon({ col, sortKey, sortDir }: { col: SortKey; sortKey: SortKey | 
   return sortDir === 'asc'
     ? <ChevronUp size={14} strokeWidth={2} />
     : <ChevronDown size={14} strokeWidth={2} />
-}
-
-function diasRelativo(vencimento: string): { label: string; color: string } {
-  const hoje = new Date()
-  hoje.setHours(0, 0, 0, 0)
-  const venc = new Date(vencimento + 'T00:00:00')
-  const diff = Math.round((venc.getTime() - hoje.getTime()) / 86_400_000)
-  if (diff === 0) return { label: 'Hoje', color: '#f08c00' }
-  if (diff === 1) return { label: 'Amanhã', color: '#f08c00' }
-  if (diff > 0) return { label: `em ${diff}d`, color: '#2f9e44' }
-  return { label: `${Math.abs(diff)}d atrás`, color: '#e03131' }
 }
 
 export default function Contas() {
@@ -237,7 +227,7 @@ export default function Contas() {
                       </td>
                       <td>
                         <Stack gap={0}>
-                          <Text size="sm">{formatData(c.vencimento)}</Text>
+                          <Text size="sm">{formatDateBR(c.vencimento)}</Text>
                           {c.status !== 'paga' && (
                             <Text size="xs" fw={600} style={{ color: rel.color }}>{rel.label}</Text>
                           )}

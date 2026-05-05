@@ -4,21 +4,11 @@ import { contasService } from '../services/billService';
 import { contasKeys } from '../services/queryKeys';
 import { useAuth } from './useAuth';
 import type { Conta, StatusConta } from '../types/Bill';
+import { STORAGE_KEYS } from '../utils/storageKeys';
+import { loadJSON, saveJSON } from '../utils/storageHelpers';
 
-const GUEST_CONTAS_KEY = 'finance.guest.contas';
-
-function loadGuestContas(): Conta[] {
-  try {
-    const raw = localStorage.getItem(GUEST_CONTAS_KEY);
-    return raw ? (JSON.parse(raw) as Conta[]) : [];
-  } catch {
-    return [];
-  }
-}
-
-function saveGuestContas(contas: Conta[]): void {
-  localStorage.setItem(GUEST_CONTAS_KEY, JSON.stringify(contas));
-}
+const loadGuestContas = (): Conta[] => loadJSON<Conta[]>(STORAGE_KEYS.GUEST_CONTAS, []);
+const saveGuestContas = (contas: Conta[]): void => saveJSON(STORAGE_KEYS.GUEST_CONTAS, contas);
 
 let guestNextId = -(Date.now());
 

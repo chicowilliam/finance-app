@@ -5,16 +5,16 @@ import type { AuthMode, AuthRole } from './AuthStateContext'
 import { apiLogin, apiMe, apiRegister, apiUpgradeFromGuest } from '../services/authService'
 import { AUTH_EXPIRED_EVENT } from '../services/api'
 import type { Conta } from '../types/Bill'
+import { STORAGE_KEYS } from '../utils/storageKeys'
+import { loadJSON } from '../utils/storageHelpers'
 
-const AUTH_MODE_KEY = 'finance.auth.mode'
-const AUTH_ROLE_KEY = 'finance.auth.role'
-const GUEST_CONTAS_KEY = 'finance.guest.contas'
+const AUTH_MODE_KEY  = STORAGE_KEYS.AUTH_MODE
+const AUTH_ROLE_KEY  = STORAGE_KEYS.AUTH_ROLE
 
 function popGuestContas(): Omit<Conta, 'id'>[] {
   try {
-    const raw = localStorage.getItem(GUEST_CONTAS_KEY)
-    const contas = raw ? (JSON.parse(raw) as Conta[]) : []
-    localStorage.removeItem(GUEST_CONTAS_KEY)
+    const contas = loadJSON<Conta[]>(STORAGE_KEYS.GUEST_CONTAS, [])
+    localStorage.removeItem(STORAGE_KEYS.GUEST_CONTAS)
     return contas.map(({ descricao, valor, vencimento, status, categoria }) => ({
       descricao,
       valor,

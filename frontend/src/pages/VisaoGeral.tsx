@@ -1,7 +1,8 @@
 import { useContasContext } from '../context/ContasContext'
 import { useSaldo } from '../hooks/useSaldo'
 import { formatBRL } from '../utils/formatCurrency'
-import { formatData } from '../data/mockContas'
+import { formatDateBR } from '../utils/formatDate'
+import { groupContasByStatus } from '../utils/contasHelpers'
 import { Group, List, SimpleGrid, Stack, Text, Title } from '@mantine/core'
 import { useMediaQuery } from '@mantine/hooks'
 import { AlertTriangle, Banknote, Clock, Wallet } from '../lib/icons'
@@ -20,9 +21,7 @@ export default function VisaoGeral() {
 
   if (loading) return <Loader variant="dashboard" />
 
-  const pagas     = contas.filter(c => c.status === 'paga')
-  const aVencer   = contas.filter(c => c.status === 'a_vencer')
-  const atrasadas = contas.filter(c => c.status === 'atrasada')
+  const { pagas, aVencer, atrasadas } = groupContasByStatus(contas)
   const isEmpty = contas.length === 0
   const totalEmAberto = aVencer.reduce((s, c) => s + c.valor, 0) + atrasadas.reduce((s, c) => s + c.valor, 0)
   const saldoAposPagar = saldo !== null ? saldo - totalEmAberto : null
@@ -189,7 +188,7 @@ export default function VisaoGeral() {
                   <Group justify="space-between" wrap="wrap" gap="xs">
                     <Text fw={600} style={{ minWidth: 0, flex: 1 }}>{c.descricao}</Text>
                     <Group gap="xs" wrap="nowrap">
-                      <Text size="sm" c="dimmed">{formatData(c.vencimento)}</Text>
+                      <Text size="sm" c="dimmed">{formatDateBR(c.vencimento)}</Text>
                       <Text fw={700} c="red">{formatBRL(c.valor)}</Text>
                     </Group>
                   </Group>

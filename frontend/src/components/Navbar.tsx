@@ -7,6 +7,7 @@ import { AppCurrencyInput } from './AppInput'
 import { useContasContext } from '../context/ContasContext'
 import { useSaldo } from '../hooks/useSaldo'
 import { formatBRL } from '../utils/formatCurrency'
+import { groupContasByStatus } from '../utils/contasHelpers'
 import { Banknote, Menu, PanelLeftOpen, Plus } from '../lib/icons'
 import BrandLogo from './BrandLogo'
 
@@ -27,11 +28,10 @@ export default function Navbar({ onAddBill, onToggleMobile, desktopOpened, onTog
   const [saldoOpen, setSaldoOpen] = useState(false)
   const [saldoInput, setSaldoInput] = useState<number | undefined>(undefined)
 
-  const totalAVencer = contas
-    .filter(c => c.status === 'a_vencer' || c.status === 'atrasada')
-    .reduce((sum, c) => sum + c.valor, 0)
-  const contasEmAberto = contas.filter(c => c.status !== 'paga').length
-  const saldoAposPagar = saldo !== null ? saldo - totalAVencer : null
+  const { aVencer, atrasadas, emAberto } = groupContasByStatus(contas)
+  const totalAVencer    = [...aVencer, ...atrasadas].reduce((sum, c) => sum + c.valor, 0)
+  const contasEmAberto  = emAberto.length
+  const saldoAposPagar  = saldo !== null ? saldo - totalAVencer : null
 
   function openSaldoModal() {
     setSaldoInput(saldo ?? undefined)

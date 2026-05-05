@@ -1,5 +1,6 @@
 import { useContasContext } from '../context/ContasContext'
 import { formatBRL } from '../utils/formatCurrency'
+import { parseFinanceDate } from '../utils/formatDate'
 import styles from './Calendario.module.css'
 
 export default function Calendario() {
@@ -16,7 +17,7 @@ export default function Calendario() {
 
   const porDia: Record<number, typeof contas> = {}
   contas.forEach(c => {
-    const d = new Date(c.vencimento + 'T00:00:00')
+    const d = parseFinanceDate(c.vencimento)
     if (d.getFullYear() === ano && d.getMonth() === mes) {
       const dia = d.getDate()
       porDia[dia] = [...(porDia[dia] ?? []), c]

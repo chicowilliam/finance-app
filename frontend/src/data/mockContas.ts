@@ -1,13 +1,4 @@
-import { formatDateBR } from '../utils/formatDate'
 import type { Conta } from '../types/Bill'
-
-// Re-export canonical types so legacy imports still resolve
-export type { StatusConta, Conta } from '../types/Bill'
-
-// Re-export formatBRL so legacy imports still resolve
-export { formatBRL } from '../utils/formatCurrency'
-
-export const formatData = (iso: string) => formatDateBR(iso)
 
 const hoje = new Date()
 const addDias = (n: number) => {

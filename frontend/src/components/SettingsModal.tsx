@@ -22,27 +22,19 @@ import { Database, Download, FileText, Globe, KeyRound, Moon, Settings, Shield, 
 import { useAuth } from '../hooks/useAuth'
 import { useTheme } from '../hooks/useTheme'
 import { apiChangePassword, apiDeleteOwnAccount, apiUpdateProfile } from '../services/authService'
+import { STORAGE_KEYS } from '../utils/storageKeys'
+import { getBool, setBool, getStr, setStr } from '../utils/storageHelpers'
 
-// ─── Preference keys ──────────────────────────────────────────────────────────
-const PREF_HIDE_VALUES    = 'finance.pref.hideValuesByDefault'
-const PREF_REDUCE_MOTION  = 'finance.pref.reduceMotion'
-const PREF_HIGH_CONTRAST  = 'finance.pref.highContrast'
-const PREF_SESSION_TIMEOUT = 'finance.pref.sessionTimeout'
-const PREF_NOTIF_BILLS    = 'finance.pref.notifBills'
-const PREF_NOTIF_WEEKLY   = 'finance.pref.notifWeekly'
-const PREF_DENSITY        = 'finance.pref.density'
-const PREF_CURRENCY       = 'finance.pref.currency'
-const PREF_ACCENT         = 'finance.pref.accentColor'
-
-function getBool(key: string, def = false): boolean {
-	const v = localStorage.getItem(key)
-	return v === null ? def : v === 'true'
-}
-function setBool(key: string, v: boolean) { localStorage.setItem(key, String(v)) }
-function getStr(key: string, def: string): string {
-	return localStorage.getItem(key) ?? def
-}
-function setStr(key: string, v: string) { localStorage.setItem(key, v) }
+// ─── Preference keys (aliases for readability) ────────────────────────────────
+const PREF_HIDE_VALUES     = STORAGE_KEYS.PREF_HIDE_VALUES
+const PREF_REDUCE_MOTION   = STORAGE_KEYS.PREF_REDUCE_MOTION
+const PREF_HIGH_CONTRAST   = STORAGE_KEYS.PREF_HIGH_CONTRAST
+const PREF_SESSION_TIMEOUT = STORAGE_KEYS.PREF_SESSION_TIMEOUT
+const PREF_NOTIF_BILLS     = STORAGE_KEYS.PREF_NOTIF_BILLS
+const PREF_NOTIF_WEEKLY    = STORAGE_KEYS.PREF_NOTIF_WEEKLY
+const PREF_DENSITY         = STORAGE_KEYS.PREF_DENSITY
+const PREF_CURRENCY        = STORAGE_KEYS.PREF_CURRENCY
+const PREF_ACCENT          = STORAGE_KEYS.PREF_ACCENT
 
 // ─── Accent colors ────────────────────────────────────────────────────────────
 const ACCENT_OPTIONS = [

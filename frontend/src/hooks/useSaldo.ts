@@ -1,26 +1,16 @@
 import { useState } from 'react'
-
-const SALDO_KEY = 'finance-app:saldo'
-
-function loadSaldo(): number | null {
-  try {
-    const raw = localStorage.getItem(SALDO_KEY)
-    const parsed = raw !== null ? Number(raw) : null
-    return parsed !== null && isFinite(parsed) ? parsed : null
-  } catch {
-    return null
-  }
-}
+import { STORAGE_KEYS } from '../utils/storageKeys'
+import { getNumber } from '../utils/storageHelpers'
 
 export function useSaldo() {
-  const [saldo, setSaldoState] = useState<number | null>(loadSaldo)
+  const [saldo, setSaldoState] = useState<number | null>(() => getNumber(STORAGE_KEYS.SALDO))
 
   function setSaldo(value: number | null) {
     try {
       if (value === null) {
-        localStorage.removeItem(SALDO_KEY)
+        localStorage.removeItem(STORAGE_KEYS.SALDO)
       } else {
-        localStorage.setItem(SALDO_KEY, String(value))
+        localStorage.setItem(STORAGE_KEYS.SALDO, String(value))
       }
     } catch {
       // localStorage indisponível
