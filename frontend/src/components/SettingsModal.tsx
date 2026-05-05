@@ -110,7 +110,7 @@ const TABS: { id: Tab; label: string; icon: React.ReactNode }[] = [
 export default function SettingsModal({ opened, onClose }: SettingsModalProps) {
 	const { userName, userEmail, refreshProfile } = useAuth()
 	const { theme, toggleTheme } = useTheme()
-	const isMobile = useMediaQuery('(max-width: 48em)')
+	const isMobile = useMediaQuery('(max-width: 48em)', false, { getInitialValueInEffect: false })
 
 	const [activeTab, setActiveTab] = useState<Tab>('conta')
 	const [isCloseHovered, setIsCloseHovered] = useState(false)

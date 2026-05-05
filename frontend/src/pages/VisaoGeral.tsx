@@ -17,7 +17,7 @@ export default function VisaoGeral() {
   const { contas, loading } = useContasContext()
   const { saldo } = useSaldo()
   const shouldReduceMotion = useReducedMotion()
-  const isMobile = useMediaQuery('(max-width: 48em)')
+  const isMobile = useMediaQuery('(max-width: 48em)', false, { getInitialValueInEffect: false })
 
   if (loading) return <Loader variant="dashboard" />
 
