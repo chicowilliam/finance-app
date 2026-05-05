@@ -5,7 +5,7 @@ import { toast } from 'sonner'
 import { useContasContext } from '../context/ContasContext'
 import { formatBRL } from '../utils/formatCurrency'
 import { formatDateBR } from '../utils/formatDate'
-import { diasRelativo } from '../utils/contasHelpers'
+import { diasRelativo, groupContasByStatus } from '../utils/contasHelpers'
 import type { Conta, StatusConta } from '../types/Bill'
 import AppPanel from '../components/AppPanel'
 import Loader from '../components/Loader'
@@ -61,9 +61,7 @@ export default function Contas() {
   }, [filtrada, sortKey, sortDir])
 
   const stats = useMemo(() => {
-    const pagas    = contas.filter(c => c.status === 'paga')
-    const aVencer  = contas.filter(c => c.status === 'a_vencer')
-    const atrasadas = contas.filter(c => c.status === 'atrasada')
+    const { pagas, aVencer, atrasadas } = groupContasByStatus(contas)
     return [
       { label: 'Total', qtd: contas.length,    valor: contas.reduce((s, c) => s + c.valor, 0),    color: 'var(--mantine-color-teal-6)',   bg: 'var(--mantine-color-teal-0)' },
       { label: 'Pagas', qtd: pagas.length,      valor: pagas.reduce((s, c) => s + c.valor, 0),     color: '#2f9e44', bg: '#f0fdf4' },

@@ -7,6 +7,7 @@ import { AnimatePresence, motion, useReducedMotion } from 'motion/react'
 import Loader from '../components/Loader'
 import AppPanel from '../components/AppPanel'
 import { daysOverdue, daysUntilDue } from '../utils/formatDate'
+import { groupContasByStatus } from '../utils/contasHelpers'
 
 const diasAtraso = (c: Conta) => daysOverdue(c.vencimento)
 const diasParaVencer = (c: Conta) => daysUntilDue(c.vencimento)
@@ -26,8 +27,8 @@ export default function Alertas() {
 
   if (loading) return <Loader variant="alerts" />
 
-  const atrasadas = contas.filter(c => c.status === 'atrasada')
-  const urgentes  = contas.filter(c => c.status === 'a_vencer' && diasParaVencer(c) <= 5)
+  const { atrasadas, aVencer } = groupContasByStatus(contas)
+  const urgentes  = aVencer.filter(c => diasParaVencer(c) <= 5)
   const allClear  = atrasadas.length === 0 && urgentes.length === 0
 
   return (
