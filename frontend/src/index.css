@@ -584,6 +584,19 @@ textarea {
   }
 }
 
+/* ── Mobile top bar (shown on all routes when sidebar is hidden) ─────────── */
+.mobile-topbar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 16px;
+  border-bottom: 1px solid var(--color-border, rgba(148,163,184,0.18));
+  background: var(--color-surface, #18181b);
+  position: sticky;
+  top: 0;
+  z-index: 40;
+}
+
 @media (max-width: 48rem) {
   .dashboard-sidebar-shell--desktop {
     display: none;
@@ -610,5 +623,11 @@ textarea {
   .magic-empty-state__glow {
     width: 220px;
     height: 220px;
+  }
+
+  /* Prevent horizontal overflow on narrow screens */
+  .dashboard-page-shell {
+    overflow-x: hidden;
+    padding-bottom: env(safe-area-inset-bottom, 0px);
   }
 }

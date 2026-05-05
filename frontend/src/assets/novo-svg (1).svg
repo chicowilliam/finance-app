@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 420 100" width="420" height="100">
+  <defs>
+    <style>
+      @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@700&amp;display=swap');
+      .brand-text {
+        font-family: 'Poppins', sans-serif;
+        font-size: 36px;
+        font-weight: 700;
+      }
+    </style>
+  </defs>
+
+  <!-- Ícone (Escuro) -->
+  <g transform="translate(10, 22.5)">
+    <rect x="0" y="0" width="80" height="55" rx="10" fill="#0f172a" />
+    <rect x="16" y="18" width="10" height="19" rx="2" fill="#ffffff" />
+    <rect x="34" y="12" width="10" height="31" rx="2" fill="#ffffff" />
+    <rect x="52" y="24" width="10" height="10" rx="2" fill="#ffffff" />
+  </g>
+  
+  <!-- Texto (Escuro) -->
+  <text x="105" y="55" class="brand-text" fill="#0f172a" dominant-baseline="middle">
+    FinanceApp
+  </text>
+</svg>

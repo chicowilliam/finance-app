@@ -16,6 +16,7 @@ import {
 	TextInput,
 	ThemeIcon,
 } from '@mantine/core'
+import { useMediaQuery } from '@mantine/hooks'
 import { toast } from 'sonner'
 import { Database, Download, FileText, Globe, KeyRound, Moon, Settings, Shield, Sliders, Sun, Timer, Trash2, UserCog, Zap } from '../lib/icons'
 import { useAuth } from '../hooks/useAuth'
@@ -117,6 +118,7 @@ const TABS: { id: Tab; label: string; icon: React.ReactNode }[] = [
 export default function SettingsModal({ opened, onClose }: SettingsModalProps) {
 	const { userName, userEmail, refreshProfile } = useAuth()
 	const { theme, toggleTheme } = useTheme()
+	const isMobile = useMediaQuery('(max-width: 48em)')
 
 	const [activeTab, setActiveTab] = useState<Tab>('conta')
 	const [isCloseHovered, setIsCloseHovered] = useState(false)
@@ -681,95 +683,171 @@ export default function SettingsModal({ opened, onClose }: SettingsModalProps) {
 			opened={opened}
 			onClose={onClose}
 			title={null}
-			size={820}
+			size={isMobile ? '100%' : 820}
+			fullScreen={isMobile}
 			padding={0}
-			radius={16}
+			radius={isMobile ? 0 : 16}
 			centered
 			withCloseButton={false}
 			styles={{
 				content: {
 					background: 'var(--color-surface, #111)',
-					border: '1px solid rgba(255,255,255,0.08)',
+					border: isMobile ? 'none' : '1px solid rgba(255,255,255,0.08)',
 					overflow: 'hidden',
 				},
-				body: { padding: 0 },
+				body: { padding: 0, height: isMobile ? '100%' : undefined, display: isMobile ? 'flex' : undefined, flexDirection: isMobile ? 'column' : undefined },
 			}}
 		>
-			<Group align="stretch" wrap="nowrap" style={{ minHeight: 540 }}>
-				{/* ── Sidebar nav ── */}
-				<Box
-					style={{
-						width: 200,
-						flexShrink: 0,
-						borderRight: '1px solid rgba(255,255,255,0.07)',
-						padding: '20px 10px',
-						display: 'flex',
-						flexDirection: 'column',
-						gap: 2,
-						background: 'rgba(0,0,0,0.18)',
-					}}
-				>
-					<Text size="11px" fw={700} c="dimmed" px={8} mb={6} style={{ letterSpacing: '0.12em', textTransform: 'uppercase' }}>
-						Configurações
-					</Text>
-					{TABS.map((tab) => (
-						<Box
-							key={tab.id}
-							onClick={() => setActiveTab(tab.id)}
-							className="profile-menu-item"
-							style={{
-								borderRadius: 8,
-								padding: '8px 10px',
-								cursor: 'pointer',
-								background: activeTab === tab.id ? 'rgba(255,255,255,0.07)' : 'transparent',
-								border: activeTab === tab.id ? '1px solid rgba(255,255,255,0.1)' : '1px solid transparent',
-								transition: 'background 0.12s',
-							}}
+			{isMobile ? (
+				/* ── Mobile: vertical layout ── */
+				<>
+					{/* Mobile header */}
+					<Box
+						style={{
+							display: 'flex',
+							alignItems: 'center',
+							justifyContent: 'space-between',
+							padding: '12px 16px',
+							borderBottom: '1px solid rgba(255,255,255,0.08)',
+							background: 'rgba(0,0,0,0.18)',
+							flexShrink: 0,
+						}}
+					>
+						<Text size="sm" fw={700} c="dimmed" style={{ letterSpacing: '0.1em', textTransform: 'uppercase' }}>
+							Configurações
+						</Text>
+						<ActionIcon
+							variant="subtle"
+							onClick={onClose}
+							aria-label="Fechar configurações"
+							size="sm"
+							style={{ color: 'var(--color-aluminum)' }}
 						>
-							<Group gap={9} wrap="nowrap">
-								<Box style={{ color: activeTab === tab.id ? 'var(--color-brand, #2ecc8a)' : 'var(--color-aluminum, #8899aa)', flexShrink: 0 }}>
-									{tab.icon}
+							<svg viewBox="0 0 24 24" width={16} height={16} stroke="currentColor" strokeWidth={2} fill="none"><line x1="18" y1="6" x2="6" y2="18" /><line x1="6" y1="6" x2="18" y2="18" /></svg>
+						</ActionIcon>
+					</Box>
+					{/* Mobile tab bar — horizontal scroll */}
+					<ScrollArea
+						style={{ flexShrink: 0, borderBottom: '1px solid rgba(255,255,255,0.07)' }}
+						type="scroll"
+						scrollbarSize={0}
+					>
+						<Box style={{ display: 'flex', gap: 4, padding: '8px 10px', whiteSpace: 'nowrap' }}>
+							{TABS.map((tab) => (
+								<Box
+									key={tab.id}
+									onClick={() => setActiveTab(tab.id)}
+									style={{
+										borderRadius: 8,
+										padding: '7px 12px',
+										cursor: 'pointer',
+										flexShrink: 0,
+										display: 'flex',
+										alignItems: 'center',
+										gap: 6,
+										background: activeTab === tab.id ? 'rgba(255,255,255,0.1)' : 'transparent',
+										border: activeTab === tab.id ? '1px solid rgba(255,255,255,0.14)' : '1px solid transparent',
+										transition: 'background 0.12s',
+									}}
+								>
+									<Box style={{ color: activeTab === tab.id ? 'var(--color-brand, #2ecc8a)' : 'var(--color-aluminum, #8899aa)', flexShrink: 0 }}>
+										{tab.icon}
+									</Box>
+									<Text size="xs" fw={activeTab === tab.id ? 600 : 400} c={activeTab === tab.id ? 'var(--color-sidebar-text)' : 'dimmed'}>
+										{tab.label}
+									</Text>
 								</Box>
-								<Text size="sm" fw={activeTab === tab.id ? 600 : 400} c={activeTab === tab.id ? 'var(--color-sidebar-text)' : 'dimmed'}>
-									{tab.label}
-								</Text>
-							</Group>
+							))}
 						</Box>
-					))}
-
-				</Box>
-
-				{/* ── Content ── */}
-				<ScrollArea style={{ flex: 1 }} type="scroll">
-					<Box p={28}>
-						<Group justify="flex-end" mb={4}>
-							<ActionIcon
-								variant="subtle"
-								onClick={onClose}
-								onMouseEnter={() => setIsCloseHovered(true)}
-								onMouseLeave={() => setIsCloseHovered(false)}
-								aria-label="Fechar configurações"
-								size="sm"
-								style={{
-									color: isCloseHovered ? '#ef4444' : 'var(--color-aluminum)',
-									background: isCloseHovered ? 'rgba(239,68,68,0.08)' : 'transparent',
-									transform: isCloseHovered ? 'scale(1.015)' : 'scale(1)',
-									transition: 'color 140ms ease, background-color 140ms ease, transform 180ms ease',
-								}}
-							>
-								<svg viewBox="0 0 24 24" width={16} height={16} stroke="currentColor" strokeWidth={2} fill="none"><line x1="18" y1="6" x2="6" y2="18" /><line x1="6" y1="6" x2="18" y2="18" /></svg>
-							</ActionIcon>
-						</Group>
-						{renderTab()}
-						<Divider my={22} color="rgba(255,255,255,0.08)" />
-						<Group justify="flex-end">
-							<Button variant="default" onClick={onClose}>
+					</ScrollArea>
+					{/* Mobile content */}
+					<ScrollArea style={{ flex: 1 }} type="auto">
+						<Box p={16}>
+							{renderTab()}
+							<Divider my={18} color="rgba(255,255,255,0.08)" />
+							<Button variant="default" fullWidth onClick={onClose}>
 								Fechar configurações
 							</Button>
-						</Group>
+						</Box>
+					</ScrollArea>
+				</>
+			) : (
+				/* ── Desktop: 2-column layout ── */
+				<Group align="stretch" wrap="nowrap" style={{ minHeight: 540 }}>
+					{/* Sidebar nav */}
+					<Box
+						style={{
+							width: 200,
+							flexShrink: 0,
+							borderRight: '1px solid rgba(255,255,255,0.07)',
+							padding: '20px 10px',
+							display: 'flex',
+							flexDirection: 'column',
+							gap: 2,
+							background: 'rgba(0,0,0,0.18)',
+						}}
+					>
+						<Text size="11px" fw={700} c="dimmed" px={8} mb={6} style={{ letterSpacing: '0.12em', textTransform: 'uppercase' }}>
+							Configurações
+						</Text>
+						{TABS.map((tab) => (
+							<Box
+								key={tab.id}
+								onClick={() => setActiveTab(tab.id)}
+								className="profile-menu-item"
+								style={{
+									borderRadius: 8,
+									padding: '8px 10px',
+									cursor: 'pointer',
+									background: activeTab === tab.id ? 'rgba(255,255,255,0.07)' : 'transparent',
+									border: activeTab === tab.id ? '1px solid rgba(255,255,255,0.1)' : '1px solid transparent',
+									transition: 'background 0.12s',
+								}}
+							>
+								<Group gap={9} wrap="nowrap">
+									<Box style={{ color: activeTab === tab.id ? 'var(--color-brand, #2ecc8a)' : 'var(--color-aluminum, #8899aa)', flexShrink: 0 }}>
+										{tab.icon}
+									</Box>
+									<Text size="sm" fw={activeTab === tab.id ? 600 : 400} c={activeTab === tab.id ? 'var(--color-sidebar-text)' : 'dimmed'}>
+										{tab.label}
+									</Text>
+								</Group>
+							</Box>
+						))}
 					</Box>
-				</ScrollArea>
-			</Group>
+
+					{/* Content */}
+					<ScrollArea style={{ flex: 1 }} type="scroll">
+						<Box p={28}>
+							<Group justify="flex-end" mb={4}>
+								<ActionIcon
+									variant="subtle"
+									onClick={onClose}
+									onMouseEnter={() => setIsCloseHovered(true)}
+									onMouseLeave={() => setIsCloseHovered(false)}
+									aria-label="Fechar configurações"
+									size="sm"
+									style={{
+										color: isCloseHovered ? '#ef4444' : 'var(--color-aluminum)',
+										background: isCloseHovered ? 'rgba(239,68,68,0.08)' : 'transparent',
+										transform: isCloseHovered ? 'scale(1.015)' : 'scale(1)',
+										transition: 'color 140ms ease, background-color 140ms ease, transform 180ms ease',
+									}}
+								>
+									<svg viewBox="0 0 24 24" width={16} height={16} stroke="currentColor" strokeWidth={2} fill="none"><line x1="18" y1="6" x2="6" y2="18" /><line x1="6" y1="6" x2="18" y2="18" /></svg>
+								</ActionIcon>
+							</Group>
+							{renderTab()}
+							<Divider my={22} color="rgba(255,255,255,0.08)" />
+							<Group justify="flex-end">
+								<Button variant="default" onClick={onClose}>
+									Fechar configurações
+								</Button>
+							</Group>
+						</Box>
+					</ScrollArea>
+				</Group>
+			)}
 		</Modal>
 	)
 }

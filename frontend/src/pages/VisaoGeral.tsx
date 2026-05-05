@@ -3,6 +3,7 @@ import { useSaldo } from '../hooks/useSaldo'
 import { formatBRL } from '../utils/formatCurrency'
 import { formatData } from '../data/mockContas'
 import { Group, List, SimpleGrid, Stack, Text, Title } from '@mantine/core'
+import { useMediaQuery } from '@mantine/hooks'
 import { AlertTriangle, Banknote, Clock, Wallet } from '../lib/icons'
 import { motion, useReducedMotion } from 'motion/react'
 import { Bar, BarChart, CartesianGrid, Cell, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts'
@@ -15,6 +16,7 @@ export default function VisaoGeral() {
   const { contas, loading } = useContasContext()
   const { saldo } = useSaldo()
   const shouldReduceMotion = useReducedMotion()
+  const isMobile = useMediaQuery('(max-width: 48em)')
 
   if (loading) return <Loader variant="dashboard" />
 
@@ -136,10 +138,15 @@ export default function VisaoGeral() {
                 <CartesianGrid strokeDasharray="3 3" stroke="rgba(148,163,184,0.25)" />
                 <XAxis dataKey="label" tick={{ fill: 'var(--color-text-muted)', fontSize: 12 }} axisLine={false} tickLine={false} />
                 <YAxis
-                  tick={{ fill: 'var(--color-text-muted)', fontSize: 12 }}
+                  tick={{ fill: 'var(--color-text-muted)', fontSize: 11 }}
                   axisLine={false}
                   tickLine={false}
-                  tickFormatter={(value) => formatBRL(value as number)}
+                  width={isMobile ? 52 : 72}
+                  tickFormatter={(value) => {
+                    const n = value as number
+                    if (isMobile && n >= 1000) return `${(n / 1000).toFixed(0)}k`
+                    return formatBRL(n)
+                  }}
                 />
                 <Tooltip
                   cursor={{ fill: 'rgba(148,163,184,0.08)' }}
@@ -179,10 +186,12 @@ export default function VisaoGeral() {
                 transition={{ duration: shouldReduceMotion ? 0.1 : 0.2, delay: shouldReduceMotion ? 0 : idx * 0.04 }}
               >
                 <List.Item>
-                  <Group justify="space-between" wrap="nowrap">
-                    <Text fw={600}>{c.descricao}</Text>
-                    <Text size="sm" c="dimmed">{formatData(c.vencimento)}</Text>
-                    <Text fw={700} c="red">{formatBRL(c.valor)}</Text>
+                  <Group justify="space-between" wrap="wrap" gap="xs">
+                    <Text fw={600} style={{ minWidth: 0, flex: 1 }}>{c.descricao}</Text>
+                    <Group gap="xs" wrap="nowrap">
+                      <Text size="sm" c="dimmed">{formatData(c.vencimento)}</Text>
+                      <Text fw={700} c="red">{formatBRL(c.valor)}</Text>
+                    </Group>
                   </Group>
                 </List.Item>
               </motion.div>

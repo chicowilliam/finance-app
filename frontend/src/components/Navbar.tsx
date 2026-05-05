@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { useLocation } from 'react-router-dom'
-import { ActionIcon, Divider, Group, Modal, Paper, Stack, Text } from '@mantine/core'
+import { ActionIcon, Box, Divider, Group, Modal, Paper, Stack, Text } from '@mantine/core'
 import { motion, useReducedMotion } from 'motion/react'
 import AppButton from './AppButton'
 import { AppCurrencyInput } from './AppInput'
@@ -8,6 +8,7 @@ import { useContasContext } from '../context/ContasContext'
 import { useSaldo } from '../hooks/useSaldo'
 import { formatBRL } from '../utils/formatCurrency'
 import { Banknote, Menu, PanelLeftOpen, Plus } from '../lib/icons'
+import BrandLogo from './BrandLogo'
 
 interface NavbarProps {
   onAddBill: () => void
@@ -43,7 +44,14 @@ export default function Navbar({ onAddBill, onToggleMobile, desktopOpened, onTog
   }
 
   if (!showTopbar) {
-    return null
+    return (
+      <Box hiddenFrom="sm" className="mobile-topbar">
+        <ActionIcon variant="subtle" onClick={onToggleMobile} aria-label="Abrir menu" style={{ color: 'var(--color-text)' }}>
+          <Menu size={20} strokeWidth={1.8} />
+        </ActionIcon>
+        <BrandLogo height={22} />
+      </Box>
+    )
   }
 
   return (

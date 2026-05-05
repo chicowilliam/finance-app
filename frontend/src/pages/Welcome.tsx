@@ -2,7 +2,6 @@ import { useRef, useState } from 'react'
 import { Navigate, useNavigate } from 'react-router-dom'
 import {
   Container,
-  Group,
   Stack,
   Tabs,
   Text,
@@ -92,7 +91,7 @@ export default function Welcome() {
   }
 
   return (
-    <Container size={520} py={36}>
+    <Container size={520} py={{ base: 16, sm: 36 }} px={{ base: 'md', sm: 'lg' }}>
       <AppPanel>
         <Stack gap="md">
           <div>
@@ -187,10 +186,10 @@ export default function Welcome() {
             </AnimatePresence>
           </div>
 
-          <Group justify="space-between" align="center">
-            <AppButton appearance="outline" tone="neutral" onClick={handleGuest}>Continuar como convidado</AppButton>
-            <Text size="xs" c="dimmed">Os dados de convidado ficam neste navegador.</Text>
-          </Group>
+          <Stack gap={4}>
+            <AppButton appearance="outline" tone="neutral" fullWidth onClick={handleGuest}>Continuar como convidado</AppButton>
+            <Text size="xs" c="dimmed" ta="center">Os dados de convidado ficam neste navegador.</Text>
+          </Stack>
         </Stack>
       </AppPanel>
     </Container>

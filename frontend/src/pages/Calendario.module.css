@@ -1,5 +1,5 @@
 .titulo { font-size: 1.5rem; font-weight: 700; margin-bottom: 0.75rem; }
-.legenda { display: flex; gap: 16px; font-size: 0.8rem; font-weight: 600; margin-bottom: 1rem; }
+.legenda { display: flex; gap: 16px; font-size: 0.8rem; font-weight: 600; margin-bottom: 1rem; flex-wrap: wrap; }
 .lPaga     { color: #15803d; }
 .lVencer   { color: #b45309; }
 .lAtrasada { color: #b91c1c; }
@@ -26,3 +26,44 @@
 .tag.paga .tagVal     { color: #15803d; }
 .tag.a_vencer .tagVal { color: #a16207; }
 .tag.atrasada .tagVal { color: #b91c1c; }
+
+/* ── Dark mode ── */
+[data-theme='dark'] .cel {
+  background: var(--color-surface, #1e1e2e);
+  border-color: rgba(148,163,184,0.15);
+}
+[data-theme='dark'] .hoje {
+  background: rgba(99,102,241,0.15);
+  border-color: #6366f1;
+}
+[data-theme='dark'] .celAtrasada {
+  background: rgba(239,68,68,0.08);
+  border-color: rgba(239,68,68,0.4);
+}
+[data-theme='dark'] .celVencer {
+  background: rgba(234,179,8,0.08);
+  border-color: rgba(234,179,8,0.4);
+}
+[data-theme='dark'] .num { color: var(--color-text, #e2e8f0); }
+[data-theme='dark'] .cab { color: #94a3b8; }
+[data-theme='dark'] .tag.paga     { background: rgba(21,128,61,0.22); }
+[data-theme='dark'] .tag.a_vencer { background: rgba(161,98,7,0.22); }
+[data-theme='dark'] .tag.atrasada { background: rgba(185,28,28,0.22); }
+[data-theme='dark'] .tag.paga .tagNome     { color: #4ade80; }
+[data-theme='dark'] .tag.a_vencer .tagNome { color: #fbbf24; }
+[data-theme='dark'] .tag.atrasada .tagNome { color: #f87171; }
+[data-theme='dark'] .tag.paga .tagVal     { color: #4ade80; }
+[data-theme='dark'] .tag.a_vencer .tagVal { color: #fbbf24; }
+[data-theme='dark'] .tag.atrasada .tagVal { color: #f87171; }
+
+/* ── Mobile ── */
+@media (max-width: 48rem) {
+  .titulo { font-size: 1.1rem; }
+  .grid { gap: 2px; }
+  .cab { font-size: 0.62rem; padding: 4px 0; }
+  .cel { min-height: 52px; padding: 4px 3px; border-radius: 5px; }
+  .num { font-size: 0.7rem; }
+  .tag { padding: 1px 3px; margin-top: 1px; border-radius: 3px; }
+  .tagNome { font-size: 0.55rem; }
+  .tagVal  { font-size: 0.52rem; }
+}
