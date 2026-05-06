@@ -139,15 +139,26 @@ function computeTooltipStyle(
   const sw = rect.width + SPOTLIGHT_PADDING * 2
   const sh = rect.height + SPOTLIGHT_PADDING * 2
 
+  // placement 'right': card centralizado na área à direita do alvo (ex: sidebar)
+  if (placement === 'right') {
+    const rightAreaStart = sx + sw + gap
+    const rightAreaCenter = rightAreaStart + (vw - rightAreaStart) / 2
+    const cardLeft = Math.max(gap, Math.min(rightAreaCenter - maxW / 2, vw - maxW - gap))
+    return {
+      position: 'fixed',
+      top: '50%',
+      left: cardLeft,
+      transform: 'translateY(-50%)',
+      width: maxW,
+    }
+  }
+
   const targetCenterX = sx + sw / 2
   const clampedLeft = Math.max(gap, Math.min(targetCenterX - maxW / 2, vw - maxW - gap))
 
   let top = sy + sh + gap
   if (placement === 'top') {
     top = sy - estimatedCardH - gap
-  }
-  if (placement === 'left' || placement === 'right') {
-    top = sy + sh / 2 - estimatedCardH / 2
   }
 
   // Evita cobrir o alvo: se não couber abaixo, posiciona acima (ou vice-versa)
