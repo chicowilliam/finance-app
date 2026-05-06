@@ -1,7 +1,5 @@
 import type { CSSProperties } from 'react'
-import logoClaro from '../assets/gemini-claro-svg.svg'
-import logoEscuro from '../assets/gemini-escuro-svg.svg'
-import { useTheme } from '../hooks/useTheme'
+import logo from '../assets/novo-svg (1).svg'
 
 interface BrandLogoProps {
 	height?: number
@@ -14,12 +12,9 @@ export default function BrandLogo({
 	style,
 	alt = 'Finance App',
 }: BrandLogoProps) {
-	const { theme } = useTheme()
-	const src = theme === 'dark' ? logoEscuro : logoClaro
-
 	return (
 		<img
-			src={src}
+			src={logo}
 			alt={alt}
 			height={height}
 			style={{ width: 'auto', display: 'block', ...style }}

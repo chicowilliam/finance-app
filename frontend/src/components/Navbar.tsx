@@ -8,18 +8,16 @@ import { useContasContext } from '../context/ContasContext'
 import { useSaldo } from '../hooks/useSaldo'
 import { formatBRL } from '../utils/formatCurrency'
 import { groupContasByStatus } from '../utils/contasHelpers'
-import { Banknote, Menu, PanelLeftOpen, Plus } from '../lib/icons'
+import { Banknote, Menu, Plus } from '../lib/icons'
 import BrandLogo from './BrandLogo'
 
 interface NavbarProps {
   onAddBill: () => void
   mobileOpened: boolean
   onToggleMobile: () => void
-  desktopOpened: boolean
-  onToggleDesktop: () => void
 }
 
-export default function Navbar({ onAddBill, onToggleMobile, desktopOpened, onToggleDesktop }: NavbarProps) {
+export default function Navbar({ onAddBill, onToggleMobile }: NavbarProps) {
   const { pathname } = useLocation()
   const shouldReduceMotion = useReducedMotion()
   const showTopbar = pathname === '/app'
@@ -49,7 +47,7 @@ export default function Navbar({ onAddBill, onToggleMobile, desktopOpened, onTog
         <ActionIcon variant="subtle" onClick={onToggleMobile} aria-label="Abrir menu" style={{ color: 'var(--color-text)' }}>
           <Menu size={20} strokeWidth={1.8} />
         </ActionIcon>
-        <BrandLogo height={22} />
+        <BrandLogo height={30} />
       </Box>
     )
   }
@@ -76,18 +74,6 @@ export default function Navbar({ onAddBill, onToggleMobile, desktopOpened, onTog
           >
             <Menu size={20} strokeWidth={1.8} />
           </ActionIcon>
-          {/* Desktop: reabrir sidebar */}
-          {!desktopOpened && (
-            <ActionIcon
-              visibleFrom="md"
-              variant="subtle"
-              onClick={onToggleDesktop}
-              aria-label="Expandir sidebar"
-            >
-              <PanelLeftOpen size={20} strokeWidth={1.8} />
-            </ActionIcon>
-          )}
-
           {/* Saldo disponível */}
           <Stack gap={1} className="magic-topbar__metric-card">
             <Text size="10px" fw={700} c="dimmed" style={{ letterSpacing: '0.16em', textTransform: 'uppercase' }}>

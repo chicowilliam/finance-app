@@ -158,8 +158,6 @@ export default function DashboardLayout() {
 							onAddBill={() => setModalOpen(true)}
 							mobileOpened={mobileOpened}
 							onToggleMobile={toggleMobile}
-							desktopOpened={desktopOpened}
-							onToggleDesktop={toggleDesktop}
 						/>
 						<div className="dashboard-page-shell">
 							<Outlet />

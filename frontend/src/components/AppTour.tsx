@@ -36,7 +36,7 @@ const STEPS: TourStep[] = [
     title: 'Navegação lateral',
     description:
       'Use o menu lateral para navegar entre as seções: Visão Geral, Contas, Calendário e Alertas. Cada seção tem uma função específica.',
-    target: '[data-tour="sidebar-nav"]',
+    target: '[data-tour="sidebar-shell"]',
     placement: 'right',
   },
   {
@@ -60,7 +60,7 @@ const STEPS: TourStep[] = [
     title: 'Resumo do Mês',
     description:
       'Esses cards mostram seu resumo financeiro: saldo disponível, total pago, contas a vencer e contas atrasadas.',
-    target: '[data-tour="overview-cards"]',
+    target: '[data-tour="overview-cards"], [data-tour="overview-empty"]',
     placement: 'bottom',
   },
   {
@@ -77,64 +77,94 @@ const STEPS: TourStep[] = [
 const SPOTLIGHT_PADDING = 10
 
 function getTargetRect(selector: string): Rect | null {
-  const el = document.querySelector(selector)
-  if (!el) return null
-  const r = el.getBoundingClientRect()
+  const elements = Array.from(document.querySelectorAll(selector))
+  if (!elements.length) return null
+
+  const visibleRects = elements
+    .map((el) => ({ el, rect: el.getBoundingClientRect() }))
+    .filter(({ el, rect }) => {
+      const style = window.getComputedStyle(el)
+      return (
+        style.display !== 'none' &&
+        style.visibility !== 'hidden' &&
+        rect.width > 16 &&
+        rect.height > 16
+      )
+    })
+
+  if (!visibleRects.length) return null
+
+  // Prefer the largest visible candidate to avoid hidden/duplicate nodes
+  visibleRects.sort((a, b) => b.rect.width * b.rect.height - a.rect.width * a.rect.height)
+  const r = visibleRects[0].rect
   return { x: r.left, y: r.top, width: r.width, height: r.height }
 }
 
 function computeTooltipStyle(
   rect: Rect | null,
   placement: TourStep['placement'],
-  cardW = 320,
+  cardW = 420,
 ): React.CSSProperties {
+  const vw = window.innerWidth
+  const vh = window.innerHeight
+  const mobile = vw < 768
+
+  if (mobile) {
+    return {
+      position: 'fixed',
+      left: 12,
+      right: 12,
+      bottom: 12,
+      width: 'auto',
+      transform: 'none',
+    }
+  }
+
   if (!rect || placement === 'center') {
     return {
       position: 'fixed',
       top: '50%',
       left: '50%',
       transform: 'translate(-50%, -50%)',
-      width: Math.min(cardW, window.innerWidth - 32),
+      width: Math.min(cardW, vw - 40),
     }
   }
 
-  const vw = window.innerWidth
-  const vh = window.innerHeight
-  const gap = 14
+  const gap = 18
+  const estimatedCardH = 250
+  const maxW = Math.min(cardW, vw - 40)
 
   const sx = rect.x - SPOTLIGHT_PADDING
   const sy = rect.y - SPOTLIGHT_PADDING
   const sw = rect.width + SPOTLIGHT_PADDING * 2
   const sh = rect.height + SPOTLIGHT_PADDING * 2
 
-  const style: React.CSSProperties = {
+  const targetCenterX = sx + sw / 2
+  const clampedLeft = Math.max(gap, Math.min(targetCenterX - maxW / 2, vw - maxW - gap))
+
+  let top = sy + sh + gap
+  if (placement === 'top') {
+    top = sy - estimatedCardH - gap
+  }
+  if (placement === 'left' || placement === 'right') {
+    top = sy + sh / 2 - estimatedCardH / 2
+  }
+
+  // Evita cobrir o alvo: se não couber abaixo, posiciona acima (ou vice-versa)
+  if (placement === 'bottom' && top + estimatedCardH > vh - gap) {
+    top = sy - estimatedCardH - gap
+  }
+  if (placement === 'top' && top < gap) {
+    top = sy + sh + gap
+  }
+
+  return {
     position: 'fixed',
-    width: Math.min(cardW, vw - 32),
+    top: Math.max(gap, Math.min(top, vh - estimatedCardH - gap)),
+    left: clampedLeft,
+    transform: 'none',
+    width: maxW,
   }
-
-  if (placement === 'bottom') {
-    style.top = sy + sh + gap
-    style.left = Math.min(Math.max(sx, gap), vw - cardW - gap)
-  } else if (placement === 'top') {
-    style.bottom = vh - sy + gap
-    style.left = Math.min(Math.max(sx, gap), vw - cardW - gap)
-  } else if (placement === 'right') {
-    style.top = Math.max(sy, gap)
-    style.left = sx + sw + gap
-  } else if (placement === 'left') {
-    style.top = Math.max(sy, gap)
-    style.right = vw - sx + gap
-  }
-
-  // Clamp inside viewport
-  if (typeof style.top === 'number') {
-    style.top = Math.max(gap, Math.min(style.top as number, vh - 220))
-  }
-  if (typeof style.left === 'number') {
-    style.left = Math.max(gap, Math.min(style.left as number, vw - cardW - gap))
-  }
-
-  return style
 }
 
 // ─── Component ───────────────────────────────────────────────────────────────
@@ -188,6 +218,14 @@ export default function AppTour() {
     return () => window.removeEventListener('finance:start-tour', handler)
   }, [])
 
+  // Garante que o alvo do passo esteja visível antes de destacar
+  useEffect(() => {
+    if (!active || !currentStep.target) return
+    const el = document.querySelector(currentStep.target)
+    if (!el) return
+    el.scrollIntoView({ behavior: 'smooth', block: 'center', inline: 'nearest' })
+  }, [active, currentStep])
+
   function closeTour(markDone = true) {
     setActive(false)
     if (markDone) localStorage.setItem(STORAGE_KEYS.TOUR_DONE, '1')
@@ -222,67 +260,105 @@ export default function AppTour() {
   return (
     <AnimatePresence>
       <>
-        {/* ── Blur backdrop ── */}
-        <motion.div
-          key="tour-blur"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          transition={{ duration: 0.25 }}
-          style={{
-            position: 'fixed',
-            inset: 0,
-            backdropFilter: 'blur(4px)',
-            WebkitBackdropFilter: 'blur(4px)',
-            zIndex: 9990,
-            pointerEvents: 'none',
-          }}
-        />
-
-        {/* ── SVG spotlight overlay ── */}
-        <motion.svg
-          key="tour-svg"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          transition={{ duration: 0.25 }}
-          style={{
-            position: 'fixed',
-            inset: 0,
-            width: '100%',
-            height: '100%',
-            zIndex: 9991,
-            pointerEvents: 'all',
-            cursor: 'default',
-          }}
-          xmlns="http://www.w3.org/2000/svg"
-          onClick={() => closeTour()}
-        >
-          <defs>
-            <mask id="tour-spotlight-mask">
-              <rect x={0} y={0} width={vw} height={vh} fill="white" />
-              {targetRect && (
-                <rect
-                  x={sx}
-                  y={sy}
-                  width={sw}
-                  height={sh}
-                  rx={12}
-                  ry={12}
-                  fill="black"
-                />
-              )}
-            </mask>
-          </defs>
-          <rect
-            x={0}
-            y={0}
-            width={vw}
-            height={vh}
-            fill="rgba(0,0,0,0.62)"
-            mask="url(#tour-spotlight-mask)"
+        {/* ── Blur + overlay fora do spotlight ── */}
+        {!targetRect ? (
+          <motion.div
+            key="tour-overlay-full"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.25 }}
+            onClick={() => closeTour()}
+            style={{
+              position: 'fixed',
+              inset: 0,
+              background: 'rgba(0,0,0,0.62)',
+              backdropFilter: 'blur(4px)',
+              WebkitBackdropFilter: 'blur(4px)',
+              zIndex: 9991,
+              pointerEvents: 'all',
+            }}
           />
-        </motion.svg>
+        ) : (
+          <>
+            <motion.div
+              key="tour-overlay-top"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.25 }}
+              onClick={() => closeTour()}
+              style={{
+                position: 'fixed',
+                top: 0,
+                left: 0,
+                width: '100%',
+                height: Math.max(0, sy),
+                background: 'rgba(0,0,0,0.62)',
+                backdropFilter: 'blur(4px)',
+                WebkitBackdropFilter: 'blur(4px)',
+                zIndex: 9991,
+              }}
+            />
+            <motion.div
+              key="tour-overlay-left"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.25 }}
+              onClick={() => closeTour()}
+              style={{
+                position: 'fixed',
+                top: sy,
+                left: 0,
+                width: Math.max(0, sx),
+                height: sh,
+                background: 'rgba(0,0,0,0.62)',
+                backdropFilter: 'blur(4px)',
+                WebkitBackdropFilter: 'blur(4px)',
+                zIndex: 9991,
+              }}
+            />
+            <motion.div
+              key="tour-overlay-right"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.25 }}
+              onClick={() => closeTour()}
+              style={{
+                position: 'fixed',
+                top: sy,
+                left: sx + sw,
+                width: Math.max(0, vw - (sx + sw)),
+                height: sh,
+                background: 'rgba(0,0,0,0.62)',
+                backdropFilter: 'blur(4px)',
+                WebkitBackdropFilter: 'blur(4px)',
+                zIndex: 9991,
+              }}
+            />
+            <motion.div
+              key="tour-overlay-bottom"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.25 }}
+              onClick={() => closeTour()}
+              style={{
+                position: 'fixed',
+                top: sy + sh,
+                left: 0,
+                width: '100%',
+                height: Math.max(0, vh - (sy + sh)),
+                background: 'rgba(0,0,0,0.62)',
+                backdropFilter: 'blur(4px)',
+                WebkitBackdropFilter: 'blur(4px)',
+                zIndex: 9991,
+              }}
+            />
+          </>
+        )}
 
         {/* ── Spotlight border glow ── */}
         {targetRect && (
@@ -325,7 +401,7 @@ export default function AppTour() {
               background: 'var(--color-surface, #1c1c1c)',
               border: '1px solid rgba(255,255,255,0.1)',
               borderRadius: 16,
-              padding: '18px 18px 14px',
+              padding: '22px 22px 18px',
               boxShadow: '0 24px 64px rgba(0,0,0,0.55), 0 4px 16px rgba(0,0,0,0.35)',
             }}
           >
@@ -346,23 +422,23 @@ export default function AppTour() {
             </Group>
 
             {/* Title */}
-            <Text fw={600} size="sm" mb={6} c="var(--color-text)">
+            <Text fw={700} size="md" mb={8} c="var(--color-text)">
               {currentStep.title}
             </Text>
 
             {/* Description */}
-            <Text size="xs" c="dimmed" mb={16} style={{ lineHeight: 1.6 }}>
+            <Text size="sm" c="dimmed" mb={18} style={{ lineHeight: 1.65 }}>
               {currentStep.description}
             </Text>
 
             {/* Progress dots */}
-            <Group gap={5} justify="center" mb={14}>
+            <Group gap={6} justify="center" mb={16}>
               {STEPS.map((_, i) => (
                 <div
                   key={i}
                   style={{
-                    width: i === step ? 22 : 6,
-                    height: 6,
+                    width: i === step ? 26 : 7,
+                    height: 7,
                     borderRadius: 3,
                     background:
                       i === step

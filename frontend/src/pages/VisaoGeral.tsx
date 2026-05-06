@@ -74,14 +74,16 @@ export default function VisaoGeral() {
       <Title order={1} size="h3">Visão Geral do Mês</Title>
 
       {isEmpty ? (
-        <MagicEmptyState
-          eyebrow="Pronto para começar"
-          title="Nenhuma conta cadastrada ainda"
-          description="Assim que você criar a primeira conta, este painel mostra totais, alertas e indicadores com profundidade visual sem perder a clareza financeira."
-          icon={<Wallet size={28} strokeWidth={1.8} />}
-          primaryActionLabel="Criar primeira conta"
-          onPrimaryAction={() => window.dispatchEvent(new Event('finance:new-bill'))}
-        />
+        <div data-tour="overview-empty">
+          <MagicEmptyState
+            eyebrow="Pronto para começar"
+            title="Nenhuma conta cadastrada ainda"
+            description="Assim que você criar a primeira conta, este painel mostra totais, alertas e indicadores com profundidade visual sem perder a clareza financeira."
+            icon={<Wallet size={28} strokeWidth={1.8} />}
+            primaryActionLabel="Criar primeira conta"
+            onPrimaryAction={() => window.dispatchEvent(new Event('finance:new-bill'))}
+          />
+        </div>
       ) : (
       <>
       <motion.div

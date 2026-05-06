@@ -53,6 +53,7 @@ export default function Sidebar({ onToggleDesktop, onNavClick }: SidebarProps) {
 	return (
 		<Box
 			className="sidebar-shell"
+			data-tour="sidebar-shell"
 			style={{
 				height: '100%',
 				padding: 'var(--space-3) var(--space-2)',
@@ -62,8 +63,8 @@ export default function Sidebar({ onToggleDesktop, onNavClick }: SidebarProps) {
 			}}
 		>
 			<Group gap={8} mb="sm" wrap="nowrap" justify="space-between">
-				<Group gap={8} wrap="nowrap" style={{ minWidth: 0, overflow: 'hidden' }}>
-					<BrandLogo height={26} style={{ maxWidth: 164 }} />
+				<Group gap={8} wrap="nowrap" justify="center" style={{ flex: 1, minWidth: 0, overflow: 'hidden', paddingLeft: 24 }}>
+					<BrandLogo height={36} style={{ maxWidth: 200 }} />
 				</Group>
 				{/* Botão de recolher — visível somente desktop */}
 				<ActionIcon

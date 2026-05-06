@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 250 100" width="250" height="100">
+  <defs>
+    <style>
+      @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@700&amp;display=swap');
+      .brand-text {
+        font-family: 'Poppins', sans-serif;
+        font-size: 36px;
+        font-weight: 700;
+      }
+    </style>
+  </defs>
+  <text x="5" y="55" class="brand-text" fill="#0f172a" dominant-baseline="middle">
+    FinanceApp
+  </text>
+</svg>
