@@ -179,7 +179,7 @@ export default function Contas() {
 
       <AppPanel p={0}>
         <ScrollArea>
-          <Table highlightOnHover style={{ minWidth: 620 }}>
+          <Table highlightOnHover style={{ minWidth: 620, borderCollapse: 'collapse' }}>
             <Table.Thead>
               <Table.Tr>
                 {/* Indicador colorido */}
@@ -209,6 +209,7 @@ export default function Contas() {
                       animate={shouldReduceMotion ? { opacity: 1 } : { opacity: 1, y: 0 }}
                       exit={shouldReduceMotion ? { opacity: 0 } : { opacity: 0, y: -8, scale: 0.99 }}
                       transition={{ duration: shouldReduceMotion ? 0.1 : 0.18, delay: shouldReduceMotion ? 0 : idx * 0.025 }}
+                      style={{ borderTop: '1px solid rgba(255,255,255,0.055)' }}
                     >
                       {/* Faixa colorida de status */}
                       <td style={{ width: 4, padding: 0, backgroundColor: STATUS_COLOR[c.status] }} />
