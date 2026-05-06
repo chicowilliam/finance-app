@@ -29,6 +29,12 @@ function popGuestContas(): Omit<Conta, 'id'>[] {
 
 export function AuthProvider({ children }: { children: ReactNode }) {
 	const [role, setRole] = useState<AuthRole>(() => {
+		const hasToken = Boolean(localStorage.getItem('token'))
+		const savedMode = localStorage.getItem(AUTH_MODE_KEY)
+		if (!hasToken || savedMode !== 'user') {
+			localStorage.removeItem(AUTH_ROLE_KEY)
+			return null
+		}
 		const savedRole = localStorage.getItem(AUTH_ROLE_KEY)
 		if (savedRole === 'admin' || savedRole === 'user') {
 			return savedRole
@@ -37,8 +43,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 	})
 
 	const [mode, setMode] = useState<AuthMode>(() => {
+		const hasToken = Boolean(localStorage.getItem('token'))
 		const savedMode = localStorage.getItem(AUTH_MODE_KEY) as AuthMode | null
-		if (savedMode === 'guest' || savedMode === 'user') {
+		if (savedMode === 'user' && hasToken) {
 			return savedMode
 		}
 		return 'anonymous'
@@ -166,8 +173,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 			return {
 			mode,
 			role,
-			isAdmin: role === 'admin',
-			isAuthenticated: mode === 'guest' || mode === 'user',
+			isAdmin: mode === 'user' && role === 'admin',
+			isAuthenticated: mode === 'user',
 			userName,
 			userEmail,
 			enterGuest,

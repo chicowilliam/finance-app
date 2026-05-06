@@ -52,7 +52,7 @@ export default function Welcome() {
   const prevTabRef = useRef<Tab>('login')
 
   const navigate = useNavigate()
-  const { isAuthenticated, enterGuest, login, register } = useAuth()
+  const { isAuthenticated, login, register } = useAuth()
 
   const loginForm = useForm<LoginFields>({ resolver: zodResolver(loginSchema) })
   const registerForm = useForm<RegisterFields>({ resolver: zodResolver(registerSchema) })
@@ -82,12 +82,6 @@ export default function Welcome() {
     } catch (err) {
       toast.error(err instanceof Error ? err.message : 'Falha ao criar conta')
     }
-  }
-
-  function handleGuest() {
-    enterGuest()
-    toast.success('Modo convidado ativado')
-    navigate('/app')
   }
 
   return (
@@ -189,11 +183,6 @@ export default function Welcome() {
               </motion.div>
             </AnimatePresence>
           </div>
-
-          <Stack gap={4}>
-            <AppButton appearance="outline" tone="neutral" fullWidth onClick={handleGuest}>Continuar como convidado</AppButton>
-            <Text size="xs" c="dimmed" ta="center">Os dados de convidado ficam neste navegador.</Text>
-          </Stack>
         </Stack>
       </AppPanel>
     </Container>
