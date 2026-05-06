@@ -33,6 +33,11 @@ export class AuthService {
     return randomBytes(32).toString('hex');
   }
 
+  private getConfiguredAdminEmail(): string | null {
+    const email = process.env.ADMIN_EMAIL?.trim().toLowerCase();
+    return email ? email : null;
+  }
+
   private buildAppUrl(path: string): string {
     const base = (process.env.APP_BASE_URL || 'http://localhost:5173').replace(
       /\/+$/,
@@ -68,8 +73,10 @@ export class AuthService {
   }
 
   async register(nome: string, email: string, senha: string) {
-    const totalUsers = await this.usersService.countUsers();
-    const role = totalUsers === 0 ? 'admin' : 'user';
+    const role = this.usersService.resolveRoleForEmail(
+      email,
+      this.getConfiguredAdminEmail(),
+    );
     const user = await this.usersService.create(nome, email, senha, role);
 
     await this.createAndSendEmailVerification(user.email, user.id);
@@ -100,7 +107,16 @@ export class AuthService {
       );
     }
 
-    const payload = { sub: user.id, email: user.email, role: user.role };
+    const syncedUser = await this.usersService.syncRoleForConfiguredAdmin(
+      user,
+      this.getConfiguredAdminEmail(),
+    );
+
+    const payload = {
+      sub: syncedUser.id,
+      email: syncedUser.email,
+      role: syncedUser.role,
+    };
     return { access_token: this.jwtService.sign(payload) };
   }
 
@@ -140,7 +156,16 @@ export class AuthService {
   async getProfile(userId: number) {
     const user = await this.usersService.findById(userId);
     if (!user) throw new UnauthorizedException('Usuário não encontrado.');
-    return { id: user.id, nome: user.nome, email: user.email, role: user.role };
+    const syncedUser = await this.usersService.syncRoleForConfiguredAdmin(
+      user,
+      this.getConfiguredAdminEmail(),
+    );
+    return {
+      id: syncedUser.id,
+      nome: syncedUser.nome,
+      email: syncedUser.email,
+      role: syncedUser.role,
+    };
   }
 
   async updateProfile(userId: number, nome?: string, email?: string) {
@@ -150,11 +175,15 @@ export class AuthService {
       nome,
       email,
     });
+    const syncedUser = await this.usersService.syncRoleForConfiguredAdmin(
+      updated,
+      this.getConfiguredAdminEmail(),
+    );
     return {
-      id: updated.id,
-      nome: updated.nome,
-      email: updated.email,
-      role: updated.role,
+      id: syncedUser.id,
+      nome: syncedUser.nome,
+      email: syncedUser.email,
+      role: syncedUser.role,
     };
   }
 

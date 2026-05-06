@@ -15,6 +15,12 @@ function validateEnv(): void {
       '[WARN] JWT_SECRET usando valor padrão de desenvolvimento. Troque em produção!',
     );
   }
+
+  if (!process.env.ADMIN_EMAIL?.trim()) {
+    console.warn(
+      '[WARN] ADMIN_EMAIL não configurado. Nenhum usuário terá acesso admin até definir esse valor.',
+    );
+  }
 }
 
 async function bootstrap() {

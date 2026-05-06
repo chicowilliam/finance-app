@@ -9,6 +9,23 @@ type UserRole = 'user' | 'admin';
 export class UsersService {
   constructor(private prisma: PrismaService) {}
 
+  private normalizeEmail(email: string): string {
+    return email.trim().toLowerCase();
+  }
+
+  resolveRoleForEmail(
+    email: string,
+    configuredAdminEmail?: string | null,
+  ): UserRole {
+    if (!configuredAdminEmail) {
+      return 'user';
+    }
+
+    return this.normalizeEmail(email) === this.normalizeEmail(configuredAdminEmail)
+      ? 'admin'
+      : 'user';
+  }
+
   async create(
     nome: string,
     email: string,
@@ -31,6 +48,22 @@ export class UsersService {
 
   findById(id: number): Promise<User | null> {
     return this.prisma.user.findUnique({ where: { id } });
+  }
+
+  async syncRoleForConfiguredAdmin(
+    user: User,
+    configuredAdminEmail?: string | null,
+  ): Promise<User> {
+    const expectedRole = this.resolveRoleForEmail(user.email, configuredAdminEmail);
+
+    if (user.role === expectedRole) {
+      return user;
+    }
+
+    return this.prisma.user.update({
+      where: { id: user.id },
+      data: { role: expectedRole },
+    });
   }
 
   listUsers() {

@@ -26,6 +26,16 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
       throw new UnauthorizedException('Sessão inválida para esta conta.');
     }
 
-    return { userId: user.id, email: user.email, role: user.role };
+    const configuredAdminEmail = process.env.ADMIN_EMAIL?.trim().toLowerCase();
+    const syncedUser = await this.usersService.syncRoleForConfiguredAdmin(
+      user,
+      configuredAdminEmail,
+    );
+
+    return {
+      userId: syncedUser.id,
+      email: syncedUser.email,
+      role: syncedUser.role,
+    };
   }
 }
