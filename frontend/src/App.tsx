@@ -12,7 +12,6 @@ const VisaoGeral = lazy(() => import('./pages/VisaoGeral'))
 const Contas = lazy(() => import('./pages/Contas'))
 const Calendario = lazy(() => import('./pages/Calendario'))
 const Alertas = lazy(() => import('./pages/Alertas'))
-const Configuracoes = lazy(() => import('./pages/Configuracoes'))
 const AdminUsuarios = lazy(() => import('./pages/AdminUsuarios'))
 const Welcome = lazy(() => import('./pages/Welcome'))
 const VerifyEmail = lazy(() => import('./pages/VerifyEmail'))
@@ -100,17 +99,6 @@ export default function App() {
                 </PageTransition>
               )}
             />
-            <Route
-              path="configuracoes"
-              element={(
-                <PageTransition>
-                  <Suspense fallback={<RouteFallback />}>
-                    <Configuracoes />
-                  </Suspense>
-                </PageTransition>
-              )}
-            />
-
             <Route
               element={(
                 <Suspense fallback={<RouteFallback />}>
