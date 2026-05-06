@@ -213,9 +213,9 @@ export default function Contas() {
                       {/* Faixa colorida de status */}
                       <td style={{ width: 4, padding: 0, backgroundColor: STATUS_COLOR[c.status] }} />
                       <td>
-                        <Stack gap={0}>
-                          <Text fw={600} size="sm">{c.descricao}</Text>
-                          <Text size="xs" c="dimmed">{c.categoria}</Text>
+                        <Stack gap={2}>
+                          <Text fw={700} size="md" style={{ letterSpacing: '-0.01em', lineHeight: 1.3 }}>{c.descricao}</Text>
+                          <Text size="xs" c="dimmed" tt="uppercase" fw={500} style={{ letterSpacing: '0.06em' }}>{c.categoria}</Text>
                         </Stack>
                       </td>
                       <td>
