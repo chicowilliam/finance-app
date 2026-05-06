@@ -45,6 +45,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 	const [mode, setMode] = useState<AuthMode>(() => {
 		const hasToken = Boolean(localStorage.getItem('token'))
 		const savedMode = localStorage.getItem(AUTH_MODE_KEY) as AuthMode | null
+		if (savedMode === 'guest') {
+			return 'guest'
+		}
 		if (savedMode === 'user' && hasToken) {
 			return savedMode
 		}
@@ -99,6 +102,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 	const enterGuest = useCallback(() => {
 		persistMode('guest')
 		persistRole(null)
+		setUserName(null)
+		setUserEmail(null)
 		localStorage.removeItem('token')
 		localStorage.removeItem(AUTH_ROLE_KEY)
 	}, [persistMode, persistRole])
@@ -133,6 +138,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
 	const logout = useCallback(() => {
 		persistMode('anonymous')
+		setUserName(null)
+		setUserEmail(null)
 	}, [persistMode])
 
 	useEffect(() => {
@@ -174,7 +181,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 			mode,
 			role,
 			isAdmin: mode === 'user' && role === 'admin',
-			isAuthenticated: mode === 'user',
+			isAuthenticated: mode === 'guest' || mode === 'user',
 			userName,
 			userEmail,
 			enterGuest,
