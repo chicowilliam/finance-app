@@ -213,11 +213,7 @@ export default function Contas() {
                       {/* Faixa colorida de status */}
                       <td style={{ width: 4, padding: 0, backgroundColor: STATUS_COLOR[c.status] }} />
                       <td>
-                        <Stack gap={4} align="center" style={{ textAlign: 'center' }}>
-                          <Text fw={700} size="md" style={{ letterSpacing: '-0.01em', lineHeight: 1.3 }}>{c.descricao}</Text>
-                          <div style={{ width: 32, height: 1, background: 'rgba(255,255,255,0.1)', borderRadius: 1 }} />
-                          <Text size="xs" c="dimmed" tt="uppercase" fw={500} style={{ letterSpacing: '0.08em' }}>{c.categoria}</Text>
-                        </Stack>
+                        <Text fw={700} size="md" style={{ letterSpacing: '-0.01em', lineHeight: 1.3, textAlign: 'center' }}>{c.descricao}</Text>
                       </td>
                       <td>
                         <Badge variant="dot" color={c.status === 'paga' ? 'teal' : c.status === 'a_vencer' ? 'violet' : 'gray'} size="sm">
