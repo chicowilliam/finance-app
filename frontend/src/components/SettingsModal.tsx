@@ -300,6 +300,18 @@ export default function SettingsModal({ opened, onClose }: SettingsModalProps) {
 							>
 								Fechar
 							</Button>
+							<Button
+								size="sm"
+								variant="light"
+								color="teal"
+								style={{ alignSelf: 'flex-start' }}
+								onClick={() => {
+									onClose()
+									setTimeout(() => window.dispatchEvent(new Event('finance:start-tour')), 300)
+								}}
+							>
+								🗺️ Ver tutorial novamente
+							</Button>
 						</Section>
 
 						<Divider />

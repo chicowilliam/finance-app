@@ -15,4 +15,7 @@ export const STORAGE_KEYS = {
 	PREF_DENSITY:         'finance.pref.density',
 	PREF_CURRENCY:        'finance.pref.currency',
 	PREF_ACCENT:          'finance.pref.accentColor',
+
+	// Onboarding tour
+	TOUR_DONE: 'finance.tour.done',
 } as const

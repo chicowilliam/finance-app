@@ -97,7 +97,7 @@ export default function VisaoGeral() {
           },
         }}
       >
-        <SimpleGrid cols={{ base: 1, md: 2, xl: 4 }} spacing="md">
+        <SimpleGrid cols={{ base: 1, md: 2, xl: 4 }} spacing="md" data-tour="overview-cards">
           {cards.map(c => (
             <motion.div
               key={c.label}

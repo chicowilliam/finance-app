@@ -9,6 +9,7 @@ import Navbar from '../components/Navbar'
 import NovaContaForm from '../components/NovaContaForm'
 import AppModal from '../components/AppModal'
 import SettingsModal from '../components/SettingsModal'
+import AppTour from '../components/AppTour'
 import { useContas } from '../hooks/useBills'
 import { ContasContext } from '../context/ContasContext'
 import type { Conta } from '../types/Bill'
@@ -174,6 +175,7 @@ export default function DashboardLayout() {
 				</AppModal>
 
 				<SettingsModal opened={settingsOpen} onClose={() => setSettingsOpen(false)} />
+				<AppTour />
 			</div>
 		</ContasContext.Provider>
 	)

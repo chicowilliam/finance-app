@@ -121,10 +121,11 @@ export default function Navbar({ onAddBill, onToggleMobile, desktopOpened, onTog
               tone="neutral"
               leftSection={<Banknote size={15} strokeWidth={1.8} />}
               onClick={openSaldoModal}
+              data-tour="btn-saldo"
             >
               {saldo !== null ? 'Atualizar saldo' : 'Adicionar saldo'}
             </AppButton>
-            <AppButton className="magic-cta-button" leftSection={<Plus size={15} strokeWidth={2} />} onClick={onAddBill}>
+            <AppButton className="magic-cta-button" leftSection={<Plus size={15} strokeWidth={2} />} onClick={onAddBill} data-tour="btn-nova-conta">
               Nova Conta
             </AppButton>
           </Stack>

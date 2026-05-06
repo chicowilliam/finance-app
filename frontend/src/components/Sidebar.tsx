@@ -112,7 +112,7 @@ export default function Sidebar({ onToggleDesktop, onNavClick }: SidebarProps) {
 				</Box>
 			)}
 
-			<Stack gap={4} mb="md">
+			<Stack gap={4} mb="md" data-tour="sidebar-nav">
 				<Text size="10px" fw={700} c="var(--color-aluminum)" className="sidebar-section-label" px={8}>Navegação</Text>
 				{mainLinks.map((l) => (
 					<MantineNavLink
