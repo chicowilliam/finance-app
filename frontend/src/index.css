@@ -523,6 +523,47 @@ textarea {
   outline-offset: 2px;
 }
 
+:root[data-density='compacto'] {
+  --space-1: 6px;
+  --space-2: 12px;
+  --space-3: 18px;
+  --space-4: 24px;
+}
+
+:root[data-density='compacto'] .magic-topbar__metric-card {
+  min-width: 180px;
+  padding: 8px 10px;
+}
+
+:root[data-density='compacto'] .dashboard-page-shell {
+  padding-top: 0.5rem;
+}
+
+:root[data-high-contrast='true'] {
+  --color-text: #0c1511;
+  --color-text-muted: #26352e;
+  --color-border: #9eafa5;
+  --color-border-strong: #7f948a;
+  --focus-ring-color: rgba(15, 78, 59, 0.45);
+}
+
+:root[data-theme='dark'][data-high-contrast='true'] {
+  --color-text: #ffffff;
+  --color-text-muted: #d6e6df;
+  --color-border: #6f857b;
+  --color-border-strong: #8ea59b;
+  --focus-ring-color: rgba(141, 226, 191, 0.48);
+}
+
+:root[data-reduce-motion='true'] *,
+:root[data-reduce-motion='true'] *::before,
+:root[data-reduce-motion='true'] *::after {
+  scroll-behavior: auto !important;
+  animation-duration: 0.01ms !important;
+  animation-iteration-count: 1 !important;
+  transition-duration: 0.01ms !important;
+}
+
 .sidebar-resize-handle {
   position: absolute;
   top: 0;

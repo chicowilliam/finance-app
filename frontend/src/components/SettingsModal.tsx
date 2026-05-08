@@ -38,11 +38,11 @@ const PREF_ACCENT          = STORAGE_KEYS.PREF_ACCENT
 
 // ─── Accent colors ────────────────────────────────────────────────────────────
 const ACCENT_OPTIONS = [
-	{ label: 'Teal (padrão)', value: 'teal',   color: '#2ecc8a' },
-	{ label: 'Azul',          value: 'blue',   color: '#3b82f6' },
-	{ label: 'Roxo',          value: 'violet', color: '#8b5cf6' },
-	{ label: 'Laranja',       value: 'orange', color: '#f97316' },
-	{ label: 'Rosa',          value: 'pink',   color: '#ec4899' },
+	{ label: 'Teal (padrão)', value: 'teal',   color: '#2ecc8a', strong: '#1e7a5d' },
+	{ label: 'Azul',          value: 'blue',   color: '#3b82f6', strong: '#1d4ed8' },
+	{ label: 'Roxo',          value: 'violet', color: '#8b5cf6', strong: '#6d28d9' },
+	{ label: 'Laranja',       value: 'orange', color: '#f97316', strong: '#c2410c' },
+	{ label: 'Rosa',          value: 'pink',   color: '#ec4899', strong: '#be185d' },
 ]
 
 // ─── Section wrapper ──────────────────────────────────────────────────────────
@@ -206,8 +206,11 @@ export default function SettingsModal({ opened, onClose }: SettingsModalProps) {
 	function handleAccentChange(value: string) {
 		setAccent(value)
 		setStr(PREF_ACCENT, value)
-		const accentColor = ACCENT_OPTIONS.find((a) => a.value === value)?.color ?? '#2ecc8a'
+		const selected = ACCENT_OPTIONS.find((a) => a.value === value)
+		const accentColor = selected?.color ?? '#2ecc8a'
+		const accentStrong = selected?.strong ?? '#1e7a5d'
 		document.documentElement.style.setProperty('--color-brand', accentColor)
+		document.documentElement.style.setProperty('--color-brand-strong', accentStrong)
 	}
 
 	function handleDensityChange(value: string) {
@@ -231,12 +234,14 @@ export default function SettingsModal({ opened, onClose }: SettingsModalProps) {
 	function toggleHideValues(v: boolean) {
 		setHideValues(v)
 		setBool(PREF_HIDE_VALUES, v)
+		window.dispatchEvent(new Event('finance:pref-hide-values-changed'))
 	}
 
 	function handleSessionTimeout(v: string | null) {
 		const val = v ?? 'nunca'
 		setSessionTimeout(val)
 		setStr(PREF_SESSION_TIMEOUT, val)
+		window.dispatchEvent(new Event('finance:pref-session-timeout-changed'))
 	}
 
 	function handleCurrencyChange(v: string | null) {

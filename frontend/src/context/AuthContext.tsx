@@ -6,7 +6,7 @@ import { apiLogin, apiMe, apiRegister, apiUpgradeFromGuest } from '../services/a
 import { AUTH_EXPIRED_EVENT } from '../services/api'
 import type { Conta } from '../types/Bill'
 import { STORAGE_KEYS } from '../utils/storageKeys'
-import { loadJSON } from '../utils/storageHelpers'
+import { getStr, loadJSON } from '../utils/storageHelpers'
 
 const AUTH_MODE_KEY  = STORAGE_KEYS.AUTH_MODE
 const AUTH_ROLE_KEY  = STORAGE_KEYS.AUTH_ROLE
@@ -25,6 +25,20 @@ function popGuestContas(): Omit<Conta, 'id'>[] {
   } catch {
     return []
   }
+}
+
+function parseTimeoutMs(value: string): number | null {
+	switch (value) {
+		case '15min':
+			return 15 * 60 * 1000
+		case '30min':
+			return 30 * 60 * 1000
+		case '1h':
+			return 60 * 60 * 1000
+		case 'nunca':
+		default:
+			return null
+	}
 }
 
 export function AuthProvider({ children }: { children: ReactNode }) {
@@ -174,6 +188,53 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 		window.addEventListener(AUTH_EXPIRED_EVENT, handleAuthExpired)
 		return () => window.removeEventListener(AUTH_EXPIRED_EVENT, handleAuthExpired)
 	}, [persistMode])
+
+	useEffect(() => {
+		if (mode === 'anonymous') return
+
+		let timeoutId: ReturnType<typeof setTimeout> | null = null
+		let timeoutMs = parseTimeoutMs(getStr(STORAGE_KEYS.PREF_SESSION_TIMEOUT, 'nunca'))
+
+		const clearTimer = () => {
+			if (timeoutId) {
+				clearTimeout(timeoutId)
+				timeoutId = null
+			}
+		}
+
+		const armTimer = () => {
+			clearTimer()
+			if (!timeoutMs) return
+			timeoutId = setTimeout(() => {
+				persistMode('anonymous')
+			}, timeoutMs)
+		}
+
+		const handleActivity = () => armTimer()
+		const handleTimeoutPrefChange = () => {
+			timeoutMs = parseTimeoutMs(getStr(STORAGE_KEYS.PREF_SESSION_TIMEOUT, 'nunca'))
+			armTimer()
+		}
+
+		window.addEventListener('mousemove', handleActivity)
+		window.addEventListener('mousedown', handleActivity)
+		window.addEventListener('keydown', handleActivity)
+		window.addEventListener('scroll', handleActivity, true)
+		window.addEventListener('touchstart', handleActivity, true)
+		window.addEventListener('finance:pref-session-timeout-changed', handleTimeoutPrefChange)
+
+		armTimer()
+
+		return () => {
+			clearTimer()
+			window.removeEventListener('mousemove', handleActivity)
+			window.removeEventListener('mousedown', handleActivity)
+			window.removeEventListener('keydown', handleActivity)
+			window.removeEventListener('scroll', handleActivity, true)
+			window.removeEventListener('touchstart', handleActivity, true)
+			window.removeEventListener('finance:pref-session-timeout-changed', handleTimeoutPrefChange)
+		}
+	}, [mode, persistMode])
 
 	const value = useMemo(
 		() => {

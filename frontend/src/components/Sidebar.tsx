@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { NavLink, useLocation } from 'react-router-dom'
 import { ActionIcon, Avatar, Box, Divider, Group, NavLink as MantineNavLink, Popover, Stack, Text, UnstyledButton } from '@mantine/core'
 import { Bell, CalendarDays, Eye, EyeOff, LayoutDashboard, List, LogOut, Moon, PanelLeftClose, Settings, Sun, TrendingUp } from '../lib/icons'
@@ -6,6 +6,8 @@ import { useContasContext } from '../context/ContasContext'
 import { useAuth } from '../hooks/useAuth'
 import { useTheme } from '../hooks/useTheme'
 import { formatBRL } from '../utils/formatCurrency'
+import { STORAGE_KEYS } from '../utils/storageKeys'
+import { getBool } from '../utils/storageHelpers'
 import BrandLogo from './BrandLogo'
 
 const mainLinks = [
@@ -22,7 +24,7 @@ interface SidebarProps {
 
 export default function Sidebar({ onToggleDesktop, onNavClick }: SidebarProps) {
 	const { pathname } = useLocation()
-	const [showValues, setShowValues] = useState(true)
+	const [showValues, setShowValues] = useState(() => !getBool(STORAGE_KEYS.PREF_HIDE_VALUES))
 	const { isAdmin, userName, userEmail, logout } = useAuth()
 	const { theme, toggleTheme } = useTheme()
 	const [profileOpen, setProfileOpen] = useState(false)
@@ -49,6 +51,12 @@ export default function Sidebar({ onToggleDesktop, onNavClick }: SidebarProps) {
 		if (to === '/app') return pathname === '/app'
 		return pathname.startsWith(to)
 	}
+
+	useEffect(() => {
+		const applyHidePref = () => setShowValues(!getBool(STORAGE_KEYS.PREF_HIDE_VALUES))
+		window.addEventListener('finance:pref-hide-values-changed', applyHidePref)
+		return () => window.removeEventListener('finance:pref-hide-values-changed', applyHidePref)
+	}, [])
 
 	return (
 		<Box
