@@ -26,6 +26,7 @@ import { useContasContext } from '../context/ContasContext'
 import { STORAGE_KEYS } from '../utils/storageKeys'
 import { getBool, setBool, getStr, setStr } from '../utils/storageHelpers'
 import { exportContasToCsv } from '../utils/exportContasCsv'
+import { exportContasToPdf } from '../utils/exportContasPdf'
 
 // ─── Preference keys (aliases for readability) ────────────────────────────────
 const PREF_HIDE_VALUES     = STORAGE_KEYS.PREF_HIDE_VALUES
@@ -260,6 +261,15 @@ export default function SettingsModal({ opened, onClose }: SettingsModalProps) {
 			return
 		}
 		toast.success('Arquivo CSV exportado com sucesso!')
+	}
+
+	function handleExportPdf() {
+		const exported = exportContasToPdf(contas)
+		if (!exported) {
+			toast.info('Nao foi possivel abrir a exportacao PDF. Verifique se o bloqueador de pop-up esta desativado.')
+			return
+		}
+		toast.success('Visualizacao PDF aberta. Use Imprimir > Salvar como PDF.')
 	}
 
 	// ── Render tabs ────────────────────────────────────────────────────────────
@@ -684,7 +694,7 @@ export default function SettingsModal({ opened, onClose }: SettingsModalProps) {
 									variant="light"
 									color="grape"
 									leftSection={<FileText size={15} strokeWidth={1.8} />}
-									onClick={() => toast.info('Exportação em PDF em breve!')}
+									onClick={handleExportPdf}
 								>
 									Exportar PDF
 								</Button>
