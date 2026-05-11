@@ -22,8 +22,10 @@ import { Database, Download, FileText, Globe, KeyRound, Moon, Settings, Shield, 
 import { useAuth } from '../hooks/useAuth'
 import { useTheme } from '../hooks/useTheme'
 import { apiChangePassword, apiDeleteOwnAccount, apiUpdateProfile } from '../services/authService'
+import { useContasContext } from '../context/ContasContext'
 import { STORAGE_KEYS } from '../utils/storageKeys'
 import { getBool, setBool, getStr, setStr } from '../utils/storageHelpers'
+import { exportContasToCsv } from '../utils/exportContasCsv'
 
 // ─── Preference keys (aliases for readability) ────────────────────────────────
 const PREF_HIDE_VALUES     = STORAGE_KEYS.PREF_HIDE_VALUES
@@ -109,6 +111,7 @@ const TABS: { id: Tab; label: string; icon: React.ReactNode }[] = [
 
 export default function SettingsModal({ opened, onClose }: SettingsModalProps) {
 	const { userName, userEmail, refreshProfile } = useAuth()
+	const { contas } = useContasContext()
 	const { theme, toggleTheme } = useTheme()
 	const isMobile = useMediaQuery('(max-width: 48em)', false, { getInitialValueInEffect: false })
 
@@ -248,6 +251,15 @@ export default function SettingsModal({ opened, onClose }: SettingsModalProps) {
 		const val = v ?? 'BRL'
 		setCurrency(val)
 		setStr(PREF_CURRENCY, val)
+	}
+
+	function handleExportCsv() {
+		const exported = exportContasToCsv(contas)
+		if (!exported) {
+			toast.info('Nenhuma conta para exportar no momento.')
+			return
+		}
+		toast.success('Arquivo CSV exportado com sucesso!')
 	}
 
 	// ── Render tabs ────────────────────────────────────────────────────────────
@@ -663,7 +675,7 @@ export default function SettingsModal({ opened, onClose }: SettingsModalProps) {
 									variant="light"
 									color="blue"
 									leftSection={<FileText size={15} strokeWidth={1.8} />}
-									onClick={() => toast.info('Exportação em CSV em breve!')}
+									onClick={handleExportCsv}
 								>
 									Exportar CSV
 								</Button>
